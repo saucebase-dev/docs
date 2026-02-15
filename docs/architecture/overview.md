@@ -77,7 +77,7 @@ return Inertia::render('Dashboard', [
 
 Vue components receive these props with full type safety:
 
-```vue
+```html
 <script setup lang="ts">
 const props = defineProps<{
     stats: Stats;

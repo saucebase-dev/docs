@@ -294,7 +294,7 @@ Inertia::share([
 
 This means your Vue components can access module configuration:
 
-```vue
+```html
 <script setup lang="ts">
 import { usePage } from '@inertiajs/vue3';
 

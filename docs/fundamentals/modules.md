@@ -453,7 +453,7 @@ const enabledModules = modules().all();
 
 **In Vue components:**
 
-```vue title="Example usage in a component"
+```html title="Example usage in a component"
 <script setup lang="ts">
 import { modules } from '@/composables/useModules';
 
@@ -490,7 +490,7 @@ Since modules are part of your codebase, customize freely:
 
 ### Example: Customize Login Page
 
-```vue title="modules/Auth/resources/js/pages/Login.vue"
+```html title="modules/Auth/resources/js/pages/Login.vue"
 <script setup lang="ts">
 // Add your custom logic
 import { useCustomAuth } from '@/composables/useCustomAuth';
@@ -537,7 +537,7 @@ public function rules(): array
 
 3. **Update Vue component:**
 
-```vue title="modules/Auth/resources/js/pages/Register.vue"
+```html title="modules/Auth/resources/js/pages/Register.vue"
 <template>
   <form @submit.prevent="submit">
     <!-- ... existing fields ... -->

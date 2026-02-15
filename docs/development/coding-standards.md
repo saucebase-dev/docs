@@ -323,7 +323,7 @@ const count = ref(0);
 
 ### Component Structure
 
-```vue
+```html
 <script setup lang="ts">
 // 1. Imports
 import { ref, computed, onMounted } from 'vue';
@@ -471,7 +471,7 @@ DB::select("SELECT * FROM users WHERE email = '$email'");
 
 ### XSS Prevention
 
-```vue
+```html
 <!-- ✅ Good: Auto-escaped by Vue -->
 <template>
     <div>{{ user.name }}</div>
@@ -496,7 +496,7 @@ const sanitizedContent = computed(() => DOMPurify.sanitize(userContent));
 
 ### CSRF Protection
 
-```vue
+```html
 <!-- ✅ Good: CSRF token automatically included by Inertia -->
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
@@ -706,7 +706,7 @@ User::created(function ($user) {
 
 ### Frontend Performance
 
-```vue
+```html
 <script setup lang="ts">
 // ✅ Good: Lazy load heavy components
 import { defineAsyncComponent } from 'vue';
