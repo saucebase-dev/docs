@@ -19,7 +19,7 @@ Breadcrumbs provide hierarchical navigation that shows users where they are in y
 
 Create a reusable breadcrumb component:
 
-```vue title="resources/js/Components/Breadcrumbs.vue"
+```html title="resources/js/Components/Breadcrumbs.vue"
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 
@@ -120,7 +120,7 @@ class ProjectController extends Controller
 
 ### Frontend - Vue Page
 
-```vue title="resources/js/Pages/Projects/Show.vue"
+```html title="resources/js/Pages/Projects/Show.vue"
 <script setup lang="ts">
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Breadcrumbs, { type Breadcrumb } from '@/Components/Breadcrumbs.vue';
@@ -158,7 +158,7 @@ defineProps<Props>();
 
 Generate breadcrumbs automatically based on the current route:
 
-```vue title="resources/js/Components/AutoBreadcrumbs.vue"
+```html title="resources/js/Components/AutoBreadcrumbs.vue"
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
@@ -241,7 +241,7 @@ const breadcrumbs = computed(() => {
 
 Create a more visually appealing breadcrumb component:
 
-```vue title="resources/js/Components/StyledBreadcrumbs.vue"
+```html title="resources/js/Components/StyledBreadcrumbs.vue"
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 
@@ -308,7 +308,7 @@ defineProps<Props>();
 
 **Usage with styled breadcrumbs:**
 
-```vue
+```html
 <StyledBreadcrumbs
   :items="[
     { label: 'Projects', href: route('projects.index') },
@@ -322,7 +322,7 @@ defineProps<Props>();
 
 Add breadcrumbs to your application layout for consistent navigation:
 
-```vue title="resources/js/Layouts/AppLayout.vue"
+```html title="resources/js/Layouts/AppLayout.vue"
 <script setup lang="ts">
 import { usePage } from '@inertiajs/vue3';
 import Breadcrumbs, { type Breadcrumb } from '@/Components/Breadcrumbs.vue';
@@ -360,7 +360,7 @@ const breadcrumbs = computed(() => {
 
 Add structured data for search engines:
 
-```vue title="resources/js/Components/SEOBreadcrumbs.vue"
+```html title="resources/js/Components/SEOBreadcrumbs.vue"
 <script setup lang="ts">
 import { Link, Head } from '@inertiajs/vue3';
 import { computed } from 'vue';

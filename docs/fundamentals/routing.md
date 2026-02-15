@@ -180,7 +180,7 @@ route().current('settings.*'); // true if on any settings.* route
 
 Combine Ziggy with Inertia's router for SPA navigation:
 
-```vue
+```html
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
 
@@ -272,7 +272,7 @@ Route::get('/locale/{locale}', function ($locale) {
 
 Client-side usage:
 
-```vue
+```html
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
 
@@ -337,7 +337,7 @@ Route::get('/dashboard', fn() => Inertia::render('Dashboard'));
 
 All POST, PUT, PATCH, DELETE routes are protected by CSRF middleware by default:
 
-```vue
+```html
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
 
@@ -415,7 +415,7 @@ return redirect()->route('dashboard')
 
 Access in Vue:
 
-```vue
+```html
 <script setup lang="ts">
 import { usePage } from '@inertiajs/vue3';
 

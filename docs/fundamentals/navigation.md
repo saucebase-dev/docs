@@ -1,83 +1,28 @@
 ---
 sidebar_position: 4
 title: Navigation
-description: Learn how to implement navigation in Saucebase using Inertia.js and the Navigation service
+description: Add and organize navigation items in your Saucebase application using the Navigation service
 ---
 
 # Navigation
 
-Saucebase provides two complementary approaches to navigation:
+Saucebase provides a backend-driven navigation system built on [Spatie Navigation](https://github.com/spatie/laravel-navigation). You register menu items in PHP, organize them into groups, and they're automatically shared to your Vue frontend via Inertia props.
 
-1. **Frontend Navigation** - Static links using Inertia's Link component
-2. **Backend Navigation System** - Dynamic, file-based menu registration with automatic frontend sharing
+## How It Works
 
-## Frontend Navigation
+- **Register** items in `routes/navigation.php` (or a module's `routes/navigation.php`)
+- **Group** items by purpose — `main`, `secondary`, `user`, `settings`, `landing`
+- **Access** them in Vue via `usePage().props.navigation`
 
-For simple static navigation, use Inertia's Link component with Ziggy route helpers:
+The Navigation service loads all files automatically — no manual registration or event listeners needed.
 
-```vue title="resources/js/Components/Navigation/SimpleNav.vue"
-<script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
-</script>
+## Adding Navigation Items
 
-<template>
-  <nav class="flex gap-4">
-    <Link
-      :href="route('dashboard')"
-      class="px-4 py-2 text-gray-600 hover:text-gray-900"
-    >
-      Dashboard
-    </Link>
-
-    <Link
-      :href="route('profile.show')"
-      class="px-4 py-2 text-gray-600 hover:text-gray-900"
-    >
-      Profile
-    </Link>
-
-    <a
-      href="https://docs.example.com"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="px-4 py-2 text-gray-600 hover:text-gray-900"
-    >
-      Documentation
-    </a>
-  </nav>
-</template>
-```
-
-**Key points:**
-- Use `Link` component for internal navigation
-- Use Ziggy's `route()` helper for type-safe Laravel routes
-- Use regular `<a>` tags for external links
-- Inertia automatically handles client-side navigation without page reloads
-
----
-
-## Backend Navigation System
-
-For dynamic menus that need to be shared across your application, Saucebase provides a file-based Navigation system that automatically loads and shares navigation items with your frontend.
-
-### Overview
-
-The Navigation Service extends [Spatie Navigation](https://github.com/spatie/laravel-navigation) with:
-
-- **File-based registration** - Define navigation in `routes/navigation.php`
-- **Module-aware loading** - Automatically loads navigation from enabled modules
-- **Runtime conditions** - Show/hide items based on user permissions
-- **Grouped navigation** - Organize items (main, secondary, user, settings)
-- **Automatic frontend sharing** - Available in Vue via Inertia props
-
-### Quick Start
-
-Create navigation items in `routes/navigation.php`:
+Use `Navigation::add()` to register items:
 
 ```php title="routes/navigation.php"
-use Spatie\Navigation\Facades\Navigation;
-use Spatie\Navigation\Section;
+use App\Facades\Navigation;
+use App\Navigation\Section;
 
 Navigation::add('Dashboard', route('dashboard'), function (Section $section) {
     $section->attributes([
@@ -88,49 +33,50 @@ Navigation::add('Dashboard', route('dashboard'), function (Section $section) {
 });
 ```
 
-### Navigation Attributes
+### Attributes Reference
 
-Configure navigation items using the `attributes()` method:
+| Attribute  | Type   | Description                                                          |
+| ---------- | ------ | -------------------------------------------------------------------- |
+| `group`    | string | Navigation group (`main`, `secondary`, `user`, `settings`, `landing`) |
+| `slug`     | string | Unique identifier for the item                                       |
+| `order`    | int    | Sort order within the group (lower = first)                          |
+| `action`   | string | JavaScript action to trigger (e.g., `'logout'`)                     |
+| `external` | bool   | Render as `<a>` instead of Inertia `<Link>`                         |
+| `newPage`  | bool   | Open in a new tab (`target="_blank"`)                                |
+| `class`    | string | Custom CSS classes                                                   |
+| `badge`    | array  | Badge config: `['content' => '3', 'variant' => 'destructive']`      |
 
-| Attribute  | Type   | Description                                      |
-| ---------- | ------ | ------------------------------------------------ |
-| `group`    | string | Navigation group (main, secondary, user, etc.)   |
-| `slug`     | string | Unique identifier                                 |
-| `order`    | int    | Sort order (lower = higher priority)              |
-| `action`   | string | JavaScript action (e.g., 'logout')                |
-| `external` | bool   | External link flag                                |
-| `newPage`  | bool   | Open in new tab                                   |
-| `class`    | string | Custom CSS classes                                |
-| `badge`    | array  | Badge: `['content' => '1', 'variant' => 'destructive']` |
-
-**Examples:**
+## Examples
 
 ```php title="routes/navigation.php"
-// External link
-Navigation::add('GitHub', 'https://github.com/username/repo', function (Section $section) {
+use App\Facades\Navigation;
+use App\Navigation\Section;
+
+// External link — opens in new tab
+Navigation::add('Documentation', 'https://docs.example.com', function (Section $section) {
     $section->attributes([
         'group' => 'secondary',
-        'slug' => 'github',
+        'slug' => 'docs',
         'external' => true,
         'newPage' => true,
         'order' => 0,
     ]);
 });
 
-// With badge
-Navigation::add('Settings', route('settings.index'), function (Section $section) {
+// Badge — show a notification count
+Navigation::add('Notifications', route('notifications.index'), function (Section $section) {
     $section->attributes([
-        'group' => 'secondary',
-        'slug' => 'settings',
+        'group' => 'main',
+        'slug' => 'notifications',
         'order' => 10,
         'badge' => [
-            'content' => '1',
+            'content' => '3',
             'variant' => 'destructive',
         ],
     ]);
 });
 
-// Action-based (no URL navigation)
+// Action-based — triggers JavaScript instead of navigating
 Navigation::add('Log out', '#', function (Section $section) {
     $section->attributes([
         'group' => 'user',
@@ -140,68 +86,48 @@ Navigation::add('Log out', '#', function (Section $section) {
     ]);
 });
 
-// With custom styling
+// Custom styling
 Navigation::add('Admin', route('filament.admin.pages.dashboard'), function (Section $section) {
     $section->attributes([
         'group' => 'secondary',
         'slug' => 'admin',
         'order' => 10,
-        'external' => true,
-        'newPage' => true,
         'class' => 'bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500/20',
     ]);
 });
 ```
 
-### Runtime Conditions
+### Conditional Items
 
-Use `addWhen()` to show items conditionally based on runtime state:
+Two methods for conditional navigation:
 
-```php title="routes/navigation.php"
-use Illuminate\Support\Facades\Auth;
+- **`addWhen(fn, ...)`** — Evaluates the callback at render time (every request). Use for conditions that change per-request like auth state.
+- **`addIf(bool, ...)`** — Checks the condition once at registration time. Use for static conditions like feature flags or database counts.
 
+```php
+// addWhen — re-evaluated every request
 Navigation::addWhen(
     fn () => Auth::check() && Auth::user()->isAdmin(),
-    'Admin',
-    route('filament.admin.pages.dashboard'),
-    function (Section $section) {
-        $section->attributes([
-            'group' => 'secondary',
-            'slug' => 'admin',
-            'order' => 10,
-        ]);
-    }
+    'Admin', route('filament.admin.pages.dashboard'),
+    function (Section $section) { /* ... */ }
+);
+
+// addIf — checked once when navigation loads
+Navigation::addIf(
+    Product::displayable()->count() > 0,
+    'Pricing', route('pricing'),
+    function (Section $section) { /* ... */ }
 );
 ```
 
-The condition is evaluated at render time, allowing dynamic visibility based on:
-- User permissions
-- Session data
-- Feature flags
-- Database state
+## Module Navigation
 
-### Module Navigation
-
-Modules can register navigation by creating `routes/navigation.php`:
-
-```php title="modules/Auth/routes/navigation.php"
-use Spatie\Navigation\Facades\Navigation;
-use Spatie\Navigation\Section;
-
-Navigation::add('Log out', '#', function (Section $section) {
-    $section->attributes([
-        'group' => 'user',
-        'action' => 'logout',
-        'slug' => 'logout',
-        'order' => 100,
-    ]);
-});
-```
-
-**Example from Settings module:**
+Modules register navigation in their own `routes/navigation.php`. The file is loaded automatically when the module is enabled in `modules_statuses.json`.
 
 ```php title="modules/Settings/routes/navigation.php"
-// User menu
+use App\Facades\Navigation;
+use App\Navigation\Section;
+
 Navigation::add('Settings', route('settings.index'), function (Section $section) {
     $section->attributes([
         'group' => 'user',
@@ -209,241 +135,80 @@ Navigation::add('Settings', route('settings.index'), function (Section $section)
         'order' => 10,
     ]);
 });
-
-// Settings sidebar
-Navigation::add('General', route('settings.index'), function (Section $section) {
-    $section->attributes([
-        'group' => 'settings',
-        'slug' => 'general',
-        'order' => 10,
-    ]);
-});
-
-Navigation::add('Profile', route('settings.profile'), function (Section $section) {
-    $section->attributes([
-        'group' => 'settings',
-        'slug' => 'profile',
-        'order' => 20,
-    ]);
-});
 ```
 
-Navigation is automatically loaded when the module is enabled in `modules_statuses.json`.
+No additional registration is needed — just create the file and enable the module.
 
-### Frontend Integration
+## Navigation Groups
 
-Navigation is automatically shared with Vue via Inertia props. Access it in any component:
+Groups organize items by where they appear in the UI. Use the `group` attribute to assign items:
 
-```vue
+| Group       | Purpose                                   |
+| ----------- | ----------------------------------------- |
+| `main`      | Primary sidebar/header navigation         |
+| `secondary` | Lower sidebar items (docs, admin links)   |
+| `user`      | User dropdown menu (settings, logout)     |
+| `settings`  | Settings page sidebar                     |
+| `landing`   | Public landing page navigation            |
+
+You can create custom groups by using any string as the group name. They'll appear in `usePage().props.navigation` under that key.
+
+## Frontend Usage
+
+Navigation is shared via Inertia props, grouped by name:
+
+```html
 <script setup lang="ts">
-import { usePage } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 
-const page = usePage();
-const navigation = page.props.navigation;
-
-// Access specific groups
-const mainNav = navigation.main;
-const secondaryNav = navigation.secondary;
-const userNav = navigation.user;
+const { main, secondary, user } = usePage().props.navigation;
 </script>
 
 <template>
   <nav>
-    <!-- Main navigation -->
-    <div v-for="item in mainNav" :key="item.slug">
-      <Link
+    <template v-for="item in main" :key="item.slug">
+      <a
+        v-if="item.external"
         :href="item.url"
-        :class="{ 'active': item.active, [item.class]: item.class }"
+        :target="item.newPage ? '_blank' : undefined"
+        :class="item.class"
       >
         {{ item.title }}
-        <span v-if="item.badge" class="badge">
-          {{ item.badge.content }}
-        </span>
+      </a>
+      <Link v-else :href="item.url" :class="[item.class, { 'font-bold': item.active }]">
+        {{ item.title }}
+        <span v-if="item.badge">{{ item.badge.content }}</span>
       </Link>
-    </div>
+    </template>
   </nav>
 </template>
 ```
 
-#### MenuItem Structure
-
-Each navigation item has the following structure:
+### MenuItem Interface
 
 ```typescript
+interface MenuBadge {
+  content?: string | number;
+  variant?: 'default' | 'secondary' | 'destructive' | 'outline';
+  class?: string;
+}
+
 interface MenuItem {
-  title: string;           // Display text
-  url: string | null;      // Link URL
-  active: boolean;         // Current page match
-  slug: string;            // Unique identifier
-  action?: string;         // JavaScript action
-  external?: boolean;      // External link flag
-  newPage?: boolean;       // Open in new tab
-  class?: string;          // Custom CSS classes
-  badge?: {
-    content: string;
-    variant: string;
-  };
-  children?: MenuItem[];   // Nested items
+  title: string;
+  url?: string;
+  slug?: string;
+  active?: boolean;
+  action?: string;
+  external?: boolean;
+  newPage?: boolean;
+  class?: string;
+  badge?: MenuBadge | boolean;
+  children?: MenuItem[];
 }
-```
-
-### How the System Works
-
-The Navigation system follows this flow:
-
-#### 1. Registration
-
-**NavigationServiceProvider** registers the custom Navigation service and automatically calls `load()`:
-
-```php title="app/Providers/NavigationServiceProvider.php"
-public function register(): void
-{
-    // Override Spatie's binding with custom Navigation class
-    $this->app->scoped(\Spatie\Navigation\Navigation::class, function ($app) {
-        return new Navigation($app->make(ActiveUrlChecker::class));
-    });
-
-    // Automatically load navigation files when resolved
-    $this->app->resolving(Navigation::class, function (Navigation $navigation) {
-        return $navigation->load();
-    });
-}
-```
-
-#### 2. File Discovery
-
-The `load()` method automatically discovers and loads navigation files:
-
-```php title="app/Services/Navigation.php (excerpt)"
-public function load(): self
-{
-    // Load core navigation
-    $coreNavigationPath = base_path('routes/navigation.php');
-    if (file_exists($coreNavigationPath)) {
-        require $coreNavigationPath;
-    }
-
-    // Load module navigation from enabled modules
-    $modulesStatusPath = base_path('modules_statuses.json');
-    if (file_exists($modulesStatusPath)) {
-        $modulesStatus = json_decode(file_get_contents($modulesStatusPath), true);
-
-        foreach ($modulesStatus as $moduleName => $enabled) {
-            if ($enabled) {
-                $moduleNavigationPath = base_path("modules/{$moduleName}/routes/navigation.php");
-                if (file_exists($moduleNavigationPath)) {
-                    require $moduleNavigationPath;
-                }
-            }
-        }
-    }
-
-    return $this;
-}
-```
-
-**Key behaviors:**
-- Checks `modules_statuses.json` to determine which modules are enabled
-- Only loads navigation files from enabled modules
-- No event listeners or manual registration needed
-- Files are loaded once when the Navigation service is first resolved
-
-#### 3. Transformation & Grouping
-
-**HandleInertiaRequests** middleware calls `treeGrouped()` to process navigation:
-
-```php title="app/Http/Middleware/HandleInertiaRequests.php (excerpt)"
-public function share(Request $request): array
-{
-    return array_merge(parent::share($request), [
-        'navigation' => app(Navigation::class)->treeGrouped(),
-        // ... other shared data
-    ]);
-}
-```
-
-The `treeGrouped()` method:
-1. Groups items by their `group` attribute
-2. Filters items based on `when` callables (runtime conditions)
-3. Transforms to MenuItem format (removes internal attributes)
-4. Calculates active state by comparing URLs
-5. Sorts by `order` attribute within each group
-
-#### 4. Frontend Access
-
-Vue components receive navigation via Inertia props:
-
-```vue
-<script setup lang="ts">
-const navigation = usePage().props.navigation;
-// navigation = {
-//   main: [...MenuItem[]],
-//   secondary: [...MenuItem[]],
-//   user: [...MenuItem[]],
-//   settings: [...MenuItem[]],
-// }
-</script>
-```
-
-### Complete Example
-
-Here's a full `routes/navigation.php` demonstrating various features:
-
-```php title="routes/navigation.php"
-use Illuminate\Support\Facades\Auth;
-use Spatie\Navigation\Facades\Navigation;
-use Spatie\Navigation\Section;
-
-// Main navigation
-Navigation::add('Dashboard', route('dashboard'), function (Section $section) {
-    $section->attributes([
-        'group' => 'main',
-        'slug' => 'dashboard',
-        'order' => 0,
-    ]);
-});
-
-// Secondary navigation - External links
-Navigation::add('Star us on Github', 'https://github.com/sauce-base/saucebase', function (Section $section) {
-    $section->attributes([
-        'group' => 'secondary',
-        'slug' => 'github',
-        'external' => true,
-        'newPage' => true,
-        'order' => 0,
-    ]);
-});
-
-Navigation::add('Documentation', 'https://sauce-base.github.io/docs', function (Section $section) {
-    $section->attributes([
-        'group' => 'secondary',
-        'slug' => 'documentation',
-        'external' => true,
-        'newPage' => true,
-        'order' => 10,
-    ]);
-});
-
-// Conditional navigation - Admin only
-Navigation::addWhen(
-    fn () => Auth::check() && Auth::user()->isAdmin(),
-    'Admin',
-    route('filament.admin.pages.dashboard'),
-    function (Section $section) {
-        $section->attributes([
-            'group' => 'secondary',
-            'slug' => 'admin',
-            'order' => 20,
-            'external' => true,
-            'newPage' => true,
-            'class' => 'bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500/20 hover:text-yellow-400',
-        ]);
-    }
-);
 ```
 
 ## What's Next?
 
-- [Breadcrumbs](./breadcrumbs.md) - Implement breadcrumb trails for hierarchical navigation
-- [Modules](./modules.md) - Learn about creating and managing modules
-- [Routing](./routing.md) - Understand Laravel and Inertia routing patterns
+- [Breadcrumbs](./breadcrumbs.md) — Hierarchical navigation trails
+- [Modules](./modules.md) — Creating and managing modules
+- [Routing](./routing.md) — Laravel and Inertia routing patterns

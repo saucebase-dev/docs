@@ -57,7 +57,8 @@ modules/
     │       └── pages/           # Module Inertia pages
     ├── routes/
     │   ├── web.php              # Auto-loaded when module enabled
-    │   └── api.php
+    │   ├── api.php
+    │   └── navigation.php       # Module navigation items
     ├── tests/
     │   ├── Feature/
     │   ├── Unit/

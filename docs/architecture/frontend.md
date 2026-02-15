@@ -199,7 +199,7 @@ return Inertia::render('Users/Index', [
 ```
 
 **Frontend (Vue Component)**:
-```vue
+```html
 <script setup lang="ts">
 interface Props {
     users: PaginatedData<User>;
@@ -361,7 +361,7 @@ export function afterMountModules(app: App) {
 
 All components use Vue 3 Composition API with `<script setup>`:
 
-```vue
+```html
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useForm, usePage } from '@inertiajs/vue3';
@@ -450,7 +450,7 @@ components/ui/
 
 ### Using UI Components
 
-```vue
+```html
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -498,7 +498,7 @@ export function useAuth() {
 
 Usage:
 
-```vue
+```html
 <script setup lang="ts">
 import { useAuth } from '@/composables/useAuth';
 
@@ -536,7 +536,7 @@ public function share(Request $request): array
 
 Access in any component:
 
-```vue
+```html
 <script setup lang="ts">
 import { usePage } from '@inertiajs/vue3';
 
@@ -608,7 +608,7 @@ export default {
 
 ### Usage
 
-```vue
+```html
 <template>
     <div class="bg-primary text-white p-4">
         <h1 class="text-2xl font-bold">Hello</h1>
@@ -637,7 +637,7 @@ lang/
 
 ### Usage in Components
 
-```vue
+```html
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 </script>
@@ -652,7 +652,7 @@ import { trans } from 'laravel-vue-i18n';
 
 ### Change Locale
 
-```vue
+```html
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
 import { loadLanguageAsync } from 'laravel-vue-i18n';
@@ -798,7 +798,7 @@ declare module 'vue' {
 
 ### Using Types in Components
 
-```vue
+```html
 <script setup lang="ts">
 import type { PageProps, User } from '@/types/global';
 
@@ -824,7 +824,7 @@ const flash = page.props.flash;
 
 Automatically handled by Vite:
 
-```vue
+```html
 <script setup lang="ts">
 // Lazy load heavy components
 import { defineAsyncComponent } from 'vue';
@@ -848,7 +848,7 @@ const HeavyChart = defineAsyncComponent(() =>
 
 ### Conditional Rendering
 
-```vue
+```html
 <template>
     <!-- Use v-if for infrequent toggles -->
     <div v-if="isAuthenticated">
@@ -864,7 +864,7 @@ const HeavyChart = defineAsyncComponent(() =>
 
 ### Memoization
 
-```vue
+```html
 <script setup lang="ts">
 import { computed } from 'vue';
 

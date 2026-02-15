@@ -157,7 +157,7 @@ class StorePostRequest extends FormRequest
 
 The `trans()` helper is available globally in Vue components:
 
-```vue
+```html
 <script setup lang="ts">
 import { trans } from 'laravel-vue-i18n';
 
@@ -245,7 +245,7 @@ export function useLocale() {
 
 Usage:
 
-```vue
+```html
 <script setup lang="ts">
 import { useLocale } from '@/composables/useLocale';
 
@@ -272,7 +272,7 @@ const { currentLocale, availableLocales, setLocale } = useLocale();
 
 Saucebase includes a built-in `LanguageSelector` component:
 
-```vue
+```html
 <script setup lang="ts">
 import LanguageSelector from '@/components/LanguageSelector.vue';
 </script>
@@ -288,7 +288,7 @@ import LanguageSelector from '@/components/LanguageSelector.vue';
 
 ### Customizing LanguageSelector
 
-```vue
+```html
 <!-- resources/js/components/LanguageSelector.vue -->
 <script setup lang="ts">
 import { computed } from 'vue';
@@ -530,7 +530,7 @@ const languages = [
 - Keep translation keys descriptive
 - Use placeholders for dynamic content
 
-```vue
+```html
 <!-- ✅ Good: Translation key -->
 <h1>{{ trans('welcome_message') }}</h1>
 
@@ -582,7 +582,7 @@ const languages = [
 
 ## Dynamic Pluralization
 
-```vue
+```html
 <script setup lang="ts">
 import { transChoice } from 'laravel-vue-i18n';
 

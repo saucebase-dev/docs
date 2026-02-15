@@ -25,7 +25,7 @@ Tailwind CSS 4 provides a `dark:` variant that applies styles when dark mode is 
 
 Create a theme toggle component:
 
-```vue title="resources/js/Components/ThemeToggle.vue"
+```html title="resources/js/Components/ThemeToggle.vue"
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 
@@ -101,7 +101,7 @@ function updateTheme() {
 
 Include the theme toggle in your navigation:
 
-```vue title="resources/js/Components/Navigation/AppNav.vue"
+```html title="resources/js/Components/Navigation/AppNav.vue"
 <script setup lang="ts">
 import ThemeToggle from '@/Components/ThemeToggle.vue';
 </script>
@@ -124,7 +124,7 @@ import ThemeToggle from '@/Components/ThemeToggle.vue';
 
 Apply dark mode styles using Tailwind's `dark:` variant:
 
-```vue title="resources/js/Components/Card.vue"
+```html title="resources/js/Components/Card.vue"
 <template>
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
     <h3 class="text-gray-900 dark:text-white font-semibold">
@@ -146,7 +146,7 @@ Apply dark mode styles using Tailwind's `dark:` variant:
 
 Create a dropdown with multiple theme options (light, dark, system):
 
-```vue title="resources/js/Components/ThemeSelector.vue"
+```html title="resources/js/Components/ThemeSelector.vue"
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 
@@ -334,7 +334,7 @@ export function useTheme() {
 
 **Usage:**
 
-```vue
+```html
 <script setup lang="ts">
 import { useTheme } from '@/composables/useTheme';
 
@@ -424,7 +424,7 @@ Always add the theme-loading script before any other scripts or styles to preven
 
 Use these common color patterns for dark mode:
 
-```vue
+```html
 <template>
   <div>
     <!-- Backgrounds -->
