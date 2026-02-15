@@ -76,8 +76,8 @@ The Navigation Service extends [Spatie Navigation](https://github.com/spatie/lar
 Create navigation items in `routes/navigation.php`:
 
 ```php title="routes/navigation.php"
-use Spatie\Navigation\Facades\Navigation;
-use Spatie\Navigation\Section;
+use App\Facades\Navigation;
+use App\Navigation\Section;
 
 Navigation::add('Dashboard', route('dashboard'), function (Section $section) {
     $section->attributes([
@@ -185,8 +185,8 @@ The condition is evaluated at render time, allowing dynamic visibility based on:
 Modules can register navigation by creating `routes/navigation.php`:
 
 ```php title="modules/Auth/routes/navigation.php"
-use Spatie\Navigation\Facades\Navigation;
-use Spatie\Navigation\Section;
+use App\Facades\Navigation;
+use App\Navigation\Section;
 
 Navigation::add('Log out', '#', function (Section $section) {
     $section->attributes([
@@ -298,13 +298,19 @@ The Navigation system follows this flow:
 ```php title="app/Providers/NavigationServiceProvider.php"
 public function register(): void
 {
-    // Override Spatie's binding with custom Navigation class
-    $this->app->scoped(\Spatie\Navigation\Navigation::class, function ($app) {
+    // Bind our custom Navigation class as scoped (fresh per request)
+    $this->app->scoped(Navigation::class, function ($app) {
         return new Navigation($app->make(ActiveUrlChecker::class));
     });
 
-    // Automatically load navigation files when resolved
-    $this->app->resolving(Navigation::class, function (Navigation $navigation) {
+    // Also bind Spatie's class to our implementation so existing DI still works
+    $this->app->alias(Navigation::class, \Spatie\Navigation\Navigation::class);
+
+    // Register global alias for the facade
+    AliasLoader::getInstance(['Navigation' => NavigationFacade::class]);
+
+    // Auto-load navigation files when the Navigation instance is resolved
+    $this->app->resolving(Navigation::class, function (Navigation $navigation): Navigation {
         return $navigation->load();
     });
 }
@@ -320,10 +326,10 @@ public function load(): self
     // Load core navigation
     $coreNavigationPath = base_path('routes/navigation.php');
     if (file_exists($coreNavigationPath)) {
-        require $coreNavigationPath;
+        require_once $coreNavigationPath;
     }
 
-    // Load module navigation from enabled modules
+    // Load module navigation
     $modulesStatusPath = base_path('modules_statuses.json');
     if (file_exists($modulesStatusPath)) {
         $modulesStatus = json_decode(file_get_contents($modulesStatusPath), true);
@@ -332,7 +338,7 @@ public function load(): self
             if ($enabled) {
                 $moduleNavigationPath = base_path("modules/{$moduleName}/routes/navigation.php");
                 if (file_exists($moduleNavigationPath)) {
-                    require $moduleNavigationPath;
+                    require_once $moduleNavigationPath;
                 }
             }
         }
@@ -356,8 +362,17 @@ public function load(): self
 public function share(Request $request): array
 {
     return array_merge(parent::share($request), [
-        'navigation' => app(Navigation::class)->treeGrouped(),
-        // ... other shared data
+        'locale' => app()->getLocale(),
+        'modules' => fn () => collect(Module::allEnabled())
+            ->mapWithKeys(fn ($module, $key) => [$key => $module->getName()])
+            ->all(),
+        'navigation' => fn () => app(Navigation::class)->treeGrouped(),
+        'breadcrumbs' => $this->getBreadcrumbs(),
+        'toast' => fn () => $request->session()->pull('toast'),
+        'ziggy' => fn () => [
+            ...(new Ziggy)->toArray(),
+            'location' => $request->url(),
+        ],
     ]);
 }
 ```
@@ -391,8 +406,8 @@ Here's a full `routes/navigation.php` demonstrating various features:
 
 ```php title="routes/navigation.php"
 use Illuminate\Support\Facades\Auth;
-use Spatie\Navigation\Facades\Navigation;
-use Spatie\Navigation\Section;
+use App\Facades\Navigation;
+use App\Navigation\Section;
 
 // Main navigation
 Navigation::add('Dashboard', route('dashboard'), function (Section $section) {

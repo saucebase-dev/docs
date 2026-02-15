@@ -59,7 +59,7 @@ import ModuleCard from '@site/src/components/ModuleCard';
     description="Subscription and payment management with Stripe integration. Handle plans, invoices, and customer billing."
     href="https://github.com/sauce-base/billing"
     icon="💳"
-    status="coming-soon"
+    status="available"
   />
   <ModuleCard
     title="Teams"
@@ -378,8 +378,8 @@ Access routes at: `https://localhost/auth/login`
 Modules can register navigation items by creating a `routes/navigation.php` file:
 
 ```php title="modules/Auth/routes/navigation.php"
-use Spatie\Navigation\Facades\Navigation;
-use Spatie\Navigation\Section;
+use App\Facades\Navigation;
+use App\Navigation\Section;
 
 Navigation::add('Log out', '#', function (Section $section) {
     $section->attributes([

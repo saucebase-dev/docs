@@ -13,7 +13,7 @@ Saucebase is built on Laravel 12 with a modular architecture that promotes separ
 | Spatie Permission   | Latest  | Role-based access control            |
 | Inertia.js          | 2.0     | Server-side routing adapter          |
 | Laravel Modules     | Latest  | Modular structure                    |
-| Filament            | 4       | Admin panel                          |
+| Filament            | 5       | Admin panel                          |
 
 ## Architecture Overview
 
@@ -45,9 +45,11 @@ app/
 ├── Console/
 │   ├── Commands/          # Artisan commands
 │   └── Kernel.php         # Command scheduling
+├── Enums/                 # Application enums
 ├── Events/                # Application events
 ├── Exceptions/
 │   └── Handler.php        # Exception handling
+├── Facades/               # Custom facades
 ├── Helpers/
 │   └── helpers.php        # Global helper functions
 ├── Http/
@@ -62,11 +64,14 @@ app/
 ├── Providers/             # Service providers
 │   ├── AppServiceProvider.php
 │   ├── BreadcrumbServiceProvider.php
-│   ├── FilamentServiceProvider.php
+│   ├── Filament/
+│   │   └── AdminPanelProvider.php
 │   ├── MacroServiceProvider.php
 │   ├── ModuleServiceProvider.php
 │   └── NavigationServiceProvider.php
-└── Services/              # Business logic services
+├── Services/              # Business logic services
+│   └── Navigation.php
+└── Notifications/         # Application notifications
 ```
 
 ### Module Structure
@@ -541,22 +546,19 @@ class HandleInertiaRequests extends Middleware
 
     public function share(Request $request): array
     {
-        return [
-            ...parent::share($request),
-            'auth' => [
-                'user' => $request->user(),
-            ],
-            'flash' => [
-                'success' => $request->session()->get('success'),
-                'error' => $request->session()->get('error'),
-            ],
+        return array_merge(parent::share($request), [
             'locale' => app()->getLocale(),
-            'ziggy' => fn() => [
+            'modules' => fn () => collect(Module::allEnabled())
+                ->mapWithKeys(fn ($module, $key) => [$key => $module->getName()])
+                ->all(),
+            'navigation' => fn () => app(Navigation::class)->treeGrouped(),
+            'breadcrumbs' => $this->getBreadcrumbs(),
+            'toast' => fn () => $request->session()->pull('toast'),
+            'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
-                'query' => $request->query(),
             ],
-        ];
+        ]);
     }
 }
 ```
