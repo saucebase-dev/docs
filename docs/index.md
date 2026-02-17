@@ -55,7 +55,7 @@ Saucebase combines modular architecture with modern tooling to help you build fa
 
 We've optimized the development experience so you can build faster:
 
-- **One-command setup**: Run `php artisan saucebase:install` and Saucebase starts [Docker](/reference/glossary#docker) containers, configures your database, and generates SSL certificates automatically
+- **One-command setup**: Run `task install` and Saucebase starts [Docker](/reference/glossary#docker) containers, configures your database, generates SSL certificates, and builds assets automatically
 - **Instant hot reload**: See your changes immediately in the browser with [HMR](/reference/glossary#hmr-hot-module-replacement) (no page refresh needed)
 - **Type-safe routes**: [Ziggy](/reference/glossary#ziggy) generates TypeScript helpers from your Laravel routes, so you get autocomplete and type checking
 - **SSR when you need it**: Enable [server-side rendering](/reference/glossary#ssr-server-side-rendering) for specific pages to improve SEO and performance
@@ -111,25 +111,20 @@ Commitlint for conventional commits
 
 ## Quick Start
 
-You can get Saucebase running in just a few minutes:
+You can get Saucebase running in just a few minutes. Only Docker and Node.js are required:
 
 ```bash
-# Create a new project
-composer create-project saucebase/saucebase my-app
+git clone https://github.com/sauce-base/saucebase.git my-app
 cd my-app
-
-# Install and configure everything
-php artisan saucebase:install
-
-# Start the development server
-npm run dev        # Docker users
-composer dev       # Native installation
+task install
 ```
 
-Open `https://localhost` in your browser (Docker) or `http://localhost:8000` (native) and you're ready to build!
+Or without [Task](https://taskfile.dev): `bash bin/setup-env`
 
-:::tip What does saucebase:install do?
-This command starts Docker containers (MySQL, Redis, Mailpit), generates SSL certificates, runs migrations, and seeds your database. Everything you need to start developing.
+Open `https://localhost` in your browser and you're ready to build!
+
+:::tip What does this do?
+The bootstrap script starts Docker containers (MySQL, Redis, Mailpit), generates SSL certificates, installs dependencies, runs migrations, enables modules, and builds frontend assets. No local PHP required.
 :::
 
 ## Available Modules

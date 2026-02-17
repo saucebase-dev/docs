@@ -13,56 +13,67 @@ Get Saucebase up and running in minutes with the automated installer, or follow 
 
 Before installing Saucebase, ensure you have:
 
-- **[Composer](https://getcomposer.org/)** 2.0.0+
 - **[Docker Desktop](https://docs.docker.com/desktop/)** 20.0.0+
 - **[Node.js](https://nodejs.org/)** 22.0.0+ and **npm** 10.5.1+
 - **[mkcert](https://github.com/FiloSottile/mkcert)** (optional, for local HTTPS)
+
+:::info No Local PHP Required
+The Docker flow handles PHP and Composer inside the container. You only need Docker and Node.js on your machine.
+:::
 
 ## Quick Start
 
 The fastest way to get started:
 
 ```bash
-# Create new project
-composer create-project saucebase/saucebase my-app
+git clone https://github.com/sauce-base/saucebase.git my-app
 cd my-app
+task install
+```
 
-# Run automated installer
-php artisan saucebase:install
+Or without [Task](https://taskfile.dev):
 
-# Start development server
-npm run dev
+```bash
+bash bin/setup-env
 ```
 
 That's it! Visit **https://localhost** to see your application.
 
-:::tip Automated Installer
-The `saucebase:install` command handles everything: Docker setup, SSL certificates, migrations, module installation, and asset building. Perfect for getting started quickly.
+:::tip What Does This Do?
+The bootstrap script starts Docker, installs PHP dependencies, runs `php artisan saucebase:install` inside the container (migrations, modules, caches), then builds frontend assets on the host. Everything in one command.
 :::
+
+### Alternative: Composer Create-Project
+
+If you have local PHP and Composer installed:
+
+```bash
+composer create-project saucebase/saucebase my-app
+cd my-app
+task install
+```
 
 ## Installer Options
 
-The installer supports several options for different scenarios:
-
-### Basic Usage
+You can pass flags through the bootstrap script to the artisan installer:
 
 ```bash
 # Standard installation (recommended)
-php artisan saucebase:install
-
-# Skip Docker setup (use manual database/Redis)
-php artisan saucebase:install --no-docker
+task install
 
 # Skip SSL certificate generation
-php artisan saucebase:install --no-ssl
+task install -- --no-ssl
 
 # Force reinstallation (overwrites existing data)
-php artisan saucebase:install --force
+task install -- --force
+
+# Skip Docker, use manual database/Redis
+task install -- --no-docker
 ```
 
 ### CI/CD Mode
 
-For automated deployments:
+For automated deployments where the artisan command runs directly:
 
 ```bash
 php artisan saucebase:install --no-interaction
@@ -151,54 +162,15 @@ docker compose exec app composer install
 
 This installs Laravel and all PHP dependencies inside the Docker container.
 
-### Step 6: Generate Application Key
+### Step 6: Run Artisan Installer
 
 ```bash
-docker compose exec app php artisan key:generate
+docker compose exec -T app php artisan saucebase:install
 ```
 
-Then restart the container to load the new key:
+This generates the application key, runs migrations, enables modules, creates the storage link, and clears caches.
 
-```bash
-docker compose restart app
-```
-
-### Step 7: Setup Database
-
-```bash
-# Ensure services are ready
-docker compose up -d --wait
-
-# Run migrations and seed data
-docker compose exec app php artisan migrate:fresh --seed
-
-# Create storage link
-docker compose exec app php artisan storage:link
-```
-
-This creates database tables and seeds default data including admin user.
-
-### Step 8: Install Modules
-
-Install the Auth and Settings modules:
-
-```bash
-# Auth Module
-composer require saucebase/auth
-composer dump-autoload
-docker compose exec app php artisan module:enable Auth
-docker compose exec app php artisan module:migrate Auth --seed
-
-# Settings Module
-composer require saucebase/settings
-composer dump-autoload
-docker compose exec app php artisan module:enable Settings
-docker compose exec app php artisan module:migrate Settings --seed
-```
-
-To enable social login (Google, GitHub), see the [OAuth configuration guide](/getting-started/configuration#oauth-auth-module).
-
-### Step 9: Install Frontend Dependencies
+### Step 7: Install Frontend Dependencies
 
 ```bash
 # Install packages
@@ -215,7 +187,7 @@ npm run dev
 Use `npm run dev` for hot module replacement during development. The Vite dev server will automatically reload when you change Vue/TypeScript/CSS files.
 :::
 
-### Step 10: Verify Installation
+### Step 8: Verify Installation
 
 **Access the application:**
 - Main site: https://localhost
