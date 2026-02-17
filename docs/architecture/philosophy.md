@@ -43,65 +43,6 @@ When you install a module, the code is copied directly into your repository inst
 
 These trade-offs align with Saucebase's philosophy: **prefer control and simplicity over convenience and abstraction**.
 
-## Design Principles
-
-Saucebase follows industry-standard design principles that keep code clean, maintainable, and understandable.
-
-### Minimum Viable Implementation (MVI)
-
-**Start with the simplest solution that solves the problem.**
-
-When building features, resist the urge to add "just in case" functionality. Implement what's needed today, not what might be needed tomorrow. This keeps code focused, testable, and easy to understand.
-
-Every line of code is a liability—more code means more bugs, more complexity, more maintenance. The best code is often the code you didn't write.
-
-**Key Question**: What's the minimum code needed to solve this problem right now?
-
-### KISS (Keep It Simple)
-
-**Prefer simple, obvious solutions over clever ones.**
-
-Simple code is easy to understand at a glance. Clever abstractions might feel elegant but often create confusion six months later when someone (including you) needs to modify them.
-
-Write code that a junior developer can read and understand. If you need comments to explain what your code does, consider whether the code itself could be clearer.
-
-**Red Flag**: If you can't explain your solution in one sentence, it's probably too complex.
-
-### YAGNI (You Aren't Gonna Need It)
-
-**Don't build features for hypothetical future requirements.**
-
-It's tempting to add configuration options, extensibility points, and "just in case" features. But most of those features never get used, and they add complexity that makes real work harder.
-
-Implement what you need today. When (and if) requirements change, refactor then. You'll have better information about what's actually needed, and refactoring is easier than removing unused features.
-
-**Example**: Don't build a complex notification system that supports email, SMS, push, and webhooks if you only send emails today. Build email notifications. Add other channels when you actually need them.
-
-### DRY (Don't Repeat Yourself)
-
-**Extract common logic into reusable functions, classes, or composables.**
-
-When you find yourself writing the same logic in multiple places, that's a signal to abstract it. But wait until you have actual duplication (typically 3+ occurrences) before abstracting.
-
-**Why 3+ times?** The first time, you're learning. The second time, you're confirming the pattern. The third time, you have enough information to create a good abstraction. Earlier abstraction often leads to premature, poorly-designed reusable code.
-
-**Where to apply DRY**:
-- Repeated Vue logic → Composables
-- Repeated backend logic → Service classes
-- Repeated test assertions → Test helpers
-- Repeated validation rules → Custom validation rules
-
-### When to Break the Rules
-
-These principles are guidelines, not laws. Use judgment for your specific situation:
-
-- **Need extensibility?** If you're building a platform where third parties will extend functionality, abstractions make sense.
-- **Performance critical?** Sometimes "clever" optimizations are necessary for performance.
-- **Team standards?** Follow your team's existing patterns for consistency.
-- **Framework conventions?** Laravel and Vue have established patterns—don't fight them.
-
-The goal is to write code that's easy to understand, maintain, and change. If following a principle makes code worse, don't follow it blindly.
-
 ## Architectural Decisions
 
 These are the key technology choices that define Saucebase and why they were made.
@@ -198,30 +139,9 @@ When something goes wrong, error messages should be clear and actionable. Don't 
 
 Follow Laravel and Vue conventions by default, but provide escape hatches when needed. Most projects work fine with conventions, but when you need to diverge, you can.
 
-## Simplicity Over Cleverness
-
-Throughout Saucebase, you'll notice a bias toward straightforward solutions:
-
-- SSR control is a simple macro, not a middleware + gateway + config system
-- Module pages use a clear namespace syntax (`Auth::Login`), not complex resolution logic
-- Service providers extend a base class rather than implementing multiple interfaces
-
-**This is intentional.** Simple code is:
-- Easier to understand
-- Easier to debug
-- Easier to modify
-- Less likely to break
-- More welcoming to contributors
-
-When you build features on Saucebase, follow this principle. Your future self (and your team) will thank you.
-
 ## Next Steps
-
-Understanding these principles helps you build features that feel natural in Saucebase:
 
 - **[Module System](/architecture/module-system)** - How modules integrate architecturally
 - **[Architecture Overview](/architecture/overview)** - High-level system design
 - **[Frontend Architecture](/architecture/frontend)** - Vue + Inertia patterns
 - **[Backend Architecture](/architecture/backend)** - Laravel patterns and practices
-
-When in doubt, choose simplicity. Choose clarity. Choose code you'll understand six months from now.

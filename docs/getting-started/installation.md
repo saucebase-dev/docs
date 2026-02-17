@@ -13,28 +13,10 @@ Get Saucebase up and running in minutes with the automated installer, or follow 
 
 Before installing Saucebase, ensure you have:
 
-### Required
-
-- **Composer** (2.0.0+)
-  - [Download from getcomposer.org](https://getcomposer.org/download/)
-  - Or use Homebrew (macOS/Linux): `brew install composer`
-  - Or use the installer script (Linux/macOS): Check [installation guide](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-macos)
-
-- **Docker Desktop** (20.0.0+)
-  - [Download for Mac](https://docs.docker.com/desktop/install/mac-install/)
-  - [Download for Windows](https://docs.docker.com/desktop/install/windows-install/)
-  - [Download for Linux](https://docs.docker.com/desktop/install/linux-install/)
-
-- **Node.js** (22.0.0+) and **npm** (10.5.1+)
-  - [Download from nodejs.org](https://nodejs.org/)
-  - Or use [nvm](https://github.com/nvm-sh/nvm): `nvm install 22`
-
-### Optional
-
-- **mkcert** - For local HTTPS support (recommended)
-  - macOS: `brew install mkcert`
-  - Windows: `choco install mkcert`
-  - Linux: See [mkcert installation guide](https://github.com/FiloSottile/mkcert#installation)
+- **[Composer](https://getcomposer.org/)** 2.0.0+
+- **[Docker Desktop](https://docs.docker.com/desktop/)** 20.0.0+
+- **[Node.js](https://nodejs.org/)** 22.0.0+ and **npm** 10.5.1+
+- **[mkcert](https://github.com/FiloSottile/mkcert)** (optional, for local HTTPS)
 
 ## Quick Start
 
@@ -214,78 +196,7 @@ docker compose exec app php artisan module:enable Settings
 docker compose exec app php artisan module:migrate Settings --seed
 ```
 
-#### Configure Social Login (Optional)
-
-To enable social login features (Google, GitHub, etc.), follow these steps:
-
-##### 1. Enable the Trait
-
-Ensure the `useSocialite` trait is added to your User model:
-
-```php
-// app/Models/User.php
-use Modules\Auth\Traits\useSocialite;
-
-class User extends Authenticatable
-{
-    use HasFactory,
-        HasRoles,
-        InteractsWithMedia,
-        Notifiable,
-        useSocialite;  // Ensure this line is present
-
-    // ... rest of your model
-}
-```
-
-The `useSocialite` trait provides:
-- `socialAccounts()` - Relationship to connected OAuth providers
-- `getConnectedProvidersAttribute` - List of connected providers
-- `disconnectSocialProvider(string $provider)` - Disconnect a social account
-- `getLatestProviderAvatarUrlAttribute` - Get provider avatar URL
-
-##### 2. Create OAuth Applications
-
-**Google OAuth:**
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select existing one
-3. Navigate to "APIs & Services" → "Credentials"
-4. Click "Create Credentials" → "OAuth 2.0 Client ID"
-5. Configure consent screen if prompted
-6. Select "Web application" as application type
-7. Add authorized redirect URI: `https://localhost/auth/socialite/google/callback`
-8. Copy the Client ID and Client Secret
-
-**GitHub OAuth:**
-1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
-2. Click "New OAuth App"
-3. Fill in application details:
-   - Application name: Your app name
-   - Homepage URL: `https://localhost`
-   - Authorization callback URL: `https://localhost/auth/socialite/github/callback`
-4. Click "Register application"
-5. Copy the Client ID
-6. Generate a new Client Secret and copy it
-
-##### 3. Configure Environment Variables
-
-Add your OAuth credentials to `.env`:
-
-```env
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-GOOGLE_CLIENT_REDIRECT_URI=/auth/socialite/google/callback
-
-GITHUB_CLIENT_ID=your-github-client-id
-GITHUB_CLIENT_SECRET=your-github-client-secret
-GITHUB_CLIENT_REDIRECT_URI=/auth/socialite/github/callback
-```
-
-:::tip Production Setup
-For production, update the redirect URIs in your OAuth apps to use your production domain (e.g., `https://yourdomain.com/auth/socialite/google/callback`).
-:::
-
-Learn more in the [Modules Guide](/fundamentals/modules).
+To enable social login (Google, GitHub), see the [OAuth configuration guide](/getting-started/configuration#oauth-auth-module).
 
 ### Step 9: Install Frontend Dependencies
 
@@ -332,78 +243,9 @@ After installing the Auth module, you can access the admin panel:
 Make sure to change these credentials in production environments!
 :::
 
-## Troubleshooting
-
-### Port Conflicts
-
-If ports 80, 443, 3306, or 6379 are already in use:
-
-```env title=".env"
-APP_PORT=8080                    # Change from 80
-APP_HTTPS_PORT=8443              # Change from 443
-FORWARD_DB_PORT=33060            # Change from 3306
-FORWARD_REDIS_PORT=63790         # Change from 6379
-```
-
-Restart Docker: `docker compose down && docker compose up -d`
-
-### Docker Daemon Not Running
-
-Ensure Docker Desktop is running:
-
-```bash
-docker info
-```
-
-If this fails, start Docker Desktop and try again.
-
-### Permission Errors (Linux)
-
-Add your user to the docker group:
-
-```bash
-sudo usermod -aG docker $USER
-newgrp docker
-```
-
-### SSL Certificate Warnings
-
-Self-signed certificates will show browser warnings. Click "Advanced" → "Proceed to localhost".
-
-For better support, ensure mkcert CA is installed:
-
-```bash
-mkcert -install
-```
-
-### Module Not Found Errors
-
-1. Check `modules_statuses.json` - ensure module is enabled (`true`)
-2. Run `composer dump-autoload`
-3. Clear caches: `docker compose exec app php artisan optimize:clear`
-4. Rebuild frontend: `npm run build`
-
-### Database Connection Refused
-
-Wait for MySQL to be ready (10-30 seconds on first start):
-
-```bash
-docker compose up -d --wait
-docker compose ps mysql
-docker compose logs mysql
-```
-
-### Frontend Build Failures
-
-```bash
-# Clear Laravel caches
-docker compose exec app php artisan optimize:clear
-
-# Reinstall Node modules
-rm -rf node_modules package-lock.json
-npm install
-npm run build
-```
+:::tip Having issues?
+Check the [Troubleshooting guide](/reference/troubleshooting) for common installation problems (port conflicts, Docker issues, SSL warnings, etc.).
+:::
 
 ## Next Steps
 

@@ -52,7 +52,7 @@ The static site generator that powers this documentation. Built by Meta (Faceboo
 ## F
 
 ### Filament
-A Laravel admin panel builder. Saucebase includes Filament 4 for creating admin interfaces quickly.
+A Laravel admin panel builder. Saucebase includes Filament 5 for creating admin interfaces quickly.
 
 **Official website**: [filamentphp.com](https://filamentphp.com/)
 **Documentation**: [Filament Documentation](https://filamentphp.com/docs)
@@ -131,7 +131,7 @@ The package manager for JavaScript. You use it to install frontend dependencies 
 ## P
 
 ### PHPStan
-A static analysis tool that finds bugs in your PHP code without running it. Saucebase uses level 9 (the strictest level) to ensure code quality.
+A static analysis tool that finds bugs in your PHP code without running it. Saucebase uses level 5 to ensure code quality.
 
 **Official website**: [phpstan.org](https://phpstan.org/)
 **Documentation**: [PHPStan Documentation](https://phpstan.org/user-guide/getting-started)

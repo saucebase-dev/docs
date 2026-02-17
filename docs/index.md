@@ -28,13 +28,8 @@ Like [shadcn/ui](https://ui.shadcn.com), modules install **directly into your re
 **Traditional vs Saucebase approach:**
 
 ```bash
-# Traditional approach (vendor package)
-composer require vendor/auth-package
-# → Code stays in vendor/, you can't modify it
-
-# Saucebase approach (copy-and-own)
-composer require saucebase/auth
-# → Code is copied to modules/Auth/, you own it
+composer require vendor/auth-package   # → Stuck in vendor/, can't modify
+composer require saucebase/auth        # → Copied to modules/Auth/, you own it
 ```
 
 **What this means for you:**
@@ -69,10 +64,9 @@ We've optimized the development experience so you can build faster:
 
 Saucebase includes everything you need for production deployments:
 
-- **Code quality tools**: [PHPStan](/reference/glossary#phpstan) level 9, [Laravel Pint](/reference/glossary#laravel-pint), ESLint, and commitlint ensure clean, consistent code
+- **Code quality tools**: [PHPStan](/reference/glossary#phpstan) level 5, [Laravel Pint](/reference/glossary#laravel-pint), ESLint, and commitlint ensure clean, consistent code
 - **Comprehensive testing**: [Playwright](/reference/glossary#playwright) for E2E testing, PHPUnit for backend tests, all pre-configured
-- **Admin panel**: [Filament 4](/reference/glossary#filament) admin panel included with beautiful UI and powerful tools
-- **Queue monitoring**: [Horizon](/reference/glossary#horizon) for managing background jobs and queues
+- **Admin panel**: [Filament 5](/reference/glossary#filament) admin panel included with beautiful UI and powerful tools
 
 ## Technology Stack
 
@@ -90,9 +84,7 @@ Saucebase uses cutting-edge tools that make development enjoyable:
 <td><strong>Backend</strong></td>
 <td>
 <a href="/reference/glossary#laravel">Laravel 12</a> with PHP 8.4+ •
-<a href="/reference/glossary#filament">Filament 4</a> admin panel •
-<a href="/reference/glossary#spatie">Spatie packages</a> •
-<a href="/reference/glossary#horizon">Horizon</a> queue monitoring
+<a href="/reference/glossary#filament">Filament 5</a> admin panel
 </td>
 </tr>
 <tr>
@@ -108,7 +100,7 @@ Saucebase uses cutting-edge tools that make development enjoyable:
 <tr>
 <td><strong>Dev Tools</strong></td>
 <td>
-<a href="/reference/glossary#phpstan">PHPStan</a> level 9 •
+<a href="/reference/glossary#phpstan">PHPStan</a> level 5 •
 <a href="/reference/glossary#laravel-pint">Laravel Pint</a> & ESLint •
 <a href="/reference/glossary#playwright">Playwright</a> E2E testing •
 Commitlint for conventional commits
@@ -130,10 +122,11 @@ cd my-app
 php artisan saucebase:install
 
 # Start the development server
-npm run dev
+npm run dev        # Docker users
+composer dev       # Native installation
 ```
 
-Open `https://localhost` in your browser and you're ready to build!
+Open `https://localhost` in your browser (Docker) or `http://localhost:8000` (native) and you're ready to build!
 
 :::tip What does saucebase:install do?
 This command starts Docker containers (MySQL, Redis, Mailpit), generates SSL certificates, runs migrations, and seeds your database. Everything you need to start developing.
