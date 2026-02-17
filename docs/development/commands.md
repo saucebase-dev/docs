@@ -118,45 +118,42 @@ docker compose ps mysql
 
 ### Automated Installation
 
+The recommended way to install — only Docker and Node.js required:
+
+```bash
+# First-time installation
+bash bin/setup-env
+
+# With flags
+bash bin/setup-env --no-ssl
+bash bin/setup-env --force
+bash bin/setup-env --no-docker
+
+# After first install, Task is available via npm:
+npm run saucebase install
+```
+
+The bootstrap script handles Docker, PHP dependencies, runs the artisan installer inside the container, then builds frontend assets.
+
+### Artisan Installer (runs inside container)
+
+When called directly (e.g. in CI or inside Docker):
+
 ```bash
 # Standard installation
 php artisan saucebase:install
 
-# Skip Docker setup
-php artisan saucebase:install --no-docker
-
-# Skip SSL certificate generation
+# Skip SSL detection
 php artisan saucebase:install --no-ssl
 
 # Force reinstallation
 php artisan saucebase:install --force
 
+# Manual mode (instructions only)
+php artisan saucebase:install --no-docker
+
 # CI/CD mode (non-interactive)
 php artisan saucebase:install --no-interaction
-```
-
-### Manual Installation Steps
-
-```bash
-# 1. Environment setup
-cp .env.example .env
-
-# 2. Generate application key
-php artisan key:generate
-
-# 3. Install dependencies
-composer install
-npm install
-
-# 4. Database setup
-php artisan migrate
-php artisan db:seed
-
-# 5. Create storage link
-php artisan storage:link
-
-# 6. Build assets
-npm run build
 ```
 
 ## Module Management
