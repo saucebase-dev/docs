@@ -116,10 +116,8 @@ You can get Saucebase running in just a few minutes. Only Docker and Node.js are
 ```bash
 git clone https://github.com/sauce-base/saucebase.git my-app
 cd my-app
-task install
+bash bin/setup-env
 ```
-
-Or without [Task](https://taskfile.dev): `bash bin/setup-env`
 
 Open `https://localhost` in your browser and you're ready to build!
 

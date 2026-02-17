@@ -121,16 +121,16 @@ docker compose ps mysql
 The recommended way to install — only Docker and Node.js required:
 
 ```bash
-# Using Task (recommended)
-task install
-
-# Or directly
+# First-time installation
 bash bin/setup-env
 
-# Pass flags through to the artisan installer
-task install -- --no-ssl
-task install -- --force
-task install -- --no-docker
+# With flags
+bash bin/setup-env --no-ssl
+bash bin/setup-env --force
+bash bin/setup-env --no-docker
+
+# After first install, Task is available via npm:
+npm run saucebase install
 ```
 
 The bootstrap script handles Docker, PHP dependencies, runs the artisan installer inside the container, then builds frontend assets.

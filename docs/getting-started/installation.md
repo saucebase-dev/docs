@@ -28,12 +28,6 @@ The fastest way to get started:
 ```bash
 git clone https://github.com/sauce-base/saucebase.git my-app
 cd my-app
-task install
-```
-
-Or without [Task](https://taskfile.dev):
-
-```bash
 bash bin/setup-env
 ```
 
@@ -43,6 +37,12 @@ That's it! Visit **https://localhost** to see your application.
 The bootstrap script starts Docker, installs PHP dependencies, runs `php artisan saucebase:install` inside the container (migrations, modules, caches), then builds frontend assets on the host. Everything in one command.
 :::
 
+After initial setup, [Task](https://taskfile.dev) is available as an npm devDependency. You can re-run the installer or use other tasks via:
+
+```bash
+npm run saucebase install
+```
+
 ### Alternative: Composer Create-Project
 
 If you have local PHP and Composer installed:
@@ -50,7 +50,7 @@ If you have local PHP and Composer installed:
 ```bash
 composer create-project saucebase/saucebase my-app
 cd my-app
-task install
+bash bin/setup-env
 ```
 
 ## Installer Options
@@ -59,17 +59,19 @@ You can pass flags through the bootstrap script to the artisan installer:
 
 ```bash
 # Standard installation (recommended)
-task install
+bash bin/setup-env
 
 # Skip SSL certificate generation
-task install -- --no-ssl
+bash bin/setup-env --no-ssl
 
 # Force reinstallation (overwrites existing data)
-task install -- --force
+bash bin/setup-env --force
 
-# Skip Docker, use manual database/Redis
-task install -- --no-docker
+# Skip Docker, use manual database/Redis (requires local PHP + Composer)
+bash bin/setup-env --no-docker
 ```
+
+After the first install, you can also use `npm run saucebase install` (which uses the bundled Task runner).
 
 ### CI/CD Mode
 
