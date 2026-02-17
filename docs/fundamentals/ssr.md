@@ -120,43 +120,6 @@ class AboutController extends Controller
 }
 ```
 
-## When to Use SSR
-
-### ✅ Enable SSR For:
-
-**Public Pages Needing SEO**
-- Landing pages
-- Product listings
-- Blog posts
-- Marketing pages
-- Documentation
-
-**Social Media Sharing**
-- Pages with Open Graph meta tags
-- Pages shared on Twitter, Facebook, LinkedIn
-
-**Performance Benefits**
-- Faster First Contentful Paint (FCP)
-- Improved Largest Contentful Paint (LCP)
-- Better Core Web Vitals scores
-
-### ❌ Disable SSR For:
-
-**Authenticated Pages**
-- Dashboards
-- Admin panels
-- User settings
-- Private content
-
-**Real-Time Data**
-- Pages that update frequently
-- Pages with real-time subscriptions
-- Live data dashboards
-
-**Performance Optimization**
-- Reduce server load
-- Skip unnecessary rendering
-
 ## Example: E-Commerce Site
 
 ```php
@@ -265,14 +228,6 @@ curl -I https://localhost/
 
 SSR responses typically have larger `Content-Length`.
 
-### Browser DevTools
-
-1. Open Network tab
-2. Reload page
-3. Click on the document request
-4. Check "Preview" or "Response" tab
-5. Look for rendered HTML content
-
 ## Troubleshooting
 
 ### SSR Server Not Starting
@@ -369,69 +324,6 @@ public function index(Request $request)
     return $isBot ? $response->withSSR() : $response;
 }
 ```
-
-## Performance Comparison
-
-### Client-Side Rendering (CSR)
-
-**Pros:**
-- ✅ Lower server load
-- ✅ Faster subsequent navigations
-- ✅ Better for real-time data
-
-**Cons:**
-- ❌ Slower First Contentful Paint
-- ❌ Poor SEO (content not in HTML)
-- ❌ Bad social media previews
-
-### Server-Side Rendering (SSR)
-
-**Pros:**
-- ✅ Fast First Contentful Paint
-- ✅ Great for SEO
-- ✅ Perfect social media previews
-- ✅ Better Core Web Vitals
-
-**Cons:**
-- ❌ Higher server load
-- ❌ Increased complexity
-- ❌ Potential hydration issues
-
-## Best Practices
-
-1. **Enable SSR selectively** - Only for pages that need SEO
-2. **Monitor performance** - Track SSR server resource usage
-3. **Use caching** - Cache SSR responses when possible
-4. **Test thoroughly** - Verify both SSR and CSR work correctly
-5. **Handle errors gracefully** - Fallback to CSR if SSR fails
-
-## Configuration Flexibility
-
-The macros work with any middleware default:
-
-### Current Setup (Recommended)
-
-SSR server enabled, **disabled by default** via middleware:
-
-```php
-// Middleware: Config::set('inertia.ssr.enabled', false)
-return Inertia::render('Index')->withSSR();        // Opt-in
-return Inertia::render('Dashboard');               // No SSR
-```
-
-### Alternative Setup
-
-SSR server enabled, **enabled by default**:
-
-```php
-// Remove Config::set line from middleware
-return Inertia::render('Index');                    // SSR enabled
-return Inertia::render('Dashboard')->withoutSSR();  // Opt-out
-```
-
-:::warning
-The default-disabled approach is recommended to avoid accidentally enabling SSR for authenticated pages.
-:::
 
 ## Technical Implementation
 

@@ -1,4 +1,4 @@
-import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
+import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
 
 /**
  * Creating a sidebar enables you to:
@@ -53,58 +53,6 @@ const sidebars: SidebarsConfig = {
             icon: 'lucide:folder-tree',
           },
         },
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Architecture',
-      collapsed: true,
-      customProps: {
-        icon: 'lucide:layers',
-      },
-      items: [
-        {
-          type: 'doc',
-          id: 'architecture/philosophy',
-          label: 'Philosophy',
-          customProps: {
-            icon: 'lucide:lightbulb',
-          },
-        },
-        {
-          type: 'doc',
-          id: 'architecture/module-system',
-          label: 'Module System',
-          customProps: {
-            icon: 'lucide:boxes',
-          },
-        },
-        {
-          type: 'doc',
-          id: 'architecture/overview',
-          label: 'Overview',
-          customProps: {
-            icon: 'lucide:eye',
-          },
-        },
-        {
-          type: 'doc',
-          id: 'architecture/frontend',
-          label: 'Frontend',
-          customProps: {
-            icon: 'lucide:monitor',
-          },
-        },
-        {
-          type: 'doc',
-          id: 'architecture/backend',
-          label: 'Backend',
-          customProps: {
-            icon: 'lucide:server-cog',
-          },
-        },
-        // 'architecture/asset-pipeline',
-        // 'architecture/testing',
       ],
     },
     {
@@ -180,6 +128,58 @@ const sidebars: SidebarsConfig = {
           },
         },
         // 'fundamentals/authentication',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Architecture',
+      collapsed: true,
+      customProps: {
+        icon: 'lucide:layers',
+      },
+      items: [
+        {
+          type: 'doc',
+          id: 'architecture/philosophy',
+          label: 'Philosophy',
+          customProps: {
+            icon: 'lucide:lightbulb',
+          },
+        },
+        {
+          type: 'doc',
+          id: 'architecture/module-system',
+          label: 'Module System',
+          customProps: {
+            icon: 'lucide:boxes',
+          },
+        },
+        {
+          type: 'doc',
+          id: 'architecture/overview',
+          label: 'Overview',
+          customProps: {
+            icon: 'lucide:eye',
+          },
+        },
+        {
+          type: 'doc',
+          id: 'architecture/frontend',
+          label: 'Frontend',
+          customProps: {
+            icon: 'lucide:monitor',
+          },
+        },
+        {
+          type: 'doc',
+          id: 'architecture/backend',
+          label: 'Backend',
+          customProps: {
+            icon: 'lucide:server-cog',
+          },
+        },
+        // 'architecture/asset-pipeline',
+        // 'architecture/testing',
       ],
     },
     {

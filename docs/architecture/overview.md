@@ -8,17 +8,6 @@ description: High-level overview of Saucebase architecture
 
 Saucebase is a modular Laravel SaaS starter kit built on the VILT stack (Vue 3, Inertia.js, Laravel 12, Tailwind CSS 4). It combines Laravel's backend power with Vue's reactive frontend, connected seamlessly through Inertia.js.
 
-## What is Saucebase?
-
-Saucebase is designed for developers building SaaS applications who want:
-
-- **Modular architecture** for organizing features as self-contained packages
-- **Copy-and-own philosophy** where you own and customize all code
-- **Modern stack** with TypeScript, Vue 3 Composition API, and Laravel 12
-- **Production-ready** setup with Docker, SSR support, testing, and code quality tools
-
-It's not a framework—it's a starting point with working code you can understand, modify, and build upon.
-
 ## High-Level Architecture
 
 ```mermaid
@@ -126,29 +115,6 @@ When you install a module, its code is copied into your repository. You're not d
 
 **Learn more**: [Design Philosophy](/architecture/philosophy)
 
-## Technology Stack
-
-### Backend
-- **Laravel 12** - PHP framework
-- **PHP 8.4+** - Modern PHP with types
-- **MySQL 8** - Primary database
-- **Redis** - Cache, sessions, queues
-- **Inertia.js Server** - Connects Laravel to Vue
-
-### Frontend
-- **Vue 3** - Composition API
-- **TypeScript 5.8** - Type-safe JavaScript
-- **Inertia.js Client** - SPA routing
-- **Tailwind CSS 4** - Utility-first CSS
-- **Vite 6** - Build tool with HMR
-
-### Infrastructure
-- **Docker** - Consistent development environment
-- **Nginx** - Web server
-- **Mailpit** - Email testing
-- **PHPUnit** - Backend testing
-- **Playwright** - E2E testing
-
 ## Request Flow
 
 ### Initial Page Load
@@ -169,58 +135,6 @@ When you install a module, its code is copied into your repository. You're not d
 5. URL updates, page renders instantly
 
 This combines the best of traditional server-side apps (simple data flow) with modern SPAs (smooth navigation).
-
-## Module System Overview
-
-Modules are the organizational foundation of Saucebase. Understanding how they work helps you build features that align with the architecture.
-
-### Structure
-
-```
-modules/Auth/
-├── app/           # Controllers, models, services
-├── resources/js/  # Vue pages and components
-├── routes/        # Web and API routes
-├── database/      # Migrations and seeders
-└── tests/         # Feature and unit tests
-```
-
-### Discovery
-
-Modules are tracked in `modules_statuses.json`. Only enabled modules are loaded:
-
-```json
-{
-    "Auth": true,
-    "Settings": true
-}
-```
-
-### Integration
-
-- **Routes** auto-load from `routes/web.php`
-- **Migrations** auto-discover from `database/migrations/`
-- **Assets** auto-collect via `module-loader.js`
-- **Pages** resolve via namespace syntax (`Auth::Login`)
-
-Everything happens automatically based on the enabled/disabled state.
-
-**Learn more**: [Module System Architecture](/architecture/module-system)
-
-## Why This Architecture?
-
-Every architectural decision in Saucebase serves a purpose:
-
-- **Inertia.js** eliminates API boilerplate
-- **Modules** provide organization without microservice complexity
-- **Copy-and-own** gives you control over your code
-- **TypeScript** catches errors before users see them
-- **Docker** ensures consistency across environments
-- **Opt-in SSR** provides SEO benefits without performance costs
-
-These aren't arbitrary choices—they're deliberate trade-offs that prioritize developer experience, maintainability, and simplicity.
-
-**Learn more**: [Design Philosophy](/architecture/philosophy)
 
 ## Next Steps
 

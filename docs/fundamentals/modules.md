@@ -6,33 +6,7 @@ description: Learn how to install, manage, and create Saucebase modules using th
 
 # Modules
 
-Modules are self-contained feature packages that you install directly into your repository. Unlike traditional Composer packages, module code becomes part of your codebase, giving you complete ownership and customization freedom.
-
-## What Are Modules?
-
-Think of modules like **building blocks** you copy into your project rather than linking to external packages.
-
-### Traditional Approach (Vendor Packages)
-
-```bash
-composer require vendor/auth-package
-# → Code stays in vendor/
-# → You can't modify it
-# → Updates can break your customizations
-```
-
-### Saucebase Approach (Copy-and-Own)
-
-```bash
-composer require saucebase/auth
-# → Code is copied to modules/Auth/
-# → You own it completely
-# → Modify freely without maintenance burden
-```
-
-:::tip Philosophy
-When you install a module, you're not depending on it—you're **acquiring** it. The code is yours from day one.
-:::
+Modules are self-contained feature packages that you install directly into your repository. Module code becomes part of your codebase, giving you complete ownership and customization freedom. For the architectural details, see [Module System Architecture](/architecture/module-system).
 
 ## Available Modules
 
@@ -266,98 +240,9 @@ After installation, the Auth module provides:
 Change these credentials in production!
 :::
 
-## Module Structure
-
-Each module is organized like a mini-application:
-
-```
-modules/Auth/
-├── app/                          # Backend code
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   │   ├── LoginController.php
-│   │   │   ├── RegisterController.php
-│   │   │   └── SocialAuthController.php
-│   │   ├── Middleware/
-│   │   └── Requests/
-│   ├── Models/
-│   │   ├── User.php
-│   │   └── SocialAccount.php
-│   ├── Providers/
-│   │   └── AuthServiceProvider.php
-│   └── Services/
-│       └── AuthService.php
-├── config/
-│   └── config.php                # Module configuration
-├── database/
-│   ├── factories/
-│   ├── migrations/
-│   │   └── 2024_01_01_000000_create_social_accounts_table.php
-│   └── seeders/
-│       └── AuthDatabaseSeeder.php
-├── lang/
-│   ├── en/
-│   │   └── auth.php
-│   └── pt_BR/
-│       └── auth.php
-├── resources/
-│   ├── css/
-│   │   └── app.css
-│   └── js/
-│       ├── app.ts                # Module setup hooks
-│       ├── pages/
-│       │   ├── Login.vue
-│       │   ├── Register.vue
-│       │   └── ForgotPassword.vue
-│       └── components/
-│           └── SocialLoginButton.vue
-├── routes/
-│   ├── web.php                   # Module routes
-│   └── api.php
-├── tests/
-│   ├── Feature/
-│   │   └── AuthTest.php
-│   ├── Unit/
-│   └── e2e/
-│       └── login.spec.ts
-├── vite.config.js                # Module assets for Vite
-├── playwright.config.ts          # E2E test config
-└── module.json                   # Module metadata
-```
-
 ## How Modules Work
 
-### 1. Service Provider Registration
-
-Module service providers are auto-loaded when enabled.
-
-```php title="modules/Auth/app/Providers/AuthServiceProvider.php"
-class AuthServiceProvider extends ModuleServiceProvider
-{
-    protected string $name = 'Auth';
-    protected string $nameLower = 'auth';
-
-    public function register(): void
-    {
-        parent::register();
-        // Register services, bindings
-    }
-
-    public function boot(): void
-    {
-        parent::boot();
-        // Boot logic, event listeners
-    }
-}
-```
-
-The base `ModuleServiceProvider` handles:
-- Loading module translations
-- Loading module configuration
-- Registering module routes
-- Sharing Inertia data
-
-### 2. Route Registration
+### 1. Route Registration
 
 Module routes are automatically loaded:
 

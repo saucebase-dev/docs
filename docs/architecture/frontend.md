@@ -1,18 +1,6 @@
 # Frontend Architecture
 
-Saucebase uses a modern frontend stack built on Vue 3, Inertia.js, TypeScript, and Tailwind CSS 4. This guide explains the frontend architecture, component structure, and build system.
-
-## Technology Stack
-
-| Technology      | Version | Purpose                                    |
-| --------------- | ------- | ------------------------------------------ |
-| Vue 3           | Latest  | Progressive JavaScript framework           |
-| Inertia.js      | 2.0     | SPA framework without API                  |
-| TypeScript      | 5.8     | Type-safe JavaScript                       |
-| Tailwind CSS    | 4.0     | Utility-first CSS framework                |
-| Vite            | 6.4     | Build tool with HMR                        |
-| Laravel Vue I18n| Latest  | Internationalization                       |
-| Ziggy           | 2.0     | Laravel routes in JavaScript               |
+This guide explains Saucebase's frontend architecture, component structure, and build system.
 
 ## Architecture Overview
 
@@ -32,41 +20,6 @@ graph TB
     Components -->|Styling| Tailwind[Tailwind CSS]
     Components -->|i18n| I18n[Laravel Vue I18n]
     Components -->|Routes| Ziggy[Ziggy Routes]
-```
-
-## Directory Structure
-
-```
-resources/js/
-├── app.ts                  # Main entry point (CSR)
-├── ssr.ts                  # SSR entry point
-├── components/             # Reusable components
-│   ├── ui/                # shadcn-vue components
-│   │   ├── button/
-│   │   ├── input/
-│   │   └── ...
-│   ├── LanguageSelector.vue
-│   └── ...
-├── pages/                  # Inertia pages (core app)
-│   ├── Index.vue
-│   ├── Dashboard.vue
-│   └── ...
-├── lib/                    # Utility libraries
-│   ├── utils.ts           # Utility functions
-│   ├── moduleSetup.ts     # Module lifecycle
-│   └── ...
-├── types/                  # TypeScript definitions
-│   └── global.d.ts
-└── ...
-
-modules/<ModuleName>/resources/js/
-├── app.ts                  # Module setup (optional)
-├── pages/                  # Module-specific pages
-│   ├── Login.vue
-│   └── ...
-├── components/             # Module components
-│   └── ...
-└── ...
 ```
 
 ## Entry Points
@@ -166,27 +119,7 @@ createServer((page) =>
 );
 ```
 
-## Inertia Integration
-
-Inertia.js is the bridge between Laravel and Vue, eliminating the need for a traditional REST API while maintaining a modern SPA experience.
-
-### How Inertia Eliminates APIs
-
-In traditional SPA architectures, you build separate frontend and backend applications:
-
-1. Backend exposes REST/GraphQL API endpoints
-2. Frontend makes HTTP requests to fetch data
-3. You maintain two parallel representations of your data structure
-4. API versioning, documentation, and authentication become complex
-
-Inertia simplifies this dramatically:
-
-1. **Controllers return props directly** - No API layer needed
-2. **Type-safe data flow** - Props are defined once, used everywhere
-3. **Automatic CSRF protection** - Built into Laravel
-4. **Session-based auth** - Use Laravel's authentication out of the box
-
-### Props Flow
+## Inertia Props Flow
 
 Data flows from Laravel controllers to Vue components as typed props:
 
@@ -211,40 +144,6 @@ const props = defineProps<Props>();
 ```
 
 The props are **type-safe** - TypeScript validates that the component receives the expected data structure. Changes to the backend immediately show type errors in the frontend.
-
-### Type Safety from Controller to Component
-
-TypeScript provides end-to-end type safety:
-
-1. Define types in `resources/js/types/global.d.ts`
-2. Use types in Vue components with `defineProps<Props>()`
-3. Get autocomplete and type checking in your IDE
-4. Build-time validation catches mismatches
-
-This makes refactoring safe. Change a prop name in the controller, and TypeScript will flag every component that needs updating.
-
-### Benefits of This Approach
-
-**Simpler Architecture**: No API layer to build, document, or version. Controllers return data directly to pages.
-
-**Faster Development**: Build features faster without maintaining parallel backend/frontend data structures.
-
-**Better DX**: IDE autocomplete, type checking, and instant feedback on data structure changes.
-
-**Security Built-in**: CSRF protection, session authentication, and authorization work out of the box.
-
-**Less Code**: Eliminate API controllers, request/response transformers, and client-side HTTP logic.
-
-### When to Use Traditional APIs
-
-Inertia is ideal for web applications where the frontend and backend are tightly coupled. Use traditional REST/GraphQL APIs when:
-
-- Building a public API for third-party developers
-- Supporting mobile applications (iOS, Android)
-- Integrating with external systems
-- Need to support multiple frontend frameworks
-
-For these cases, Laravel's API resources and controllers work alongside Inertia pages.
 
 ## Module Page Resolution
 
@@ -355,121 +254,6 @@ export function afterMountModules(app: App) {
 }
 ```
 
-## Component Architecture
-
-### Composition API Style
-
-All components use Vue 3 Composition API with `<script setup>`:
-
-```html
-<script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useForm, usePage } from '@inertiajs/vue3';
-
-// Define props
-interface Props {
-    user: {
-        id: number;
-        name: string;
-        email: string;
-    };
-}
-
-const props = defineProps<Props>();
-
-// Define emits
-const emit = defineEmits<{
-    update: [user: Props['user']];
-    delete: [id: number];
-}>();
-
-// Reactive state
-const isEditing = ref(false);
-
-// Computed properties
-const displayName = computed(() => {
-    return props.user.name || props.user.email;
-});
-
-// Methods
-const startEdit = () => {
-    isEditing.value = true;
-};
-
-// Inertia form
-const form = useForm({
-    name: props.user.name,
-    email: props.user.email,
-});
-
-const submit = () => {
-    form.put(route('user.update', { user: props.user.id }), {
-        onSuccess: () => {
-            isEditing.value = false;
-            emit('update', props.user);
-        },
-    });
-};
-</script>
-
-<template>
-    <div class="user-card">
-        <h3>{{ displayName }}</h3>
-        <button v-if="!isEditing" @click="startEdit">Edit</button>
-
-        <form v-else @submit.prevent="submit">
-            <input v-model="form.name" type="text" />
-            <input v-model="form.email" type="email" />
-            <button type="submit" :disabled="form.processing">Save</button>
-        </form>
-    </div>
-</template>
-```
-
-### UI Components (shadcn-vue)
-
-Saucebase uses shadcn-vue style components in `resources/js/components/ui/`:
-
-```
-components/ui/
-├── button/
-│   ├── Button.vue
-│   └── index.ts
-├── input/
-│   ├── Input.vue
-│   └── index.ts
-├── card/
-│   ├── Card.vue
-│   ├── CardHeader.vue
-│   ├── CardContent.vue
-│   └── index.ts
-└── ...
-```
-
-**Copy-and-own philosophy**: These components are copied into your project and can be customized directly.
-
-### Using UI Components
-
-```html
-<script setup lang="ts">
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardContent } from '@/components/ui/card';
-</script>
-
-<template>
-    <Card>
-        <CardHeader>
-            <h2>Login</h2>
-        </CardHeader>
-        <CardContent>
-            <Input v-model="form.email" type="email" placeholder="Email" />
-            <Button @click="submit">Login</Button>
-        </CardContent>
-    </Card>
-</template>
-```
-
 ## State Management
 
 Saucebase doesn't include a global state management library by default. Use these patterns:
@@ -544,77 +328,6 @@ const page = usePage();
 const flash = computed(() => page.props.flash);
 const locale = computed(() => page.props.locale);
 </script>
-```
-
-### 3. Pinia (Optional)
-
-For complex state management, install Pinia:
-
-```bash
-npm install pinia
-```
-
-```typescript
-// resources/js/app.ts
-import { createPinia } from 'pinia';
-
-const pinia = createPinia();
-app.use(pinia);
-```
-
-## Styling with Tailwind CSS 4
-
-### Configuration
-
-```javascript
-// tailwind.config.js
-export default {
-    content: [
-        './resources/**/*.blade.php',
-        './resources/**/*.js',
-        './resources/**/*.vue',
-        './modules/**/resources/**/*.vue',
-    ],
-    theme: {
-        extend: {
-            colors: {
-                primary: 'oklch(var(--color-primary) / <alpha-value>)',
-                secondary: 'oklch(var(--color-secondary) / <alpha-value>)',
-            },
-        },
-    },
-    plugins: [],
-};
-```
-
-### Custom CSS Variables
-
-```css
-/* resources/css/theme.css */
-@import "tailwindcss";
-
-@theme {
-    --color-primary: 0.51 0.17 278.25;        /* Purple */
-    --color-secondary: 0.65 0.1229 217.1824;  /* Blue */
-}
-
-@media (prefers-color-scheme: dark) {
-    @theme {
-        --color-primary: 0.55 0.17 282.5;
-        --color-secondary: 0.75 0.1563 184.617;
-    }
-}
-```
-
-### Usage
-
-```html
-<template>
-    <div class="bg-primary text-white p-4">
-        <h1 class="text-2xl font-bold">Hello</h1>
-        <p class="text-secondary">Welcome to Saucebase</p>
-    </div>
-</template>
 ```
 
 ## Internationalization (i18n)
@@ -817,86 +530,6 @@ const user = page.props.auth.user;
 const flash = page.props.flash;
 </script>
 ```
-
-## Performance Optimization
-
-### Code Splitting
-
-Automatically handled by Vite:
-
-```html
-<script setup lang="ts">
-// Lazy load heavy components
-import { defineAsyncComponent } from 'vue';
-
-const HeavyChart = defineAsyncComponent(() =>
-    import('@/components/HeavyChart.vue')
-);
-</script>
-
-<template>
-    <Suspense>
-        <template #default>
-            <HeavyChart :data="chartData" />
-        </template>
-        <template #fallback>
-            <div>Loading chart...</div>
-        </template>
-    </Suspense>
-</template>
-```
-
-### Conditional Rendering
-
-```html
-<template>
-    <!-- Use v-if for infrequent toggles -->
-    <div v-if="isAuthenticated">
-        <Dashboard />
-    </div>
-
-    <!-- Use v-show for frequent toggles -->
-    <div v-show="showPanel">
-        <Panel />
-    </div>
-</template>
-```
-
-### Memoization
-
-```html
-<script setup lang="ts">
-import { computed } from 'vue';
-
-const props = defineProps<{ items: Item[] }>();
-
-// Expensive computation cached
-const sortedItems = computed(() => {
-    return [...props.items].sort((a, b) => a.name.localeCompare(b.name));
-});
-</script>
-```
-
-## Best Practices
-
-### ✅ Do
-
-- Use TypeScript for type safety
-- Follow Composition API style with `<script setup>`
-- Use composables for reusable logic
-- Leverage Inertia shared props for global data
-- Use Tailwind utility classes
-- Lazy load heavy components
-- Use `v-if` vs `v-show` appropriately
-
-### ❌ Don't
-
-- Use Options API (deprecated in Saucebase)
-- Create global state without composables
-- Bypass Inertia for navigation
-- Inline complex logic in templates
-- Use `any` type in TypeScript
-- Import entire libraries (import only what you need)
 
 ## Next Steps
 

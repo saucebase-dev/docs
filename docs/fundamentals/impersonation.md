@@ -144,25 +144,7 @@ Test user journeys across different account types by maintaining quick access to
 - **Route:** `POST /auth/impersonate/{userId}`
 - **Permissions:** Requires access to Filament admin panel
 
-## Use Cases
-
-### Customer Support
-
-Reproduce issues users are experiencing by viewing the application exactly as they see it.
-
-### Permission Testing
-
-Verify that role-based permissions are working correctly by impersonating users with different roles.
-
-### Bug Debugging
-
-Investigate user-specific bugs without requiring password sharing or manual authentication.
-
-### Feature Testing
-
-Test new features from the perspective of different user types before rolling out to production.
-
-## Security & Best Practices
+## Security
 
 :::warning Important Security Considerations
 
@@ -172,22 +154,6 @@ Test new features from the perspective of different user types before rolling ou
 - **No password exposure** - Users' passwords are never revealed or compromised
 
 :::
-
-### Best Practices
-
-**Transparency**
-- Inform users in your privacy policy that admin impersonation is possible
-- Consider logging impersonation events for audit trails
-
-**Appropriate Use**
-- Only impersonate users for legitimate support or debugging purposes
-- Exit impersonation immediately after resolving the issue
-- Don't modify user data while impersonating unless absolutely necessary
-
-**Security Measures**
-- Limit admin access to trusted team members
-- Monitor impersonation usage in production environments
-- Consider implementing time limits for impersonation sessions
 
 ## Technical Details
 

@@ -101,37 +101,6 @@ These files are specific to Saucebase's modular architecture:
 - **`vite.config.js`** - Module-aware Vite configuration that uses `module-loader.js` to build module assets
 - **`playwright.config.ts`** - Module-aware E2E testing configuration. [Learn more →](/development/testing-guide)
 
-## Key Concepts
-
-### Module System
-Modules are self-contained feature packages that install directly into your repository. Each module has its own service provider extending `ModuleServiceProvider`, which automatically handles migrations, translations, and configuration. [Learn more →](/fundamentals/modules)
-
-### Server-Side Rendering
-Saucebase uses a two-level SSR control system with opt-in macros (`->withSSR()`, `->withoutSSR()`). SSR is disabled by default via middleware, and controllers explicitly enable it for pages needing SEO. [Learn more →](/fundamentals/ssr)
-
-### Module Asset Discovery
-The `module-loader.js` reads `modules_statuses.json` to discover enabled modules, then collects their assets, translations, and test configs. Modules export asset paths via `vite.config.js` which are automatically included in the build. [Learn more →](/architecture/overview)
-
-### Module Page Resolution
-Pages can be rendered from core (`Dashboard`) or modules (`Auth::Login`) using namespace syntax. The `resolveModularPageComponent()` function handles resolution automatically. [Learn more →](/fundamentals/modules)
-
-### Module Lifecycle Hooks
-Modules can export `setup()` and `afterMount()` hooks in `resources/js/app.ts` to run code before/after Vue app mounts. Used for registering components, plugins, or initializing services. [Learn more →](/fundamentals/modules)
-
-### Testing Architecture
-PHPUnit tests are organized into Unit, Feature, and Modules suites. Playwright E2E tests are auto-discovered from enabled modules, with each module getting its own test project (`@ModuleName`). [Learn more →](/development/testing-guide)
-
-## What Makes Saucebase Different?
-
-Unlike traditional Laravel applications with packages, Saucebase uses a **copy-and-own philosophy**. Modules install directly into your repository, giving you complete control without vendor lock-in. The module system provides:
-
-- **Auto-discovery** - Enabled modules are automatically discovered at build time
-- **Isolated structure** - Each module has its own routes, migrations, tests, and frontend assets
-- **Namespace syntax** - Render module pages with `Inertia::render('Auth::Login')`
-- **Lifecycle hooks** - Modules can run setup code before/after Vue app mounts
-- **Test isolation** - Each module gets its own PHPUnit suite and Playwright project
-- **SSR control** - Per-page SSR control with simple macros (`->withSSR()`)
-
 ## Next Steps
 
 - **[Module System Guide](/fundamentals/modules)** - Learn to install and manage modules
