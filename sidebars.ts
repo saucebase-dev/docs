@@ -66,7 +66,7 @@ const sidebars: SidebarsConfig = {
         {
           type: 'doc',
           id: 'fundamentals/modules',
-          label: 'Modules',
+          label: 'Module Management',
           customProps: {
             icon: 'lucide:package',
           },
@@ -128,6 +128,17 @@ const sidebars: SidebarsConfig = {
           },
         },
         // 'fundamentals/authentication',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Modules',
+      collapsed: true,
+      customProps: { icon: 'lucide:package' },
+      items: [
+        { type: 'doc', id: 'modules/auth', label: 'Auth', customProps: { icon: 'lucide:lock' } },
+        { type: 'doc', id: 'modules/settings', label: 'Settings', customProps: { icon: 'lucide:settings-2' } },
+        { type: 'doc', id: 'modules/billing', label: 'Billing', customProps: { icon: 'lucide:credit-card' } },
       ],
     },
     {
