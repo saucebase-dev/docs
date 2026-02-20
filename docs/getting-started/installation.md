@@ -2,28 +2,26 @@
 sidebar_position: 2
 slug: /
 title: Installation
-description: Complete installation guide for Saucebase - quick start and manual installation options
+description: Complete installation guide for Saucebase — Docker, Laravel Herd, Sail, and native PHP
 ---
 
 # Installation
 
-Get Saucebase up and running in minutes with the automated installer, or follow the manual installation steps for more control.
+Get Saucebase running with your preferred development environment. The artisan installer is
+environment-agnostic — Docker, Herd, Sail, and native PHP are all first-class paths.
 
 ## Prerequisites
 
-Before installing Saucebase, ensure you have:
-
-- **[Docker Desktop](https://docs.docker.com/desktop/)** 20.0.0+
-- **[Node.js](https://nodejs.org/)** 22.0.0+ and **npm** 10.5.1+
-- **[mkcert](https://github.com/FiloSottile/mkcert)** (optional, for local HTTPS)
-
-:::info No Local PHP Required
-The Docker flow handles PHP and Composer inside the container. You only need Docker and Node.js on your machine.
-:::
+| Requirement | Docker | Herd | Sail | Native |
+|---|---|---|---|---|
+| Docker Desktop 20+ | ✅ required | ❌ | ✅ required | ❌ |
+| PHP 8.4+ | in container | via Herd | via container | ✅ required |
+| Composer | in container | ✅ required | via container | ✅ required |
+| Node.js 22+ | ✅ required (host) | ✅ required | ✅ required | ✅ required |
 
 ## Quick Start
 
-The fastest way to get started:
+### Docker
 
 ```bash
 git clone https://github.com/sauce-base/saucebase.git my-app
@@ -31,205 +29,206 @@ cd my-app
 bash bin/setup-env
 ```
 
-That's it! Visit **https://localhost** to see your application.
+`bin/setup-env` is a Docker-specific bootstrapper. It starts containers, installs PHP dependencies
+inside the container, runs `php artisan saucebase:install --all-modules`, and builds frontend assets.
+Visit **https://localhost** when it completes (SSL via mkcert, optional).
 
-:::tip What Does This Do?
-The bootstrap script starts Docker, installs PHP dependencies, runs `php artisan saucebase:install` inside the container (migrations, modules, caches), then builds frontend assets on the host. Everything in one command.
+### Laravel Herd
+
+```bash
+git clone https://github.com/sauce-base/saucebase.git my-app
+cd my-app
+composer install
+cp .env.example .env
+# Set APP_URL to your Herd site URL (e.g. http://my-app.test) in .env
+# Configure DB_* credentials in .env
+php artisan saucebase:install
+npm install && npm run dev
+```
+
+### Laravel Sail
+
+```bash
+git clone https://github.com/sauce-base/saucebase.git my-app
+cd my-app
+cp .env.example .env
+# Configure .env for Sail (DB_HOST=mysql, REDIS_HOST=redis, etc.)
+sail up -d
+sail composer install
+sail artisan saucebase:install
+npm install && npm run dev
+```
+
+### Native PHP
+
+```bash
+git clone https://github.com/sauce-base/saucebase.git my-app
+cd my-app
+composer install
+cp .env.example .env
+# Configure APP_URL, DB_*, REDIS_* in .env
+php artisan saucebase:install
+npm install && npm run dev
+```
+
+:::tip Set APP_URL first
+The installer no longer overwrites `APP_URL`. Set it to your local URL before running the installer:
+Herd → `http://my-app.test`, native → `http://localhost:8000`, Docker → `https://localhost`.
 :::
 
-After initial setup, [Task](https://taskfile.dev) is available as an npm devDependency. You can re-run the installer or use other tasks via:
+## Environment Variables
 
-```bash
-npm run saucebase install
-```
+Before running the installer, configure these in `.env`:
 
-### Alternative: Composer Create-Project
+| Variable | Description |
+|----------|-------------|
+| `APP_URL` | Full URL of your local site — **must be set before install** |
+| `APP_HOST` | Hostname portion (e.g. `localhost`, `my-app.test`) |
+| `APP_SLUG` | Project slug used for storage/cache keys |
+| `DB_*` | Standard Laravel database connection settings |
 
-If you have local PHP and Composer installed:
-
-```bash
-composer create-project saucebase/saucebase my-app
-cd my-app
-bash bin/setup-env
-```
+The installer copies `.env.example` → `.env` if `.env` is missing, but won't overwrite values you've
+already set.
 
 ## Installer Options
 
-You can pass flags through the bootstrap script to the artisan installer:
+Run directly with Artisan (all environments):
 
 ```bash
-# Standard installation (recommended)
-bash bin/setup-env
-
-# Skip SSL certificate generation
-bash bin/setup-env --no-ssl
-
-# Force reinstallation (overwrites existing data)
-bash bin/setup-env --force
-
-# Skip Docker, use manual database/Redis (requires local PHP + Composer)
-bash bin/setup-env --no-docker
+php artisan saucebase:install [options]
 ```
 
-After the first install, you can also use `npm run saucebase install` (which uses the bundled Task runner).
+| Flag | Description |
+|---|---|
+| _(none)_ | Safe default: `migrate --seed`, interactive module selection |
+| `--fresh` | Runs `migrate:fresh --seed` — **drops all tables first** |
+| `--all-modules` | Enable and migrate all modules in `modules/` without prompting |
+| `--modules=Auth,Settings` | Enable specific modules only |
+| `--force` | Skip confirmations |
+| `--no-interaction` | Non-interactive (selects all modules automatically) |
 
-### CI/CD Mode
-
-For automated deployments where the artisan command runs directly:
+### Examples
 
 ```bash
+# Interactive install — prompts for module selection
+php artisan saucebase:install
+
+# Fully automated — enable everything, no prompts
+php artisan saucebase:install --all-modules --no-interaction
+
+# Fresh database reset + specific modules
+php artisan saucebase:install --fresh --modules=Auth,Settings
+
+# CI/CD — auto-detected, runs minimal setup
 php artisan saucebase:install --no-interaction
 ```
 
-This automatically detects CI environments and runs minimal setup without prompts.
+### Module Discovery
 
-## Manual Installation
+The installer auto-discovers all modules present in the `modules/` directory. In interactive mode
+it presents a multi-select prompt. Pass `--all-modules` or `--modules=` to skip the prompt.
 
-For step-by-step control, follow these detailed instructions.
+```bash
+# See available modules
+php artisan module:list
+```
 
-### Step 1: Clone the Repository
+## Docker Setup (`bin/setup-env`)
+
+`bin/setup-env` is a Docker-only bootstrapper — not a universal installer. It:
+
+1. Starts `docker compose up -d --wait`
+2. Installs Composer dependencies inside the container
+3. Runs `php artisan saucebase:install --all-modules` inside the container
+4. Installs Node.js dependencies and builds assets on the host
+
+Use it for Docker environments. For Herd/Sail/native, run `php artisan saucebase:install` directly.
+
+## CI/CD Mode
+
+The installer auto-detects CI environments (`CI`, `GITHUB_ACTIONS`, `GITLAB_CI`, `TRAVIS`,
+`CIRCLECI` env vars) and runs minimal setup — verifies `.env` and app key, then exits cleanly.
+
+```bash
+php artisan saucebase:install
+```
+
+No special flags needed; CI detection is automatic.
+
+## Default Credentials
+
+After enabling the Auth module:
+
+- **Email**: `chef@saucebase.dev`
+- **Password**: `secretsauce`
+
+:::warning Change these in production.
+:::
+
+## Manual Installation (Docker step-by-step)
+
+For Docker users who want full control:
+
+### 1. Clone
 
 ```bash
 git clone https://github.com/sauce-base/saucebase.git my-app
 cd my-app
 ```
 
-Or use Composer:
+### 2. Generate SSL certificates (optional)
 
 ```bash
-composer create-project saucebase/saucebase my-app
-cd my-app
-```
-
-### Step 2: Configure Environment
-
-```bash
-cp .env.example .env
-```
-
-Review and update these Saucebase-specific variables in `.env`:
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `APP_HOST` | `localhost` | Application hostname |
-| `APP_URL` | `https://localhost` | Full URL (must match APP_HOST) |
-| `APP_SLUG` | `saucebase` | Project slug for storage keys |
-
-Standard Laravel variables (DB_\*, APP_KEY, etc.) have sensible defaults.
-
-### Step 3: Generate SSL Certificates (Optional)
-
-For HTTPS support with wildcard domains (multi-tenancy ready):
-
-```bash
-# Install mkcert if not already installed
 mkcert -install
-
-# Generate certificates
-mkdir -p docker/ssl
-cd docker/ssl
+mkdir -p docker/ssl && cd docker/ssl
 mkcert -key-file app.key.pem -cert-file app.pem "*.localhost" localhost 127.0.0.1 ::1
 cd ../..
 ```
 
-:::info Wildcard Support
-Certificates include `*.localhost` for multi-tenant applications. You can access your app at `https://localhost`, `https://tenant1.localhost`, etc.
-:::
-
-### Step 4: Start Docker Services
+### 3. Start Docker services
 
 ```bash
 docker compose up -d --wait
 ```
 
-This launches:
-
 | Service | Purpose | Ports |
 |---------|---------|-------|
 | **nginx** | Web server | 80, 443 |
-| **app** | PHP-FPM + CLI | - |
+| **app** | PHP-FPM + CLI | — |
 | **mysql** | Database | 3306 |
 | **redis** | Cache/Queue/Session | 6379 |
-| **mailpit** | Email testing | 1025 (SMTP), 8025 (Web UI) |
+| **mailpit** | Email testing | 8025 (Web UI) |
 
-:::tip Service Health
-The `--wait` flag ensures all services are healthy before returning. MySQL typically takes 10-30 seconds to initialize on first run.
-:::
-
-### Step 5: Install Backend Dependencies
+### 4. Install dependencies + run installer
 
 ```bash
 docker compose exec app composer install
+docker compose exec -T app php artisan saucebase:install --all-modules
 ```
 
-This installs Laravel and all PHP dependencies inside the Docker container.
-
-### Step 6: Run Artisan Installer
+### 5. Build frontend
 
 ```bash
-docker compose exec -T app php artisan saucebase:install
+npm install && npm run dev   # dev server with HMR
+# or
+npm install && npm run build  # production build
 ```
 
-This generates the application key, runs migrations, enables modules, creates the storage link, and clears caches.
-
-### Step 7: Install Frontend Dependencies
+### 6. Verify
 
 ```bash
-# Install packages
-npm install
-
-# Build assets (production)
-npm run build
-
-# OR start dev server with HMR (recommended)
-npm run dev
-```
-
-:::tip Development Mode
-Use `npm run dev` for hot module replacement during development. The Vite dev server will automatically reload when you change Vue/TypeScript/CSS files.
-:::
-
-### Step 8: Verify Installation
-
-**Access the application:**
-- Main site: https://localhost
-- Admin panel: https://localhost/admin (requires Auth module)
-- Email testing: http://localhost:8025 (Mailpit)
-
-**Health checks:**
-
-```bash
-# Check database connection
 docker compose exec app php artisan migrate:status
-
-# Check web server
-curl -sk https://localhost/health
+curl -sk https://localhost/up
 ```
-
-## Default Credentials
-
-After installing the Auth module, you can access the admin panel:
-
-- **Email**: `chef@saucebase.dev`
-- **Password**: `secretsauce`
-
-:::warning Change Credentials
-Make sure to change these credentials in production environments!
-:::
-
-:::tip Having issues?
-Check the [Troubleshooting guide](/reference/troubleshooting) for common installation problems (port conflicts, Docker issues, SSL warnings, etc.).
-:::
 
 ## Next Steps
 
-Now that Saucebase is installed:
-
-1. **[Configure Environment](/getting-started/configuration)** - Set up environment variables
-2. **[Understand Directory Structure](/getting-started/directory-structure)** - Learn the codebase organization
-3. **[Explore Modules](/fundamentals/modules)** - Install and manage modules
-4. **[Development Commands](/development/commands)** - Learn common development tasks
+1. **[Configure Environment](/getting-started/configuration)** — environment variables reference
+2. **[Directory Structure](/getting-started/directory-structure)** — codebase layout
+3. **[Modules](/fundamentals/modules)** — enable/disable/create modules
+4. **[Development Commands](/development/commands)** — common dev tasks
 
 ---
 
-Need help? Check the [Troubleshooting Reference](/reference/troubleshooting) or [open an issue](https://github.com/sauce-base/saucebase/issues).
+Need help? See the [Troubleshooting guide](/reference/troubleshooting) or
+[open an issue](https://github.com/sauce-base/saucebase/issues).

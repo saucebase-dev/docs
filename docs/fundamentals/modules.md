@@ -1,62 +1,12 @@
 ---
 sidebar_position: 1
-title: Modules
-description: Learn how to install, manage, and create Saucebase modules using the copy-and-own philosophy
+title: Module Management
+description: Learn how to install, enable, disable, and remove Saucebase modules
 ---
 
-# Modules
+# Module Management
 
 Modules are self-contained feature packages that you install directly into your repository. Module code becomes part of your codebase, giving you complete ownership and customization freedom. For the architectural details, see [Module System Architecture](/architecture/module-system).
-
-## Available Modules
-
-import ModuleGrid from '@site/src/components/ModuleGrid';
-import ModuleCard from '@site/src/components/ModuleCard';
-
-<ModuleGrid>
-  <ModuleCard
-    title="Auth"
-    description="Complete authentication system with social login support for Google and GitHub. Includes registration, login, password reset, and OAuth integration."
-    href="https://github.com/sauce-base/auth"
-    icon="🔐"
-    status="available"
-  />
-  <ModuleCard
-    title="Settings"
-    description="User and system settings management with a flexible configuration system. Manage user preferences and application-wide settings."
-    href="https://github.com/sauce-base/settings"
-    icon="⚙️"
-    status="available"
-  />
-  <ModuleCard
-    title="Billing"
-    description="Subscription and payment management with Stripe integration. Handle plans, invoices, and customer billing."
-    href="https://github.com/sauce-base/billing"
-    icon="💳"
-    status="available"
-  />
-  <ModuleCard
-    title="Teams"
-    description="Multi-tenant team management with role-based permissions. Collaborate with team members on shared resources."
-    href="https://github.com/sauce-base/teams"
-    icon="👥"
-    status="coming-soon"
-  />
-  <ModuleCard
-    title="Notifications"
-    description="Multi-channel notification system supporting email, SMS, and in-app notifications with queue support."
-    href="https://github.com/sauce-base/notifications"
-    icon="🔔"
-    status="coming-soon"
-  />
-  <ModuleCard
-    title="API"
-    description="RESTful API foundation with Laravel Sanctum authentication and API token management."
-    href="https://github.com/sauce-base/api"
-    icon="🔌"
-    status="coming-soon"
-  />
-</ModuleGrid>
 
 ## Installing Modules
 
@@ -106,18 +56,6 @@ docker compose exec app php artisan module:migrate Auth --seed
 npm run build
 ```
 
-### Development Environment
-
-If not using Docker:
-
-```bash
-composer require saucebase/auth
-composer dump-autoload
-php artisan module:enable Auth
-php artisan module:migrate Auth --seed
-npm run build
-```
-
 ## Managing Modules
 
 ### Enable/Disable Modules
@@ -154,6 +92,7 @@ Or view `modules_statuses.json`:
 ```json title="modules_statuses.json"
 {
   "Auth": true,
+  "Billing": true,
   "Settings": true
 }
 ```
@@ -178,268 +117,6 @@ php artisan module:seed Auth
 # Migrate and seed together
 php artisan module:migrate Auth --seed
 ```
-
-## Example: Installing Auth Module
-
-The Auth module provides complete authentication with social login support.
-
-### Step 1: Install
-
-```bash
-composer require saucebase/auth
-composer dump-autoload
-```
-
-### Step 2: Enable and Migrate
-
-```bash
-php artisan module:enable Auth
-php artisan module:migrate Auth --seed
-```
-
-### Step 3: Build Assets
-
-```bash
-npm run build
-# OR for development
-npm run dev
-```
-
-### Step 4: Configure OAuth (Optional)
-
-Add to `.env`:
-
-```env title=".env"
-GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-
-GITHUB_CLIENT_ID=your-github-client-id
-GITHUB_CLIENT_SECRET=your-github-client-secret
-```
-
-**Setup OAuth Apps:**
-
-- **Google**: [Google Cloud Console](https://console.cloud.google.com/)
-- **GitHub**: [GitHub Developer Settings](https://github.com/settings/developers)
-
-### What You Get
-
-After installation, the Auth module provides:
-
-- ✅ Login, registration, password reset flows
-- ✅ OAuth integration (Google, GitHub via Laravel Socialite)
-- ✅ Multiple provider connections per user
-- ✅ Routes: `/auth/login`, `/auth/register`, `/auth/forgot-password`
-- ✅ Admin panel access at `/admin`
-
-**Default Admin Credentials:**
-- Email: `chef@saucebase.dev`
-- Password: `secretsauce`
-
-:::warning
-Change these credentials in production!
-:::
-
-## How Modules Work
-
-### 1. Route Registration
-
-Module routes are automatically loaded:
-
-```php title="modules/Auth/routes/web.php"
-use Modules\Auth\app\Http\Controllers\LoginController;
-
-Route::prefix('auth')->name('auth.')->group(function () {
-    Route::get('login', [LoginController::class, 'show'])->name('login');
-    Route::post('login', [LoginController::class, 'store']);
-    Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
-});
-```
-
-Access routes at: `https://localhost/auth/login`
-
-### 3. Navigation Registration
-
-Modules can register navigation items by creating a `routes/navigation.php` file:
-
-```php title="modules/Auth/routes/navigation.php"
-use App\Facades\Navigation;
-use App\Navigation\Section;
-
-Navigation::add('Log out', '#', function (Section $section) {
-    $section->attributes([
-        'group' => 'user',
-        'action' => 'logout',
-        'slug' => 'logout',
-        'order' => 100,
-    ]);
-});
-```
-
-Navigation is automatically loaded when the module is enabled. See [Navigation](./navigation.md) for details.
-
-### 4. Frontend Integration
-
-Module pages use namespace syntax in Inertia:
-
-```php title="modules/Auth/app/Http/Controllers/LoginController.php"
-public function show()
-{
-    return inertia('Auth::Login'); // Namespace syntax!
-}
-```
-
-This resolves to: `modules/Auth/resources/js/pages/Login.vue`
-
-### 5. Module Lifecycle Hooks
-
-Modules can export setup hooks:
-
-```typescript title="modules/Auth/resources/js/app.ts"
-export default {
-    setup(app) {
-        // Called before Vue app mounts
-        // Register components, plugins, etc.
-        console.log('Auth module setup');
-    },
-
-    afterMount(app) {
-        // Called after Vue app mounts
-        // Initialize services that need DOM
-        console.log('Auth module mounted');
-    },
-};
-```
-
-### 6. Checking Module Availability in Frontend
-
-Use the `useModules` composable to conditionally render UI based on enabled modules.
-
-Modules are shared as a key-value map where the key is the module identifier and the value is the module name from `Module::getName()`:
-
-```typescript
-// Example modules prop structure
-{ Auth: 'Auth', Settings: 'Settings', Billing: 'Billing' }
-```
-
-**Usage:**
-
-```typescript
-import { modules } from '@/composables/useModules';
-
-// Check if a module is enabled (by key)
-if (modules().has('Auth')) { }
-if (modules().has('Settings')) { }
-
-// Get all enabled module names
-const enabledModules = modules().all();
-// → ['Auth', 'Settings', 'Billing']
-```
-
-**In Vue components:**
-
-```html title="Example usage in a component"
-<script setup lang="ts">
-import { modules } from '@/composables/useModules';
-
-// Destructured pattern
-const { has, all } = modules();
-</script>
-
-<template>
-  <!-- Conditionally render based on module availability -->
-  <nav>
-    <Link v-if="modules().has('Auth')" :href="route('auth.login')">
-      Login
-    </Link>
-
-    <Link v-if="modules().has('Settings')" :href="route('settings.index')">
-      Settings
-    </Link>
-
-    <Link v-if="modules().has('Billing')" :href="route('billing.index')">
-      Billing
-    </Link>
-  </nav>
-</template>
-```
-
-This is useful for:
-- Showing/hiding navigation items based on installed modules
-- Conditionally loading module-specific features
-- Building adaptive UIs that respond to the module configuration
-
-## Customizing Modules
-
-Since modules are part of your codebase, customize freely:
-
-### Example: Customize Login Page
-
-```html title="modules/Auth/resources/js/pages/Login.vue"
-<script setup lang="ts">
-// Add your custom logic
-import { useCustomAuth } from '@/composables/useCustomAuth';
-
-const { login } = useCustomAuth();
-</script>
-
-<template>
-  <div>
-    <!-- Customize the UI completely -->
-    <h1>My Custom Login Page</h1>
-    <!-- ... -->
-  </div>
-</template>
-```
-
-### Example: Add Custom Field to Registration
-
-1. **Add migration:**
-
-```bash
-php artisan make:migration add_phone_to_users --path=modules/Auth/database/migrations
-```
-
-```php
-Schema::table('users', function (Blueprint $table) {
-    $table->string('phone')->nullable();
-});
-```
-
-2. **Update form request:**
-
-```php title="modules/Auth/app/Http/Requests/RegisterRequest.php"
-public function rules(): array
-{
-    return [
-        'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'email', 'unique:users'],
-        'phone' => ['nullable', 'string', 'max:20'], // Added
-        'password' => ['required', 'confirmed', 'min:8'],
-    ];
-}
-```
-
-3. **Update Vue component:**
-
-```html title="modules/Auth/resources/js/pages/Register.vue"
-<template>
-  <form @submit.prevent="submit">
-    <!-- ... existing fields ... -->
-
-    <!-- Add phone field -->
-    <Input
-      v-model="form.phone"
-      type="tel"
-      label="Phone"
-    />
-
-    <!-- ... -->
-  </form>
-</template>
-```
-
-**That's it!** No forking, no maintaining patches. The code is yours.
 
 ## Removing Modules
 
@@ -513,15 +190,11 @@ php artisan module:migrate Auth
 php artisan module:migrate-status Auth
 ```
 
-## Creating Custom Modules
-
-Creating your own module follows the same structure as built-in modules. You can use the module generator or manually create the structure. Documentation for creating custom modules is coming soon.
-
 ## Next Steps
 
-- **[Routing](/fundamentals/routing)** - Learn about routing in Saucebase
-- **[SSR](/fundamentals/ssr)** - Server-side rendering per page
-- **[Navigation](/fundamentals/navigation)** - Build navigation menus
+- **[Auth Module](../modules/auth)** — Authentication, OAuth, and user impersonation
+- **[Settings Module](../modules/settings)** — User profile and avatar management
+- **[Billing Module](../modules/billing)** — Subscriptions and payment processing
 
 ---
 
