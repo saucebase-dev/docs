@@ -7,6 +7,8 @@ description: Complete installation guide for Saucebase — Docker, Laravel Herd,
 
 # Installation
 
+![Installation Screenshot](</img/preview.gif>)
+
 Get Saucebase running with your preferred development environment. The artisan installer is
 environment-agnostic — Docker, Herd, Sail, and native PHP are all first-class paths.
 
