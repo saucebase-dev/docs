@@ -15,7 +15,7 @@ Saucebase follows these testing principles:
 - **Feature tests for user-facing workflows** - Test complete user journeys
 - **Unit tests for complex business logic** - Test individual components in isolation
 - **E2E tests for critical paths** - Test authentication, checkout, and key user flows
-- **DRY principle in tests** - Extract repeated logic into helper functions
+- **DRY principle in tests** - Extract repeated logic into helpers and page objects
 - **Test what matters** - Focus on behavior, not implementation details
 
 ## PHPUnit Testing
@@ -39,10 +39,13 @@ Saucebase uses PHPUnit for backend testing with three test suites configured in 
 </testsuites>
 ```
 
-**Database Configuration:**
-- Tests run with **SQLite in-memory database** by default
-- Each test runs in a transaction and is rolled back
-- No need to manually reset the database between tests
+**Environment (from `phpunit.xml`):**
+- `DB_CONNECTION=sqlite`, `DB_DATABASE=:memory:` — in-memory SQLite, no teardown needed
+- `QUEUE_CONNECTION=sync` — jobs run inline
+- `BCRYPT_ROUNDS=4` — faster password hashing in tests
+- `TELESCOPE_ENABLED=false`, `PULSE_ENABLED=false` — observability tools disabled
+
+The base `TestCase` seeds the database before each test class (`$seed = true`) and provides a `createUser()` helper that creates a factory user and assigns the `user` role.
 
 ### Running PHPUnit Tests
 
@@ -56,59 +59,23 @@ php artisan test --testsuite=Feature
 php artisan test --testsuite=Modules
 
 # Run specific test file
-php artisan test tests/Feature/AuthTest.php
+php artisan test tests/Feature/ExampleTest.php
 
 # Run specific test method
-php artisan test --filter test_user_can_login
+php artisan test --filter test_user_can_access_dashboard
 
-# Run tests in a directory
-php artisan test tests/Feature
-php artisan test tests/Unit
+# Run tests in parallel
+php artisan test --parallel
 
 # Run with coverage (requires Xdebug)
 php artisan test --coverage
-
-# Run in parallel
-php artisan test --parallel
-```
-
-### Writing Unit Tests
-
-Unit tests verify individual components in isolation:
-
-```php title="tests/Unit/UserTest.php"
-<?php
-
-namespace Tests\Unit;
-
-use App\Models\User;
-use PHPUnit\Framework\TestCase;
-
-class UserTest extends TestCase
-{
-    /** @test */
-    public function it_generates_full_name_correctly(): void
-    {
-        // Arrange
-        $user = new User([
-            'first_name' => 'John',
-            'last_name' => 'Doe',
-        ]);
-
-        // Act
-        $fullName = $user->getFullNameAttribute();
-
-        // Assert
-        $this->assertEquals('John Doe', $fullName);
-    }
-}
 ```
 
 ### Writing Feature Tests
 
 Feature tests verify complete user workflows using the database:
 
-```php title="tests/Feature/AuthenticationTest.php"
+```php title="tests/Feature/DashboardTest.php"
 <?php
 
 namespace Tests\Feature;
@@ -117,76 +84,49 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class AuthenticationTest extends TestCase
+class DashboardTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
-    public function it_creates_user_with_valid_data(): void
-    {
-        // Arrange
-        $data = [
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'password' => 'password123',
-        ];
-
-        // Act
-        $response = $this->post('/register', $data);
-
-        // Assert
-        $this->assertDatabaseHas('users', [
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-        ]);
-        $response->assertRedirect('/dashboard');
-    }
-
-    /** @test */
     public function authenticated_user_can_access_dashboard(): void
     {
-        // Arrange
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
-        // Act
         $response = $this->actingAs($user)->get('/dashboard');
 
-        // Assert
         $response->assertOk();
         $response->assertInertia(fn ($page) =>
             $page->component('Dashboard')
         );
     }
+
+    /** @test */
+    public function guest_is_redirected_from_dashboard(): void
+    {
+        $response = $this->get('/dashboard');
+
+        $response->assertRedirect();
+    }
 }
 ```
 
-### Module Testing Patterns
+### Module Tests
 
-Modules should include their own tests in `modules/<ModuleName>/tests/`:
+Modules include their own PHPUnit tests under `modules/<ModuleName>/tests/`:
 
 ```
 modules/Auth/
-├── tests/
-│   ├── Feature/
-│   │   ├── LoginTest.php
-│   │   └── RegistrationTest.php
-│   └── Unit/
-│       └── AuthServiceTest.php
+└── tests/
+    ├── Feature/
+    │   ├── LoginTest.php
+    │   └── RegistrationTest.php
+    └── Unit/
+        └── LoginRequestTest.php
 ```
 
-**Run module tests:**
-```bash
-# Run all module tests
-php artisan test --testsuite=Modules
+Module test classes follow the `Modules\<Name>\Tests` namespace:
 
-# Run specific module's tests
-php artisan test modules/Auth/tests
-
-# Run specific module test file
-php artisan test modules/Auth/tests/Feature/LoginTest.php
-```
-
-**Example module test:**
 ```php title="modules/Auth/tests/Feature/LoginTest.php"
 <?php
 
@@ -201,25 +141,25 @@ class LoginTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function user_can_login_with_valid_credentials(): void
+    public function user_can_view_login_page(): void
     {
-        // Arrange
-        $user = User::factory()->create([
-            'email' => 'test@example.com',
-            'password' => bcrypt('password'),
-        ]);
+        $response = $this->get('/auth/login');
 
-        // Act
-        $response = $this->post('/auth/login', [
-            'email' => 'test@example.com',
-            'password' => 'password',
-        ]);
-
-        // Assert
-        $this->assertAuthenticatedAs($user);
-        $response->assertRedirect('/dashboard');
+        $response->assertOk();
+        $response->assertInertia(fn ($page) =>
+            $page->component('Auth::Login')
+        );
     }
 }
+```
+
+**Run module tests:**
+```bash
+# All module tests
+php artisan test --testsuite=Modules
+
+# Specific module
+php artisan test modules/Auth/tests
 ```
 
 ### Test Organization Best Practices
@@ -230,13 +170,13 @@ class LoginTest extends TestCase
 public function it_does_something(): void
 {
     // Arrange - Set up test data and conditions
-    $user = User::factory()->create();
+    $user = $this->createUser();
 
     // Act - Perform the action being tested
-    $result = $user->performAction();
+    $response = $this->actingAs($user)->get('/some-route');
 
     // Assert - Verify the expected outcome
-    $this->assertTrue($result);
+    $response->assertOk();
 }
 ```
 
@@ -249,58 +189,74 @@ public function it_sends_welcome_email_after_registration(): void
 public function test_email(): void
 ```
 
-**Extract test helpers:**
-```php title="tests/TestCase.php"
-<?php
+## Playwright E2E Testing
 
-namespace Tests;
+### How It Works
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+E2E tests use the [`@saucebase/laravel-playwright`](https://github.com/saucebase/laravel-playwright) package, which provides a `laravel` fixture available in all tests. The fixture exposes two methods:
 
-abstract class TestCase extends BaseTestCase
-{
-    /**
-     * Create an authenticated user and return the user instance.
-     */
-    protected function createAuthenticatedUser(array $attributes = []): User
-    {
-        $user = User::factory()->create($attributes);
-        $this->actingAs($user);
+- **`laravel.artisan(command)`** — Runs an Artisan command on the running app (e.g., `migrate:fresh --seed`)
+- **`laravel.callFunction(fqn)`** — Calls a static PHP method and returns its result as JSON (used to fetch credentials, run seeders, etc.)
 
-        return $user;
-    }
-}
+Both methods communicate with the app over a secret endpoint (`APP_URL/playwright`), protected by `PLAYWRIGHT_SECRET`.
+
+### Setup Chain
+
+Before test projects run, setup projects seed the database. The dependency chain is:
+
+```
+database.setup
+├── @Core [Desktop Chrome]
+├── @Auth [Desktop Chrome]
+├── @Settings [Desktop Chrome]
+└── billing.setup
+    └── @Billing [Desktop Chrome]
 ```
 
-## Playwright E2E Testing
+- **`database.setup`** (`tests/e2e/database.setup.ts`) — runs `migrate:fresh --seed` then `module:migrate-refresh --all --seed`. All test projects depend on it.
+- **`billing.setup`** (`modules/Billing/tests/e2e/billing.setup.ts`) — calls `BillingTestHelper::createSubscriberFixtures()` to set up subscription fixtures. Only `@Billing` depends on it.
+
+Only modules that export a `playwright.config.ts` get a setup step. Currently only Billing does.
 
 ### Configuration
 
-Playwright tests are configured in `playwright.config.ts` with automatic module discovery:
+The root `playwright.config.ts` collects module configs via `module-loader.js` and appends the active device suffix to every project name:
 
-```typescript title="playwright.config.ts"
-import { defineConfig } from '@playwright/test';
+```typescript title="playwright.config.ts (simplified)"
+import { defineConfig, devices } from '@playwright/test';
+import type { LaravelOptions } from '@saucebase/laravel-playwright';
 import { collectModulePlaywrightConfigs } from './module-loader.js';
 
-const moduleProjects = await collectModulePlaywrightConfigs();
+const { projects: moduleProjects, setups: moduleSetups } =
+    await collectModulePlaywrightConfigs();
 
-export default defineConfig({
+export default defineConfig<LaravelOptions>({
     projects: [
+        { name: 'database.setup', testMatch: /database\.setup\.ts/ },
+        ...moduleSetups,                    // e.g. billing.setup
         {
-            name: '@Core',
+            name: '@Core [Desktop Chrome]',
             testDir: './tests/e2e',
+            use: { ...devices['Desktop Chrome'] },
+            dependencies: ['database.setup'],
         },
-        ...moduleProjects, // [@Auth, @Settings, ...]
+        // @Auth [Desktop Chrome], @Billing [Desktop Chrome], etc.
+        ...moduleProjects,
     ],
-    // ... other config
+    use: {
+        baseURL: process.env.APP_URL ?? 'http://localhost',
+        laravelBaseUrl: `${BASE_URL}/playwright`,
+        laravelSecret: process.env.PLAYWRIGHT_SECRET,
+        ignoreHTTPSErrors: true,
+    },
 });
 ```
 
 **How module discovery works:**
 1. `module-loader.js` reads `modules_statuses.json` to find enabled modules
-2. For each enabled module, it checks for `playwright.config.ts` in the module directory
-3. Module test projects are prefixed with `@ModuleName` (e.g., `@Auth`, `@Settings`)
+2. For each enabled module, it checks for a `playwright.config.ts` in the module directory
+3. Modules without a `playwright.config.ts` still get a test project (prefixed `@ModuleName`), but no setup step
+4. Each project name gets the active device appended: `@Auth [Desktop Chrome]`
 
 ### Running Playwright Tests
 
@@ -309,8 +265,8 @@ export default defineConfig({
 npm run test:e2e
 
 # Run specific project
-npm run test:e2e -- --project=@Core
-npm run test:e2e -- --project=@Auth
+npm run test:e2e -- --project="@Core [Desktop Chrome]"
+npm run test:e2e -- --project="@Auth [Desktop Chrome]"
 
 # Run in UI mode (interactive)
 npm run test:e2e:ui
@@ -324,160 +280,184 @@ npm run test:e2e:debug
 # View test report
 npm run test:e2e:report
 
-# Run specific test file
-npm run test:e2e tests/e2e/index.spec.ts
-
 # Run tests matching a pattern
 npm run test:e2e -- --grep "login"
 ```
 
-### Writing E2E Tests
+### Test Structure
 
-**Core tests** go in `tests/e2e/`:
-
-```typescript title="tests/e2e/home.spec.ts"
-import { test, expect } from '@playwright/test';
-
-test.describe('Home Page', () => {
-    test('displays welcome message', async ({ page }) => {
-        await page.goto('/');
-
-        await expect(page.locator('h1')).toContainText('Welcome to Saucebase');
-    });
-
-    test('navigates to dashboard when logged in', async ({ page }) => {
-        // Login first
-        await page.goto('/auth/login');
-        await page.fill('input[name="email"]', 'test@example.com');
-        await page.fill('input[name="password"]', 'password');
-        await page.click('button[type="submit"]');
-
-        // Visit home
-        await page.goto('/');
-        await page.click('text=Go to Dashboard');
-
-        // Verify navigation
-        await expect(page).toHaveURL('/dashboard');
-    });
-});
-```
-
-**Module tests** go in `modules/<ModuleName>/tests/e2e/`:
-
-```typescript title="modules/Auth/tests/e2e/login.spec.ts"
-import { test, expect } from '@playwright/test';
-
-test.describe('Login', () => {
-    test('user can login with valid credentials', async ({ page }) => {
-        await page.goto('/auth/login');
-
-        await page.fill('input[name="email"]', 'chef@saucebase.dev');
-        await page.fill('input[name="password"]', 'secretsauce');
-        await page.click('button[type="submit"]');
-
-        await expect(page).toHaveURL('/dashboard');
-        await expect(page.locator('text=Dashboard')).toBeVisible();
-    });
-
-    test('shows error for invalid credentials', async ({ page }) => {
-        await page.goto('/auth/login');
-
-        await page.fill('input[name="email"]', 'wrong@example.com');
-        await page.fill('input[name="password"]', 'wrongpassword');
-        await page.click('button[type="submit"]');
-
-        await expect(page.locator('text=Invalid credentials')).toBeVisible();
-    });
-});
-```
-
-### Module Test Structure
+Module E2E tests are organized by feature into subdirectories. The Auth module is the reference example:
 
 ```
-modules/Auth/
-├── tests/
-│   └── e2e/
-│       ├── login.spec.ts
-│       ├── registration.spec.ts
-│       └── password-reset.spec.ts
-└── playwright.config.ts  # Optional module-specific config
+modules/Auth/tests/e2e/
+├── fixtures/
+│   └── index.ts              ← credentials fixture (see below)
+├── pages/
+│   ├── LoginPage.ts
+│   ├── RegisterPage.ts
+│   ├── ForgotPasswordPage.ts
+│   └── VerifyEmailPage.ts
+└── tests/
+    ├── login/
+    │   ├── login.basic.spec.ts
+    │   ├── login.errors.spec.ts
+    │   ├── login.security.spec.ts
+    │   ├── login.social.spec.ts
+    │   └── logout.basic.spec.ts
+    ├── register/
+    │   ├── register.basic.spec.ts
+    │   └── register.errors.spec.ts
+    ├── forgot-password/
+    │   ├── forgot-password.basic.spec.ts
+    │   └── forgot-password.errors.spec.ts
+    └── verify-email/
+        └── verify-email.basic.spec.ts
 ```
 
-**Module Playwright config (optional):**
-```typescript title="modules/Auth/playwright.config.ts"
-export default {
-    name: 'Auth',
-    testDir: './tests/e2e',
-};
-```
+Core E2E tests live in `tests/e2e/` (no subdirectory nesting required).
 
-The module loader will automatically:
-- Prefix the project with `@` (becomes `@Auth`)
-- Include module tests when running `npm run test:e2e`
+### Page Objects
 
-### Test Helpers and Utilities
+All module E2E tests use page object classes to encapsulate locators and interactions. Locators use `getByTestId` rather than raw CSS selectors:
 
-**Extract repeated logic into helpers:**
+```typescript title="modules/Auth/tests/e2e/pages/LoginPage.ts"
+import { expect, type Locator, type Page } from '@playwright/test';
 
-```typescript title="tests/e2e/helpers/auth.ts"
-import { Page } from '@playwright/test';
+export class LoginPage {
+    readonly page: Page;
+    readonly emailInput: Locator;
+    readonly passwordInput: Locator;
+    readonly loginButton: Locator;
 
-export async function login(page: Page, email: string, password: string) {
-    await page.goto('/auth/login');
-    await page.fill('input[name="email"]', email);
-    await page.fill('input[name="password"]', password);
-    await page.click('button[type="submit"]');
-}
+    constructor(page: Page) {
+        this.page = page;
+        this.emailInput = page.getByTestId('email');
+        this.passwordInput = page.getByTestId('password');
+        this.loginButton = page.getByTestId('login-button');
+    }
 
-export async function logout(page: Page) {
-    await page.click('button[aria-label="User menu"]');
-    await page.click('text=Logout');
-}
-```
+    async goto() {
+        await this.page.goto('/auth/login');
+    }
 
-**SSR test helpers** (already included in Saucebase):
+    async login(email: string, password: string) {
+        await this.emailInput.fill(email);
+        await this.passwordInput.fill(password);
+        await this.loginButton.click();
+    }
 
-```typescript title="tests/e2e/helpers/ssr.ts"
-import { Page, expect } from '@playwright/test';
-
-export async function expectSSREnabled(page: Page, expectedComponent?: string) {
-    const htmlContent = await page.content();
-
-    // Check for Inertia SSR markers
-    expect(htmlContent).toContain('id="app"');
-    expect(htmlContent).toContain('data-page');
-
-    if (expectedComponent) {
-        expect(htmlContent).toContain(`"component":"${expectedComponent}"`);
+    async expectToBeVisible() {
+        await expect(this.page.getByTestId('login-form')).toBeVisible();
     }
 }
+```
 
-export async function expectSSRDisabled(page: Page) {
-    const htmlContent = await page.content();
+**Using a page object in a spec:**
+```typescript title="modules/Auth/tests/e2e/tests/login/login.basic.spec.ts"
+import { test, expect } from '../../fixtures';
+import { LoginPage } from '../../pages/LoginPage';
 
-    // Should have app div but no data-page
-    expect(htmlContent).toContain('id="app"');
-    expect(htmlContent).not.toContain('data-page');
+test('logs in with valid credentials', async ({ page, credentials }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login(credentials.admin.email, credentials.admin.password);
+
+    await expect(page).toHaveURL('/dashboard');
+});
+```
+
+Each module's `pages/` directory holds all its page objects. Follow the same pattern when adding new modules.
+
+### Credentials Fixture
+
+E2E tests never hardcode passwords. Instead, Auth and Billing specs import `{ test, expect }` from the Auth module's credentials fixture, which fetches seeded credentials from the backend at runtime:
+
+```typescript title="modules/Auth/tests/e2e/fixtures/index.ts"
+import { test as base } from '@saucebase/laravel-playwright';
+import { expect } from '@playwright/test';
+
+export type UserCredential = { email: string; password: string };
+
+export type TestCredentials = {
+    admin: UserCredential;
+    user: UserCredential;
+    subscriber: UserCredential;
+    cancelled: UserCredential;
+};
+
+export const test = base.extend<{ credentials: TestCredentials }>({
+    credentials: async ({ laravel }, use) => {
+        const creds = await laravel.callFunction<TestCredentials>(
+            'Tests\\Support\\TestFixtures::credentials',
+        );
+        await use(creds);
+    },
+});
+
+export { expect };
+```
+
+The credentials themselves are defined in `tests/Support/TestFixtures.php` and correspond to users seeded by `database.setup`:
+
+```php title="tests/Support/TestFixtures.php"
+<?php
+
+namespace Tests\Support;
+
+class TestFixtures
+{
+    public static function credentials(): array
+    {
+        return [
+            'admin'      => ['email' => 'chef@saucebase.dev',       'password' => 'secretsauce'],
+            'user'       => ['email' => 'test@example.com',         'password' => 'secretsauce'],
+            'subscriber' => ['email' => 'subscriber@example.com',   'password' => 'secretsauce'],
+            'cancelled'  => ['email' => 'cancelled@example.com',    'password' => 'secretsauce'],
+        ];
+    }
 }
 ```
 
-**Using helpers in tests:**
-```typescript title="tests/e2e/dashboard.spec.ts"
+Any spec that needs credentials imports `{ test, expect }` from the fixtures file instead of `@playwright/test`:
+
+```typescript
+// ✅ Import from fixture (gives access to credentials)
+import { test, expect } from '../../fixtures';
+
+// ❌ Do not import directly from @playwright/test in module specs
 import { test, expect } from '@playwright/test';
-import { login } from './helpers/auth';
-import { expectSSRDisabled } from './helpers/ssr';
+```
 
-test('dashboard disables SSR', async ({ page }) => {
-    await login(page, 'chef@saucebase.dev', 'secretsauce');
-    await page.goto('/dashboard');
+### SSR Helpers
 
-    await expectSSRDisabled(page);
+`tests/e2e/helpers/ssr.ts` provides three helpers for verifying server-side rendering behavior:
+
+```typescript
+import {
+    expectSSREnabled,
+    expectSSRDisabled,
+    expectInertiaPageDataEmbedded,
+} from '../../helpers/ssr';
+```
+
+| Helper | What it checks |
+|--------|---------------|
+| `expectSSREnabled(page, component?)` | Verifies `data-page` script tag is present; optionally checks the Inertia component name |
+| `expectSSRDisabled(page)` | Verifies `id="app"` and `data-page` are present (client-rendered, no pre-rendered HTML) |
+| `expectInertiaPageDataEmbedded(page)` | Verifies the JSON script tag exists and contains page data |
+
+**Usage:**
+```typescript title="tests/e2e/index.spec.ts"
+import { test } from '@playwright/test';
+import { expectSSREnabled } from './helpers/ssr';
+
+test('home page uses SSR', async ({ page }) => {
+    await page.goto('/');
+    await expectSSREnabled(page, 'Index');
 });
 ```
 
 ## Continuous Integration
-
-When running tests in CI environments:
 
 ```bash
 # Set environment to testing
@@ -491,7 +471,7 @@ npm run test:e2e -- --reporter=github
 ```
 
 :::tip
-In CI, Playwright automatically runs in headless mode and doesn't start the Vite dev server (detects CI environment).
+In CI, Playwright runs in headless mode. The `webServer` config is skipped (it only starts locally), so your CI pipeline must build and serve the app separately before running E2E tests.
 :::
 
 ## Troubleshooting
@@ -499,15 +479,14 @@ In CI, Playwright automatically runs in headless mode and doesn't start the Vite
 ### PHPUnit Issues
 
 **Database not found:**
-```bash
-# Ensure SQLite is configured in phpunit.xml
+```xml
+<!-- Ensure these are set in phpunit.xml -->
 <env name="DB_CONNECTION" value="sqlite"/>
 <env name="DB_DATABASE" value=":memory:"/>
 ```
 
 **Tests fail with "Class not found":**
 ```bash
-# Regenerate autoload files
 composer dump-autoload
 ```
 
@@ -515,18 +494,18 @@ composer dump-autoload
 
 **Module tests not discovered:**
 ```bash
-# Verify module is enabled in modules_statuses.json
-# Rebuild the config
+# Verify the module is enabled
+cat modules_statuses.json
+
+# List all discovered projects
 npm run test:e2e -- --list
 ```
 
-**Vite server not starting:**
+**Setup not running:**
+
+Ensure `database.setup` completes before test projects run. If `billing.setup` fails, `@Billing` tests won't start. Run setup projects individually to isolate the issue:
 ```bash
-# Check if port 5173 is available
-# Or specify a different port in playwright.config.ts
-webServer: {
-    port: 5174,
-}
+npm run test:e2e -- --project="database.setup"
 ```
 
 ## Next Steps
