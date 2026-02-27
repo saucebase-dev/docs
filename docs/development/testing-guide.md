@@ -290,8 +290,6 @@ Module E2E tests are organized by feature into subdirectories. The Auth module i
 
 ```
 modules/Auth/tests/e2e/
-├── fixtures/
-│   └── index.ts              ← credentials fixture (see below)
 ├── pages/
 │   ├── LoginPage.ts
 │   ├── RegisterPage.ts
@@ -313,6 +311,8 @@ modules/Auth/tests/e2e/
     └── verify-email/
         └── verify-email.basic.spec.ts
 ```
+
+The shared credentials fixture lives in `tests/e2e/fixtures/index.ts` (core), not inside any module. Any module spec that needs credentials imports from there.
 
 Core E2E tests live in `tests/e2e/` (no subdirectory nesting required).
 
@@ -370,9 +370,9 @@ Each module's `pages/` directory holds all its page objects. Follow the same pat
 
 ### Credentials Fixture
 
-E2E tests never hardcode passwords. Instead, Auth and Billing specs import `{ test, expect }` from the Auth module's credentials fixture, which fetches seeded credentials from the backend at runtime:
+E2E tests never hardcode passwords. The credentials fixture lives in `tests/e2e/fixtures/index.ts` (core), making it available to any module without cross-module imports. It fetches seeded credentials from the backend at runtime via `laravel.callFunction()`:
 
-```typescript title="modules/Auth/tests/e2e/fixtures/index.ts"
+```typescript title="tests/e2e/fixtures/index.ts"
 import { test as base } from '@saucebase/laravel-playwright';
 import { expect } from '@playwright/test';
 
@@ -418,14 +418,17 @@ class TestFixtures
 }
 ```
 
-Any spec that needs credentials imports `{ test, expect }` from the fixtures file instead of `@playwright/test`:
+Any spec that needs credentials imports `{ test, expect }` from the core fixtures instead of `@playwright/test`. The relative path from a module spec (`modules/X/tests/e2e/tests/<feature>/`) to the core fixtures is always 6 levels up:
 
 ```typescript
-// ✅ Import from fixture (gives access to credentials)
-import { test, expect } from '../../fixtures';
+// ✅ Import from core fixtures (gives access to credentials)
+import { test, expect } from '@e2e/fixtures/index.ts';
 
 // ❌ Do not import directly from @playwright/test in module specs
 import { test, expect } from '@playwright/test';
+
+// ❌ Do not import from another module's directory
+import { test, expect } from '../../../../../Auth/tests/e2e/fixtures/index.ts';
 ```
 
 ### SSR Helpers
