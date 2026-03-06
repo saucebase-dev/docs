@@ -117,6 +117,6 @@ When `is_dismissable = true`, a ✕ button appears in the banner. Clicking it se
 ## Testing
 
 ```bash
-php artisan test --testsuite=Modules --filter=Announcement
+php artisan test --testsuite=Modules --filter=Announcements
 npx playwright test --project="@Announcements*"
 ```
