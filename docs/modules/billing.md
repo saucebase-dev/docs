@@ -37,7 +37,16 @@ npm run build
 
 ### Add the Billable trait to your User model
 
-This step is required. Without it, `$user->billingCustomer` and all subscription checks will fail:
+This step is required. Without it, `$user->billingCustomer` and all subscription checks will fail. Apply the provided patch:
+
+```bash
+git apply modules/Billing/patches/user.patch
+```
+
+<details>
+<summary>Manual alternative</summary>
+
+In `app/Models/User.php`, add the import and the trait:
 
 ```php title="app/Models/User.php"
 use Modules\Billing\Traits\Billable;
@@ -47,6 +56,8 @@ class User extends Authenticatable
     use Billable;
 }
 ```
+
+</details>
 
 ## Configuration
 
@@ -161,5 +172,5 @@ Set `is_highlighted = true` on a product to mark it as **"Most popular"** — it
 
 ```bash
 php artisan test --testsuite=Modules --filter=Billing
-npx playwright test --project="@Billing [Desktop Chrome]"
+npx playwright test --project="@Billing*"
 ```

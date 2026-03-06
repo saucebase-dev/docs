@@ -206,11 +206,11 @@ Before test projects run, setup projects seed the database. The dependency chain
 
 ```
 database.setup
-├── @Core [Desktop Chrome]
-├── @Auth [Desktop Chrome]
-├── @Settings [Desktop Chrome]
+├── @Core 
+├── @Auth 
+├── @Settings 
 └── billing.setup
-    └── @Billing [Desktop Chrome]
+    └── @Billing 
 ```
 
 - **`database.setup`** (`tests/e2e/database.setup.ts`) — runs `migrate:fresh --seed` then `module:migrate-refresh --all --seed`. All test projects depend on it.
@@ -220,37 +220,7 @@ Only modules that export a `playwright.config.ts` get a setup step. Currently on
 
 ### Configuration
 
-The root `playwright.config.ts` collects module configs via `module-loader.js` and appends the active device suffix to every project name:
-
-```typescript title="playwright.config.ts (simplified)"
-import { defineConfig, devices } from '@playwright/test';
-import type { LaravelOptions } from '@saucebase/laravel-playwright';
-import { collectModulePlaywrightConfigs } from './module-loader.js';
-
-const { projects: moduleProjects, setups: moduleSetups } =
-    await collectModulePlaywrightConfigs();
-
-export default defineConfig<LaravelOptions>({
-    projects: [
-        { name: 'database.setup', testMatch: /database\.setup\.ts/ },
-        ...moduleSetups,                    // e.g. billing.setup
-        {
-            name: '@Core [Desktop Chrome]',
-            testDir: './tests/e2e',
-            use: { ...devices['Desktop Chrome'] },
-            dependencies: ['database.setup'],
-        },
-        // @Auth [Desktop Chrome], @Billing [Desktop Chrome], etc.
-        ...moduleProjects,
-    ],
-    use: {
-        baseURL: process.env.APP_URL ?? 'http://localhost',
-        laravelBaseUrl: `${BASE_URL}/playwright`,
-        laravelSecret: process.env.PLAYWRIGHT_SECRET,
-        ignoreHTTPSErrors: true,
-    },
-});
-```
+The root `playwright.config.ts` collects module configs via `module-loader.js` and appends the active device suffix to every project name. Check the file for details.
 
 **How module discovery works:**
 1. `module-loader.js` reads `modules_statuses.json` to find enabled modules

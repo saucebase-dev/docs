@@ -37,7 +37,16 @@ npm run build
 
 ### Add the Sociable trait to your User model
 
-This step is required for social login and the Settings module's provider display to work:
+This step is required for social login and the Settings module's provider display to work. Apply the provided patch:
+
+```bash
+git apply modules/Auth/patches/user.patch
+```
+
+<details>
+<summary>Manual alternative</summary>
+
+In `app/Models/User.php`, add the import and the trait:
 
 ```php title="app/Models/User.php"
 use Modules\Auth\Traits\Sociable;
@@ -47,6 +56,8 @@ class User extends Authenticatable
     use Sociable;
 }
 ```
+
+</details>
 
 The trait adds `socialAccounts()`, `connected_providers`, and the disconnect helper to your User model.
 
@@ -103,5 +114,5 @@ See the [Impersonation guide](../fundamentals/impersonation) for full details.
 
 ```bash
 php artisan test --testsuite=Modules --filter=Auth
-npx playwright test --project="@Auth [Desktop Chrome]"
+npx playwright test --project="@Auth*"
 ```

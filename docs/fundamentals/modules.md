@@ -39,6 +39,24 @@ npm run build
 4. `module:migrate --seed` - Runs database migrations and seeds sample data
 5. `npm run build` - Rebuilds frontend assets to include module JavaScript/CSS
 
+### Applying Patches
+
+Some modules include patch files that integrate the module into core files like `User.php`, `App.vue`, and `index.d.ts`. These patches add things like model interfaces, Vue component registrations, and TypeScript type definitions that the module requires.
+
+Patch files live at `modules/{ModuleName}/patches/*.patch`.
+
+Apply a single patch with `git apply` from the repo root:
+
+```bash
+git apply modules/Auth/patches/user.patch
+```
+
+To preview what a patch will change without modifying files:
+
+```bash
+git apply --check modules/Auth/patches/user.patch
+```
+
 ### Docker Environment
 
 If using Docker:
