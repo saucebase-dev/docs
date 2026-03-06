@@ -72,5 +72,5 @@ The item will appear in the sidebar on all settings pages automatically.
 
 ```bash
 php artisan test --testsuite=Modules --filter=Settings
-npx playwright test --project="@Settings [Desktop Chrome]"
+npx playwright test --project="@Settings*"
 ```

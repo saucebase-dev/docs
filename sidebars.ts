@@ -139,6 +139,7 @@ const sidebars: SidebarsConfig = {
         { type: 'doc', id: 'modules/auth', label: 'Auth', customProps: { icon: 'lucide:lock' } },
         { type: 'doc', id: 'modules/settings', label: 'Settings', customProps: { icon: 'lucide:settings-2' } },
         { type: 'doc', id: 'modules/billing', label: 'Billing', customProps: { icon: 'lucide:credit-card' } },
+        { type: 'doc', id: 'modules/announcements', label: 'Announcements', customProps: { icon: 'lucide:megaphone' } },
       ],
     },
     {
