@@ -73,6 +73,14 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'doc',
+          id: 'fundamentals/dialogs',
+          label: 'Dialogs',
+          customProps: {
+            icon: 'lucide:alert-circle',
+          },
+        },
+        {
+          type: 'doc',
           id: 'fundamentals/ssr',
           label: 'SSR',
           customProps: {
