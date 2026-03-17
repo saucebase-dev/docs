@@ -7,6 +7,8 @@ description: Subscriptions, checkout sessions, and payment processing
 
 The Billing module handles subscription management and payment processing. Users go through a checkout session to subscribe, can manage their billing via a hosted portal, and can cancel or resume their subscription at any time. The module uses a gateway driver pattern with Stripe as the default.
 
+**Requires:** [Auth module](./auth)
+
 ## What you get
 
 - **Checkout flow** — create a session with a configurable expiration window; billing address is collected at checkout

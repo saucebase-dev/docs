@@ -14,14 +14,6 @@ const sidebars: SidebarsConfig = {
   // Main documentation sidebar
   docs: [
     {
-      type: 'doc',
-      id: 'index',
-      label: 'What is saucebase',
-      customProps: {
-        icon: 'lucide:home',
-      },
-    },
-    {
       type: 'category',
       label: 'Getting Started',
       collapsed: false,
@@ -29,6 +21,14 @@ const sidebars: SidebarsConfig = {
         icon: 'lucide:rocket',
       },
       items: [
+        {
+          type: 'doc',
+          id: 'index',
+          label: 'What is Saucebase',
+          customProps: {
+            icon: 'lucide:home',
+          },
+        },
         {
           type: 'doc',
           id: 'getting-started/installation',
@@ -52,6 +52,19 @@ const sidebars: SidebarsConfig = {
           customProps: {
             icon: 'lucide:folder-tree',
           },
+        },
+        {
+          type: 'category',
+          label: 'Modules',
+          collapsed: false,
+          customProps: { icon: 'lucide:package' },
+          items: [
+            { type: 'doc', id: 'modules/auth', label: 'Auth', customProps: { icon: 'lucide:lock' } },
+            { type: 'doc', id: 'modules/settings', label: 'Settings', customProps: { icon: 'lucide:settings-2' } },
+            { type: 'doc', id: 'modules/billing', label: 'Billing', customProps: { icon: 'lucide:credit-card' } },
+            { type: 'doc', id: 'modules/announcements', label: 'Announcements', customProps: { icon: 'lucide:megaphone' } },
+            { type: 'doc', id: 'modules/roadmap', label: 'Roadmap', customProps: { icon: 'lucide:map' } },
+          ],
         },
       ],
     },
@@ -140,18 +153,6 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'Modules',
-      collapsed: true,
-      customProps: { icon: 'lucide:package' },
-      items: [
-        { type: 'doc', id: 'modules/auth', label: 'Auth', customProps: { icon: 'lucide:lock' } },
-        { type: 'doc', id: 'modules/settings', label: 'Settings', customProps: { icon: 'lucide:settings-2' } },
-        { type: 'doc', id: 'modules/billing', label: 'Billing', customProps: { icon: 'lucide:credit-card' } },
-        { type: 'doc', id: 'modules/announcements', label: 'Announcements', customProps: { icon: 'lucide:megaphone' } },
-      ],
-    },
-    {
-      type: 'category',
       label: 'Architecture',
       collapsed: true,
       customProps: {
@@ -228,14 +229,6 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'doc',
-          id: 'development/coding-standards',
-          label: 'Coding Standards',
-          customProps: {
-            icon: 'lucide:file-check',
-          },
-        },
-        {
-          type: 'doc',
           id: 'development/testing-guide',
           label: 'Testing Guide',
           customProps: {
@@ -257,6 +250,17 @@ const sidebars: SidebarsConfig = {
     //     'advanced/deployment',
     //   ],
     // },
+    {
+      type: 'category',
+      label: 'Guidelines',
+      collapsed: true,
+      customProps: { icon: 'lucide:book-check' },
+      items: [
+        { type: 'doc', id: 'guidelines/index', label: 'Overview', customProps: { icon: 'lucide:layout-grid' } },
+        { type: 'doc', id: 'guidelines/laravel', label: 'Laravel', customProps: { icon: 'lucide:server' } },
+        { type: 'doc', id: 'guidelines/javascript', label: 'JavaScript', customProps: { icon: 'lucide:code-2' } },
+      ],
+    },
     {
       type: 'category',
       label: 'Reference',
