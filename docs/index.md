@@ -9,17 +9,17 @@ import ModuleGrid from '@site/src/components/ModuleGrid';
 
 # What is Saucebase?
 
-Saucebase is a modular Laravel SaaS starter kit built on the [VILT stack](/reference/glossary#vilt-stack) (Vue 3, Inertia.js, Laravel 12, Tailwind CSS 4). Unlike traditional starter kits that trap you in vendor packages, Saucebase gives you complete ownership of the code.
+Saucebase is a modular Laravel SaaS starter kit built on the [VILT stack](/reference/glossary#vilt-stack) (Vue, Inertia.js, Laravel, Tailwind CSS). Unlike traditional starter kits that trap you in vendor packages, Saucebase gives you complete ownership of the code.
 
 When you install Saucebase modules, they copy directly into your repository - not as external dependencies. You own every line of code and can modify, refactor, or rebuild features to match your exact needs. It's a foundation you control, not a framework you're locked into.
 
-Saucebase provides everything you need to build production-ready SaaS applications: authentication, team management, subscriptions, admin panels, and more - all with modern tooling and best practices built in.
+Saucebase provides everything you need to build production-ready SaaS applications: authentication, user management, subscriptions, admin panels, and more - all with modern tooling and best practices built in.
 
 ## Why Saucebase?
 
-Most Laravel starter kits trap you in a vendor package. You fight their architecture, maintain patches, and pray updates don't break your customizations.
+Building a SaaS means solving the same problems every time: authentication, billing, admin panels, code quality, deployment pipelines. Saucebase solves all of that before you write a single line of your own logic — giving you months back and a production-ready foundation to build on.
 
-**Saucebase solves this with a copy-and-own philosophy.**
+**The result: you focus entirely on what makes your product unique.**
 
 ### Copy-and-Own Philosophy
 
@@ -34,10 +34,10 @@ composer require saucebase/auth        # → Copied to modules/Auth/, you own it
 
 **What this means for you:**
 
-- **No vendor controlling your roadmap**: The code is in YOUR repository. You decide what changes, when, and how.
-- **Change anything without asking permission**: Need a custom field? Edit the file. Want different validation? Modify the rules. It's your code.
-- **No 3am emergencies from upstream changes**: Package updates can't break your code because you control the code.
-- **Complete freedom to refactor**: Rebuild features to match your exact architecture. You're not fighting against package assumptions.
+- **Yours from day one** — every file, class, and migration lives in your repository. Read it, understand it, adapt it.
+- **Change anything, any time** — custom fields, different validation, new relationships: just edit the file. No workarounds, no override ceremonies.
+- **You decide when to update** — upstream improvements are always available to pull in. You choose what fits your product and when.
+- **Full visibility into your codebase** — no black-box dependencies to trace. When something needs fixing, you know exactly where to look.
 
 :::tip You Are The Vendor
 When you install a Saucebase module, you're not adding a dependency. You're acquiring source code. From day one, you control the roadmap, the updates, and the architecture.
@@ -45,7 +45,7 @@ When you install a Saucebase module, you're not adding a dependency. You're acqu
 
 ## Key Features
 
-Saucebase combines modular architecture with modern tooling to help you build faster while maintaining complete control.
+Saucebase gives you a production-ready SaaS architecture — scalable, secure, extensible, and high-performance — with the tooling and automation to ship fast and stay confident as you grow.
 
 ### Modular Architecture
 
@@ -53,9 +53,9 @@ Saucebase combines modular architecture with modern tooling to help you build fa
 
 ### Modern Development Experience
 
-We've optimized the development experience so you can build faster:
+Saucebase ships a complete development environment so your team is productive from day one:
 
-- **One-command setup**: Run `task install` and Saucebase starts [Docker](/reference/glossary#docker) containers, configures your database, generates SSL certificates, and builds assets automatically
+- **One-command setup** — `bash bin/setup-env` starts everything: Docker containers, SSL certificates, database, assets. Be running in minutes, not hours.
 - **Instant hot reload**: See your changes immediately in the browser with [HMR](/reference/glossary#hmr-hot-module-replacement) (no page refresh needed)
 - **Type-safe routes**: [Ziggy](/reference/glossary#ziggy) generates TypeScript helpers from your Laravel routes, so you get autocomplete and type checking
 - **SSR when you need it**: Enable [server-side rendering](/reference/glossary#ssr-server-side-rendering) for specific pages to improve SEO and performance
@@ -132,13 +132,18 @@ The bootstrap script starts Docker containers (MySQL, Redis, Mailpit), generates
 **Installing a module is simple:**
 
 ```bash
-# Install the Auth module
+php artisan saucebase:install
+```
+
+The interactive installer prompts you to choose modules, runs `composer require`, enables them, and runs migrations. The code lands in your `modules/` directory — open the files and modify them however you want.
+
+If you prefer to install a single module manually:
+
+```bash
 composer require saucebase/auth
 php artisan module:enable Auth
 php artisan module:migrate Auth --seed
 ```
-
-The code now lives in your `modules/Auth` directory. You can open the files and modify them however you want.
 
 <ModuleGrid modules={[
   {
@@ -156,11 +161,18 @@ The code now lives in your `modules/Auth` directory. You can open the files and 
     status: 'available'
   },
   {
-    title: 'Subscriptions',
-    description: 'Stripe-powered subscription management with multiple plans, metered billing, usage tracking, and webhooks. Handle trials, upgrades, and cancellations with ease.',
-    href: '#',
+    title: 'Billing',
+    description: 'Subscription management and payment processing via Stripe. Includes checkout sessions, a hosted billing portal, invoice list, stored payment methods, and idempotent webhook processing.',
+    href: 'https://github.com/sauce-base/billing',
     icon: '',
-    status: 'coming-soon'
+    status: 'available'
+  },
+  {
+    title: 'Roadmap',
+    description: 'Let users suggest features and bugs, vote on what matters most, and track your public roadmap. Includes moderation, voting, six statuses, and a Filament admin panel.',
+    href: 'https://github.com/sauce-base/roadmap',
+    icon: '',
+    status: 'available'
   },
   {
     title: 'Teams',
@@ -184,24 +196,5 @@ Ready to dive deeper? Here are the key resources to explore:
 - **[Modules](/fundamentals/modules)** - Learn to work with and create modules
 - **[Development](/development/commands)** - Daily development workflow and commands
 - **[Reference](/reference/glossary)** - Glossary and troubleshooting guides
-
-## Need Help?
-
-We're here to help you succeed with Saucebase:
-
-- **Documentation**: You're already here! Use the search bar above to find what you need
-- **Found a bug?**: [Report it on GitHub Issues](https://github.com/sauce-base/saucebase/issues)
-- **Have questions?**: [Ask the community on GitHub Discussions](https://github.com/sauce-base/saucebase/discussions)
-- **Browse the code**: [Main Repository](https://github.com/sauce-base/saucebase)
-
-:::tip Check the Troubleshooting Guide
-Many common issues are already solved in our [troubleshooting guide](/reference/troubleshooting). Check there first!
-:::
-
-## License
-
-Saucebase is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT). You can use it freely in your projects, modify it, and even use it commercially.
-
----
 
 **Ready to own your SaaS foundation?** Head to [Getting Started](/) →
