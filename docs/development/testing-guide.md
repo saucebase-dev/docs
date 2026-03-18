@@ -484,5 +484,5 @@ npm run test:e2e -- --project="database.setup"
 ## Next Steps
 
 - **Module Development:** Learn how to add tests to your modules in the [Module System](/fundamentals/modules) guide
-- **Coding Standards:** Review testing standards in the [Coding Standards](/development/coding-standards) guide
+- **Guidelines:** Review testing standards in the [Guidelines](/guidelines) guide
 - **CI/CD:** Set up automated testing in your deployment pipeline (coming soon)

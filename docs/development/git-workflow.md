@@ -307,5 +307,5 @@ chmod +x .git/hooks/commit-msg
 
 ## Next Steps
 
-- [Coding Standards](/development/coding-standards) - Understand code quality standards
+- [Guidelines](/guidelines) - Understand code quality standards
 - [Commands](/development/commands) - Useful development commands
