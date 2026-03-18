@@ -38,7 +38,8 @@ Navigation::add('Dashboard', route('dashboard'), function (Section $section) {
 | Attribute  | Type   | Description                                                          |
 | ---------- | ------ | -------------------------------------------------------------------- |
 | `group`    | string | Navigation group (`main`, `secondary`, `user`, `settings`, `landing`) |
-| `slug`     | string | Unique identifier for the item                                       |
+| `slug`     | string | Unique identifier for the item (used in testids and as the key)     |
+| `icon`     | string | Icon identifier — must be registered via `registerIcon()` in your module's `app.ts` |
 | `order`    | int    | Sort order within the group (lower = first)                          |
 | `action`   | string | JavaScript action to trigger (e.g., `'logout'`)                     |
 | `external` | bool   | Render as `<a>` instead of Inertia `<Link>`                         |
@@ -82,6 +83,7 @@ Navigation::add('Log out', '#', function (Section $section) {
         'group' => 'user',
         'action' => 'logout',
         'slug' => 'logout',
+        'icon' => 'logout',
         'order' => 100,
     ]);
 });
@@ -132,6 +134,7 @@ Navigation::add('Settings', route('settings.index'), function (Section $section)
     $section->attributes([
         'group' => 'user',
         'slug' => 'settings',
+        'icon' => 'settings',
         'order' => 10,
     ]);
 });
@@ -152,6 +155,34 @@ Groups organize items by where they appear in the UI. Use the `group` attribute 
 | `landing`   | Public landing page navigation            |
 
 You can create custom groups by using any string as the group name. They'll appear in `usePage().props.navigation` under that key.
+
+## Icons
+
+Icons are decoupled from PHP — the backend only names them, the frontend decides which component to render.
+
+**In PHP**, set the `icon` attribute to a string identifier:
+
+```php
+$section->attributes([
+    'slug' => 'roadmap',
+    'icon' => 'roadmap',
+]);
+```
+
+**In your module's `app.ts`**, register the matching component via `registerIcon()`:
+
+```typescript title="modules/Roadmap/resources/js/app.ts"
+import { registerIcon } from '@/lib/navigation';
+import IconMap from '~icons/heroicons/map';
+
+export function setup() {
+    registerIcon('roadmap', IconMap);
+}
+```
+
+`registerIcon()` is called during app initialization (before Vue mounts), so icons are available by the time any navigation component renders. The `NavIcon` component resolves the string to a component via `resolveIcon()` and logs a warning in development if no match is found.
+
+Core icons (`dashboard`, `github`, `admin`, `documentation`) are pre-registered in `lib/navigation.ts`. Modules register their own icons in their `app.ts` — no changes to core files are needed.
 
 ## Frontend Usage
 
@@ -197,6 +228,7 @@ interface MenuItem {
   title: string;
   url?: string;
   slug?: string;
+  icon?: string | null;
   active?: boolean;
   action?: string;
   external?: boolean;

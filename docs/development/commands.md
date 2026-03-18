@@ -423,7 +423,7 @@ curl http://127.0.0.1:13714
 
 ## Next Steps
 
-- **[Coding Standards](/development/coding-standards)** - Code quality guidelines and best practices
+- **[Guidelines](/guidelines)** - Code quality guidelines and best practices
 - **[Git Workflow](/development/git-workflow)** - Branch strategy and commit conventions
 
 ---
