@@ -59,6 +59,7 @@ const sidebars: SidebarsConfig = {
           collapsed: false,
           customProps: { icon: 'lucide:package' },
           items: [
+            { type: 'doc', id: 'modules/index', label: 'Overview', customProps: { icon: 'lucide:layout-grid' } },
             { type: 'doc', id: 'modules/auth', label: 'Auth', customProps: { icon: 'lucide:lock' } },
             { type: 'doc', id: 'modules/settings', label: 'Settings', customProps: { icon: 'lucide:settings-2' } },
             { type: 'doc', id: 'modules/billing', label: 'Billing', customProps: { icon: 'lucide:credit-card' } },

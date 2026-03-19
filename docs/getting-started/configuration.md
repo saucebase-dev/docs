@@ -42,120 +42,26 @@ APP_SLUG=saucebase
 - Keep it short and memorable
 - Don't change after deployment (affects storage paths and database names)
 
-### VITE_LOCAL_STORAGE_KEY
-
-Frontend local storage prefix (defaults to `${APP_SLUG}`).
-
-```env
-VITE_LOCAL_STORAGE_KEY=saucebase
-```
-
 This prevents localStorage conflicts when running multiple applications on localhost.
 
-## Docker vs Local Defaults
 
-When using Docker, `docker-compose.yml` provides fallback values that differ from `.env.example`:
+## Module Configuration
 
-| Component | Docker (default) | Local (default) | Config Variable |
-|-----------|-----------------|-----------------|-----------------|
-| Cache | `redis` | `database` | `CACHE_STORE` |
-| Sessions | `redis` | `database` | `SESSION_DRIVER` |
-| Queues | `redis` | `database` | `QUEUE_CONNECTION` |
+Saucebase modules keep their config files inside the module itself, not in the top-level `config/` directory:
 
-**Docker** automatically uses Redis with no configuration needed. **Local** uses database drivers to avoid requiring a Redis installation.
+| Module | Config file |
+|--------|-------------|
+| Auth (OAuth) | `modules/Auth/config/services.php` |
+| Billing | `modules/Billing/config/billing.php` |
+| *(all modules)* | `modules/[Name]/config/` |
 
-To override Docker defaults, explicitly set the variables in `.env`:
+This means you won't find OAuth credentials or billing settings in `config/services.php` — look inside the module folder instead.
 
-```env
-CACHE_STORE=database
-SESSION_DRIVER=database
-QUEUE_CONNECTION=database
-```
+For setup details, see the individual docs:
 
-## OAuth (Auth Module)
-
-If you've installed the Auth module, configure social login providers.
-
-:::info Configuration Location
-OAuth credentials are configured in `modules/Auth/config/services.php`, not `config/services.php`.
-:::
-
-### Google OAuth
-
-1. Create OAuth credentials at [Google Cloud Console](https://console.cloud.google.com/)
-2. Set authorized redirect URI: `https://localhost/auth/google/callback`
-
-```env title=".env"
-GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-```
-
-### GitHub OAuth
-
-1. Create OAuth app at [GitHub Developer Settings](https://github.com/settings/developers)
-2. Set authorization callback URL: `https://localhost/auth/github/callback`
-
-```env title=".env"
-GITHUB_CLIENT_ID=your-github-client-id
-GITHUB_CLIENT_SECRET=your-github-client-secret
-```
-
-:::tip Testing OAuth Locally
-OAuth providers typically allow `localhost` for development. Use `https://localhost` as your redirect URL. For production, update the callback URLs to your domain.
-:::
-
-## Inertia SSR
-
-Server-side rendering is enabled in `config/inertia.php`, but **disabled by default per-request** via middleware.
-
-**How it works:**
-
-1. **Boot level** (config): SSR server runs when enabled
-2. **Request level** (middleware): Disables SSR by default for each request
-3. **Response level** (controller): Opt-in with `->withSSR()` or opt-out with `->withoutSSR()`
-
-```php
-// Enable SSR for SEO-critical pages
-return Inertia::render('Index')->withSSR();
-
-// Default - SSR disabled by middleware
-return Inertia::render('Dashboard');
-```
-
-Learn more in the [SSR Guide](/fundamentals/ssr).
-
-## Port Conflicts
-
-If default ports are in use, change them in `.env`:
-
-```env
-APP_PORT=8080
-APP_HTTPS_PORT=8443
-FORWARD_DB_PORT=33060
-FORWARD_REDIS_PORT=63790
-FORWARD_MAILPIT_PORT=8026
-```
-
-Then restart:
-
-```bash
-docker compose down
-docker compose up -d
-```
-
-Access your app at `https://localhost:8443` (using your custom HTTPS port).
-
-## Troubleshooting
-
-If configuration changes aren't taking effect:
-
-```bash
-php artisan optimize:clear
-
-# In Docker:
-docker compose exec app php artisan optimize:clear
-docker compose restart app
-```
+- **[Auth Module](/modules/auth)** — Google and GitHub OAuth setup, redirect URIs, social login
+- **[Billing Module](/modules/billing)** — Stripe keys and billing configuration
+- **[Inertia SSR](/fundamentals/ssr)** — SSR config, middleware, and per-request opt-in
 
 ## Next Steps
 

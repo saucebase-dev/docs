@@ -344,7 +344,7 @@ The `->withSSR()` and `->withoutSSR()` macros are registered in:
 
 This provider centralizes all framework macro extensions, making them easy to discover and maintain.
 
-See the [Directory Structure](/getting-started/directory-structure#unique-saucebase-files) page for more details on Saucebase-specific files.
+See the [Directory Structure](/getting-started/directory-structure) page for an overview of Saucebase-specific files.
 
 ## Next Steps
 

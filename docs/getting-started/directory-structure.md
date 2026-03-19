@@ -46,15 +46,16 @@ modules/
     │   ├── seeders/
     │   └── factories/
     ├── lang/
-    │   ├── en/                  # Module translations
-    │   └── pt_BR/
+    │   └── en/                  # Module translations
     ├── resources/
     │   ├── css/
     │   │   └── app.css          # Module styles
     │   └── js/
     │       ├── app.ts           # ⭐ Module lifecycle hooks (setup, afterMount)
     │       ├── components/      # Module Vue components
-    │       └── pages/           # Module Inertia pages
+    │       ├── layouts/
+    │       ├── pages/           # Module Inertia pages
+    │       └── types/
     ├── routes/
     │   ├── web.php              # Auto-loaded when module enabled
     │   ├── api.php
@@ -64,7 +65,7 @@ modules/
     │   ├── Unit/
     │   └── e2e/                 # Module E2E tests (auto-discovered)
     ├── vite.config.js           # ⭐ Exports asset paths for collection
-    ├── playwright.config.ts     # Optional custom E2E config
+    ├── composer.json
     └── module.json              # Module metadata
 ```
 
@@ -79,31 +80,12 @@ Tracks which modules are enabled. Only enabled modules are loaded and built.
 }
 ```
 
-Managed automatically via `php artisan module:enable` and `php artisan module:disable` commands.
+Managed automatically via `php artisan module:enable` and `php artisan module:disable` commands. Saucebase's module system is built on [nWidart/laravel-modules](https://github.com/nWidart/laravel-modules) — see that package for the full module API.
 
-## Unique Saucebase Files
+## Want to go deeper?
 
-These files are specific to Saucebase's modular architecture:
+The structure above reflects how Saucebase ties modules together at the framework level. To understand how it all works:
 
-### Backend Files
-- **`app/Providers/ModuleServiceProvider.php`** - Base class for module providers. All module service providers extend this class to automatically handle migrations, translations, config, and Inertia data sharing. [Learn more →](/fundamentals/modules)
-- **`app/Providers/MacroServiceProvider.php`** - Centralized macro registration for framework extensions (e.g., `->withSSR()`, `->withoutSSR()`). [Learn more →](/fundamentals/ssr#technical-implementation)
-
-### Frontend Files
-- **`resources/js/lib/moduleSetup.ts`** - Module lifecycle management system. Executes module `setup()` and `afterMount()` hooks. [Learn more →](/fundamentals/modules)
-- **`resources/js/lib/utils.ts`** - Contains `resolveModularPageComponent()` for module page resolution with namespace syntax (`Auth::Login`). [Learn more →](/fundamentals/modules)
-- **`resources/js/app.ts`** - Client-side rendering entry point
-- **`resources/js/ssr.ts`** - Server-side rendering entry point. [Learn more →](/fundamentals/ssr#technical-implementation)
-
-### Build System Files
-- **`module-loader.js`** - Module discovery engine that collects assets, translations, and E2E test configs from enabled modules at build time. [Learn more →](/architecture/overview)
-- **`modules_statuses.json`** - Module registry tracking enabled/disabled state
-- **`vite.config.js`** - Module-aware Vite configuration that uses `module-loader.js` to build module assets
-- **`playwright.config.ts`** - Module-aware E2E testing configuration. [Learn more →](/development/testing-guide)
-
-## Next Steps
-
-- **[Module System Guide](/fundamentals/modules)** - Learn to install and manage modules
-- **[Architecture Overview](/architecture/overview)** - Deep dive into how everything works together
-- **[Development Commands](/development/commands)** - Common development workflows
-- **[Testing Guide](/development/testing-guide)** - Learn about PHPUnit and Playwright testing
+- **[Module System](/fundamentals/modules)** — How modules are loaded, enabled, and how lifecycle hooks work
+- **[SSR Setup](/fundamentals/ssr)** — Server-side rendering entry point and the `withSSR()` macro
+- **[Architecture Overview](/architecture/overview)** — How the module system, build pipeline, and frontend fit together
