@@ -125,8 +125,6 @@ Open `https://localhost` in your browser and you're ready to build!
 The bootstrap script starts Docker containers (MySQL, Redis, Mailpit), generates SSL certificates, installs dependencies, runs migrations, enables modules, and builds frontend assets. No local PHP required.
 :::
 
-## Available Modules
-
 [Modules](/reference/glossary#module) are self-contained features that install into your codebase. You can use the pre-built ones or create your own.
 
 **Installing a module is simple:**
@@ -145,43 +143,7 @@ php artisan module:enable Auth
 php artisan module:migrate Auth --seed
 ```
 
-<ModuleGrid modules={[
-  {
-    title: 'Auth',
-    description: 'Complete authentication system with login, registration, password reset, email verification, and OAuth integration (Google, GitHub). Production-ready security with rate limiting and CSRF protection.',
-    href: 'https://github.com/sauce-base/auth',
-    icon: '',
-    status: 'available'
-  },
-  {
-    title: 'Settings',
-    description: 'Flexible settings management for both user preferences and system-wide configuration. Supports multiple data types, validation, and caching for optimal performance.',
-    href: 'https://github.com/sauce-base/settings',
-    icon: '',
-    status: 'available'
-  },
-  {
-    title: 'Billing',
-    description: 'Subscription management and payment processing via Stripe. Includes checkout sessions, a hosted billing portal, invoice list, stored payment methods, and idempotent webhook processing.',
-    href: 'https://github.com/sauce-base/billing',
-    icon: '',
-    status: 'available'
-  },
-  {
-    title: 'Roadmap',
-    description: 'Let users suggest features and bugs, vote on what matters most, and track your public roadmap. Includes moderation, voting, six statuses, and a Filament admin panel.',
-    href: 'https://github.com/sauce-base/roadmap',
-    icon: '',
-    status: 'available'
-  },
-  {
-    title: 'Teams',
-    description: 'Multi-user team collaboration with role-based permissions, invitations, and team switching. Perfect for B2B SaaS applications with organizational structures.',
-    href: '#',
-    icon: '',
-    status: 'coming-soon'
-  }
-]} />
+<ModuleGrid />
 
 :::tip Want to create your own?
 Check out our [module creation guide](/fundamentals/modules) to learn how to build custom modules for your specific needs.

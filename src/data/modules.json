@@ -1,0 +1,81 @@
+{
+  "modules": [
+    {
+      "id": "auth",
+      "title": "Auth",
+      "description": "Complete authentication system with login, registration, password reset, email verification, and OAuth integration (Google, GitHub).",
+      "color": "#7c3aed",
+      "logo": "lucide:lock",
+      "badge": "free",
+      "href": "/modules/auth",
+      "features": [
+        { "icon": "lucide:log-in", "name": "Login & Register", "description": "Login, registration, and password reset flows" },
+        { "icon": "lucide:mail", "name": "Email Verification", "description": "Verify user emails on signup" },
+        { "icon": "lucide:github", "name": "OAuth", "description": "Google and GitHub OAuth integration" },
+        { "icon": "lucide:shield", "name": "Security", "description": "Rate limiting and CSRF protection" }
+      ],
+      "dependencies": []
+    },
+    {
+      "id": "settings",
+      "title": "Settings",
+      "description": "Flexible settings management for user preferences and system-wide configuration with validation and caching.",
+      "color": "#0ea5e9",
+      "logo": "lucide:settings-2",
+      "badge": "free",
+      "href": "/modules/settings",
+      "features": [
+        { "icon": "lucide:user", "name": "User Preferences", "description": "Per-user configurable preferences" },
+        { "icon": "lucide:server", "name": "System Config", "description": "Application-wide configuration" },
+        { "icon": "lucide:zap", "name": "Caching", "description": "Cached settings for optimal performance" }
+      ],
+      "dependencies": ["auth"]
+    },
+    {
+      "id": "billing",
+      "title": "Billing",
+      "description": "Subscription management and payment processing via Stripe with checkout sessions, billing portal, invoices, and webhook processing.",
+      "color": "#16a34a",
+      "logo": "lucide:credit-card",
+      "badge": "free",
+      "href": "/modules/billing",
+      "features": [
+        { "icon": "lucide:shopping-cart", "name": "Checkout", "description": "Stripe checkout sessions" },
+        { "icon": "lucide:receipt", "name": "Billing Portal", "description": "Hosted Stripe billing portal" },
+        { "icon": "lucide:file-text", "name": "Invoices", "description": "Invoice list and stored payment methods" },
+        { "icon": "lucide:webhook", "name": "Webhooks", "description": "Idempotent webhook processing" }
+      ],
+      "dependencies": ["auth"]
+    },
+    {
+      "id": "roadmap",
+      "title": "Roadmap",
+      "description": "Public roadmap with feature requests, voting, moderation, six statuses, and a Filament admin panel.",
+      "color": "#f59e0b",
+      "logo": "lucide:map",
+      "badge": "free",
+      "href": "/modules/roadmap",
+      "features": [
+        { "icon": "lucide:lightbulb", "name": "Feature Requests", "description": "Users suggest features and bugs" },
+        { "icon": "lucide:thumbs-up", "name": "Voting", "description": "Vote on what matters most" },
+        { "icon": "lucide:layout-dashboard", "name": "Admin Panel", "description": "Filament admin panel for moderation" }
+      ],
+      "dependencies": ["auth"]
+    },
+    {
+      "id": "teams",
+      "title": "Teams",
+      "description": "Multi-user team collaboration with role-based permissions, invitations, and team switching for B2B SaaS applications.",
+      "color": "#6b7280",
+      "logo": "lucide:users",
+      "badge": "coming-soon",
+      "href": "#",
+      "features": [
+        { "icon": "lucide:users", "name": "Team Collaboration", "description": "Multi-user teams" },
+        { "icon": "lucide:key", "name": "Role Permissions", "description": "Role-based access control" },
+        { "icon": "lucide:mail-plus", "name": "Invitations", "description": "Team invitations by email" }
+      ],
+      "dependencies": ["auth"]
+    }
+  ]
+}
