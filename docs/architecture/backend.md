@@ -1,6 +1,6 @@
 # Backend Architecture
 
-Saucebase is built on Laravel 12 with a modular architecture. This guide covers what's unique to Saucebase — for standard Laravel patterns, see the [Laravel Documentation](https://laravel.com/docs).
+Saucebase is built on Laravel 13 with a modular architecture. This guide covers what's unique to Saucebase — for standard Laravel patterns, see the [Laravel Documentation](https://laravel.com/docs).
 
 ## Architecture Overview
 

@@ -84,7 +84,7 @@ A framework that connects Laravel (backend) and Vue (frontend) without building 
 ## L
 
 ### Laravel
-A PHP web application framework. Saucebase is built on Laravel 12 with PHP 8.4+.
+A PHP web application framework. Saucebase is built on Laravel 13 with PHP 8.4+.
 
 **Official website**: [laravel.com](https://laravel.com/)
 **Documentation**: [Laravel Documentation](https://laravel.com/docs)

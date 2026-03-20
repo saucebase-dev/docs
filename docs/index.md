@@ -83,7 +83,7 @@ Saucebase uses cutting-edge tools that make development enjoyable:
 <tr>
 <td><strong>Backend</strong></td>
 <td>
-<a href="/reference/glossary#laravel">Laravel 12</a> with PHP 8.4+ •
+<a href="/reference/glossary#laravel">Laravel 13</a> with PHP 8.4+ •
 <a href="/reference/glossary#filament">Filament 5</a> admin panel
 </td>
 </tr>

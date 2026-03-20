@@ -6,7 +6,7 @@ description: High-level overview of Saucebase architecture
 
 # Architecture Overview
 
-Saucebase is a modular Laravel SaaS starter kit built on the VILT stack (Vue 3, Inertia.js, Laravel 12, Tailwind CSS 4). It combines Laravel's backend power with Vue's reactive frontend, connected seamlessly through Inertia.js.
+Saucebase is a modular Laravel SaaS starter kit built on the VILT stack (Vue 3, Inertia.js, Laravel 13, Tailwind CSS 4). It combines Laravel's backend power with Vue's reactive frontend, connected seamlessly through Inertia.js.
 
 ## High-Level Architecture
 
