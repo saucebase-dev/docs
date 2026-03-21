@@ -8,6 +8,61 @@ description: Learn how to install, enable, disable, and remove Saucebase modules
 
 Modules are self-contained feature packages that you install directly into your repository. Module code becomes part of your codebase, giving you complete ownership and customization freedom. For the architectural details, see [Module System Architecture](/architecture/module-system).
 
+## Creating Modules
+
+Use the `saucebase:recipe` command to scaffold a new module from a recipe template. It renames files, replaces placeholders, and registers the module in your Taskfile automatically.
+
+```bash
+# Interactive — prompts for name and recipe
+php artisan saucebase:recipe
+
+# Non-interactive
+php artisan saucebase:recipe BlogPost "Basic Recipe"
+```
+
+:::note
+Module names must be StudlyCase with no spaces or hyphens (e.g. `BlogPost`, `UserReports`).
+:::
+
+The command generates a ready-to-use structure under `Modules/{Name}/`:
+
+```
+Modules/BlogPost/
+├── app/
+│   ├── Filament/           # Admin panel plugin
+│   ├── Http/Controllers/
+│   └── Providers/          # Service + Route providers
+├── config/config.php
+├── resources/js/
+│   └── pages/Index.vue     # First Inertia page
+├── routes/
+│   ├── web.php
+│   ├── api.php
+│   └── navigation.php      # Sidebar nav entries
+├── tests/e2e/
+├── composer.json
+├── module.json
+└── vite.config.js
+```
+
+After generation, activate the module:
+
+```bash
+composer dump-autoload
+php artisan module:enable BlogPost
+npm run dev
+```
+
+### Alternative: `module:make`
+
+The underlying `nwidart/laravel-modules` package also provides a generator:
+
+```bash
+php artisan module:make BlogPost
+```
+
+This works but produces generic stubs — it won't include the Filament plugin, Vite config, Taskfile entry, or navigation route that `saucebase:recipe` sets up.
+
 ## Installing Modules
 
 ### Installation Steps

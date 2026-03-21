@@ -180,6 +180,26 @@ Module models can reference each other through Eloquent relationships. An Order 
 
 This communication happens through Laravel's standard patterns. Modules aren't isolated applications—they're part of the same Laravel app, with all the tools Laravel provides.
 
+## TypeScript Page Props {#typescript-page-props}
+
+Modules can contribute to the shared Inertia `PageProps` type without touching any core file.
+
+Create `resources/js/types/page-props.d.ts` in your module and augment `@inertiajs/vue3`'s `PageProps` interface:
+
+```typescript title="modules/MyModule/resources/js/types/page-props.d.ts"
+declare module '@inertiajs/vue3' {
+  interface PageProps {
+    my_shared_prop?: MyType;
+  }
+}
+
+export {}; // required — makes this file a module
+```
+
+Because `modules/**/resources/js/**/*.ts` is included in `tsconfig.json`, augmentations are picked up automatically the moment the module is enabled. No patches, no edits to core files.
+
+Use this for any data your module shares on every Inertia response via `shareInertiaData()` in your service provider.
+
 ## Next Steps
 
 - **[Modules Guide](/fundamentals/modules)** - Install, customize, and manage modules in practice

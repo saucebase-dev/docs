@@ -119,6 +119,11 @@ const config: Config = {
           label: 'Docs',
         },
         {
+          href: 'https://demo.saucebase.dev/',
+          label: 'Demo',
+          position: 'right',
+        },
+        {
           href: 'https://github.com/sauce-base/saucebase',
           label: 'GitHub',
           position: 'right',
