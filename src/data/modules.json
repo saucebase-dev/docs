@@ -3,7 +3,7 @@
     {
       "id": "auth",
       "title": "Auth",
-      "description": "Complete authentication system with login, registration, password reset, email verification, and OAuth integration (Google, GitHub).",
+      "description": "Complete authentication system with login, registration, magic link (passwordless), password reset, email verification, and OAuth integration (Google, GitHub).",
       "color": "#7c3aed",
       "logo": "lucide:lock",
       "badge": "free",
@@ -12,7 +12,8 @@
         { "icon": "lucide:log-in", "name": "Login & Register", "description": "Login, registration, and password reset flows" },
         { "icon": "lucide:mail", "name": "Email Verification", "description": "Verify user emails on signup" },
         { "icon": "lucide:github", "name": "OAuth", "description": "Google and GitHub OAuth integration" },
-        { "icon": "lucide:shield", "name": "Security", "description": "Rate limiting and CSRF protection" }
+        { "icon": "lucide:shield", "name": "Security", "description": "Rate limiting and CSRF protection" },
+        { "icon": "lucide:link", "name": "Magic Link", "description": "Passwordless login via email" }
       ],
       "dependencies": []
     },

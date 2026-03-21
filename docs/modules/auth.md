@@ -10,6 +10,7 @@ The Auth module handles everything related to user identity: email/password logi
 ## What you get
 
 - **Login and registration** — standard email/password flows with rate limiting (5 attempts before a temporary lockout)
+- **Magic link login** — passwordless login via a secure, one-time email link (15-minute expiry, single-use, hashed token)
 - **Password reset** — token-based email reset flow
 - **Email verification** — signed links; users can request a resend from the prompt page
 - **Social login (OAuth)** — Google and GitHub via Laravel Socialite. Guests can log in or register; authenticated users can link additional providers to their account
@@ -97,6 +98,32 @@ The redirect URI to register in each provider's dashboard is `/auth/socialite/{p
 :::note OAuth account behavior
 When a user registers via OAuth (Google or GitHub), their email is automatically marked as verified and a random password is assigned. This means they have no usable password — if they ever want to switch to email/password login, they must go through **Forgot password** to set one. Keep this in mind when handling support requests from social-login users.
 :::
+
+## Magic Link login
+
+Users can log in without a password by requesting a one-time link sent to their email. The link expires after a configurable period (15 minutes by default) and is single-use. If no account exists for the email, the response is identical to a successful send — no information is revealed about registered emails.
+
+**Flow:**
+1. User visits `/auth/magic-link` and enters their email
+2. If the email matches a user, the old token (if any) is deleted, a new hashed token is created, and a `MagicLinkNotification` is sent
+3. User clicks the link in their email (`/auth/magic-link/{token}`)
+4. Token is validated (exists, not expired, not used), user is logged in, token is marked as used
+5. User is redirected to the intended URL or dashboard
+
+**Security:**
+- Tokens are stored as SHA-256 hashes; the plain token only ever lives in the email
+- Configurable expiry (default 15 min) with single-use enforcement
+- Rate limited to 5 requests per minute per IP
+- Silent fail on unknown emails (no enumeration)
+
+Magic link login is enabled by default. To disable it, set in `.env`:
+
+```env
+AUTH_MAGIC_LINK_ENABLED=false
+AUTH_MAGIC_LINK_EXPIRY=15
+```
+
+When disabled, the `/auth/magic-link` routes return 404 and the link is hidden on the login page.
 
 ## Admin panel
 

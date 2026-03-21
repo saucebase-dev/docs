@@ -222,6 +222,14 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: 'doc',
+          id: 'development/taskfile',
+          label: 'Taskfile',
+          customProps: {
+            icon: 'lucide:zap',
+          },
+        },
+        {
+          type: 'doc',
           id: 'development/git-workflow',
           label: 'Git Workflow',
           customProps: {
