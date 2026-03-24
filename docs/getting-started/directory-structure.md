@@ -86,6 +86,7 @@ Managed automatically via `php artisan module:enable` and `php artisan module:di
 
 The structure above reflects how Saucebase ties modules together at the framework level. To understand how it all works:
 
+- **[Modules Overview](/modules/)** — How modules are loaded, enabled, and how lifecycle hooks work
 - **[Module System](/fundamentals/modules)** — How modules are loaded, enabled, and how lifecycle hooks work
 - **[SSR Setup](/fundamentals/ssr)** — Server-side rendering entry point and the `withSSR()` macro
 - **[Architecture Overview](/architecture/overview)** — How the module system, build pipeline, and frontend fit together

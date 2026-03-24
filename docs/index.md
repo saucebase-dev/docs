@@ -6,14 +6,19 @@ description: A modular Laravel SaaS starter kit with copy-and-own philosophy - b
 ---
 
 import ModuleGrid from '@site/src/components/ModuleGrid';
+import FeatureOverview from '@site/src/components/FeatureOverview';
 
 # What is Saucebase?
+
+![Installation Screenshot](</img/preview.gif>)
 
 Saucebase is a modular Laravel SaaS starter kit built on the [VILT stack](/reference/glossary#vilt-stack) (Vue, Inertia.js, Laravel, Tailwind CSS). Unlike traditional starter kits that trap you in vendor packages, Saucebase gives you complete ownership of the code.
 
 When you install Saucebase modules, they copy directly into your repository - not as external dependencies. You own every line of code and can modify, refactor, or rebuild features to match your exact needs. It's a foundation you control, not a framework you're locked into.
 
 Saucebase provides everything you need to build production-ready SaaS applications: authentication, user management, subscriptions, admin panels, and more - all with modern tooling and best practices built in.
+
+<FeatureOverview />
 
 ## Why Saucebase?
 
@@ -111,7 +116,7 @@ Commitlint for conventional commits
 
 ## Quick Start
 
-You can get Saucebase running in just a few minutes. Only Docker and Node.js are required:
+You can get Saucebase running in just a few minutes. Only **[Docker](https://www.docker.com)** and **[Node.js](https://nodejs.org)** are required:
 
 ```bash
 git clone https://github.com/sauce-base/saucebase.git my-app
@@ -153,7 +158,7 @@ Check out our [module creation guide](/fundamentals/modules) to learn how to bui
 
 Ready to dive deeper? Here are the key resources to explore:
 
-- **[Get Started](/)** - Complete installation and configuration guide
+- **[Installation](/)** - Complete installation and configuration guide
 - **[Architecture](/architecture/overview)** - Understand how Saucebase works under the hood
 - **[Modules](/fundamentals/modules)** - Learn to work with and create modules
 - **[Development](/development/commands)** - Daily development workflow and commands

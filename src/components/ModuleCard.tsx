@@ -8,6 +8,7 @@ export interface ModuleFeature {
   icon: string;
   name: string;
   description: string;
+  details?: string;
 }
 
 export interface ModuleCardProps {

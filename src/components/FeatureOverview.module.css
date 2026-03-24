@@ -1,0 +1,127 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.group {
+  border: 1px solid var(--ifm-border-color);
+  border-radius: 0.625rem;
+  overflow: hidden;
+  background: var(--ifm-card-background-color);
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.875rem;
+}
+
+.groupLogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.groupTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff !important;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+
+.groupTitle:hover {
+  text-decoration: none;
+  color: #fff !important;
+}
+
+.featureList {
+  margin: 0;
+  padding: 0.5rem 0.875rem;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.featureList li {
+  border-bottom: 1px solid var(--ifm-border-color);
+}
+
+.featureList li:last-child {
+  border-bottom: none;
+}
+
+.featureRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.45rem 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.featureIcon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--ifm-color-emphasis-500);
+}
+
+.featureName {
+  flex: 1;
+  font-size: 1rem;
+}
+
+.chevron {
+  display: flex;
+  align-items: center;
+  color: var(--ifm-color-emphasis-400);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.featureDesc {
+  margin: 0 0 0.5rem 1.4rem;
+  font-size: 0.8rem;
+  color: var(--ifm-color-emphasis-600);
+  line-height: 1.5;
+}
+
+.seeMore {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.875rem;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--ifm-border-color);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+}
+
+.seeMore:hover {
+  background: var(--ifm-hover-overlay);
+}
