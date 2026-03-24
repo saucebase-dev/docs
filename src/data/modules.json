@@ -1,4 +1,66 @@
 {
+  "core": [
+    {
+      "icon": "lucide:terminal",
+      "name": "One-command setup",
+      "description": "Docker, SSL, DB, assets — running in minutes",
+      "details": "`bash bin/setup-env` spins up Docker containers (MySQL, Redis, Mailpit), generates self-signed SSL certificates, installs PHP and Node dependencies, runs migrations, and builds frontend assets. No local PHP or MySQL required."
+    },
+    {
+      "icon": "lucide:zap",
+      "name": "Hot reload (HMR)",
+      "description": "Instant browser updates with no page refresh",
+      "details": "Vite's Hot Module Replacement updates only the changed module in the browser instantly, without a full page reload. Your Vue component state is preserved across edits."
+    },
+    {
+      "icon": "lucide:route",
+      "name": "Type-safe routes",
+      "description": "Ziggy generates TypeScript helpers from Laravel routes",
+      "details": "Ziggy exports all named Laravel routes to the frontend as a typed object. You get autocompletion and compile-time errors when calling `route('user.profile', { id })` instead of building URLs by hand."
+    },
+    {
+      "icon": "lucide:monitor",
+      "name": "SSR opt-in",
+      "description": "Per-page server-side rendering for SEO",
+      "details": "Add `->withSSR()` to any `Inertia::render()` call to server-render that page. The SSR server starts automatically with `composer dev`. Use it for public SEO pages; authenticated pages skip it by default."
+    },
+    {
+      "icon": "lucide:layout-dashboard",
+      "name": "Filament admin",
+      "description": "Full admin panel included out of the box",
+      "details": "Filament 5 is pre-configured with a custom theme and dark mode. Modules like Billing, Roadmap, and Announcements register their own Filament resources automatically — no manual setup needed."
+    },
+    {
+      "icon": "lucide:palette",
+      "name": "Dark / light mode",
+      "description": "Theme switching built in",
+      "details": "A CSS variable-based theme system lets users toggle between dark and light mode. The preference is persisted in localStorage and respected on every page load, including SSR."
+    },
+    {
+      "icon": "lucide:component",
+      "name": "shadcn-vue UI",
+      "description": "Pre-integrated component library",
+      "details": "A curated set of accessible components (Button, Dialog, Dropdown, Table, and more) from shadcn-vue, pre-integrated with Tailwind CSS 4. Components are copied into your codebase — you own and modify them freely."
+    },
+    {
+      "icon": "lucide:shield-check",
+      "name": "PHPStan level 5",
+      "description": "Static analysis on every commit",
+      "details": "Static analysis runs on every commit via a pre-commit hook and in CI. Level 5 catches undefined variables, wrong argument types, and unreachable code without requiring full type annotations across the codebase."
+    },
+    {
+      "icon": "lucide:test-tube-2",
+      "name": "Playwright E2E",
+      "description": "End-to-end tests pre-configured",
+      "details": "End-to-end tests run against a real browser with a seeded test database. Module tests are co-located in `modules/*/tests/e2e/`. A custom `SaucebasePage` helper provides common actions like login and navigation."
+    },
+    {
+      "icon": "lucide:git-commit-horizontal",
+      "name": "Commitlint",
+      "description": "Conventional commits enforced",
+      "details": "Conventional commit format (`feat:`, `fix:`, `chore:`, etc.) is enforced by a commit-msg hook. This feeds into automated changelog generation and keeps `git log` readable across the team."
+    }
+  ],
   "modules": [
     {
       "id": "auth",
@@ -9,11 +71,36 @@
       "badge": "free",
       "href": "/modules/auth",
       "features": [
-        { "icon": "lucide:log-in", "name": "Login & Register", "description": "Login, registration, and password reset flows" },
-        { "icon": "lucide:mail", "name": "Email Verification", "description": "Verify user emails on signup" },
-        { "icon": "lucide:github", "name": "OAuth", "description": "Google and GitHub OAuth integration" },
-        { "icon": "lucide:shield", "name": "Security", "description": "Rate limiting and CSRF protection" },
-        { "icon": "lucide:link", "name": "Magic Link", "description": "Passwordless login via email" }
+        {
+          "icon": "lucide:log-in",
+          "name": "Login & Register",
+          "description": "Login, registration, and password reset flows",
+          "details": "Full login, registration, and password reset flows with pre-built Vue pages, form validation, rate limiting, and redirect handling after authentication."
+        },
+        {
+          "icon": "lucide:mail",
+          "name": "Email Verification",
+          "description": "Verify user emails on signup",
+          "details": "Users receive a verification email after registration. Protected routes can require a verified email via the `verified` middleware. A resend flow is included."
+        },
+        {
+          "icon": "lucide:github",
+          "name": "OAuth",
+          "description": "Google and GitHub OAuth integration",
+          "details": "Google and GitHub OAuth via Laravel Socialite. One config entry per provider in `.env`. New users are created automatically; existing users are linked by email."
+        },
+        {
+          "icon": "lucide:shield",
+          "name": "Security",
+          "description": "Rate limiting and CSRF protection",
+          "details": "All auth routes are rate-limited. CSRF tokens are injected into every Inertia response. Session fixation is prevented on login."
+        },
+        {
+          "icon": "lucide:link",
+          "name": "Magic Link",
+          "description": "Passwordless login via email",
+          "details": "Users enter their email and receive a signed, time-limited login link. No password required. Powered by a signed URL with a 15-minute expiry and single-use enforcement."
+        }
       ],
       "dependencies": []
     },
@@ -26,9 +113,24 @@
       "badge": "free",
       "href": "/modules/settings",
       "features": [
-        { "icon": "lucide:user", "name": "User Preferences", "description": "Per-user configurable preferences" },
-        { "icon": "lucide:server", "name": "System Config", "description": "Application-wide configuration" },
-        { "icon": "lucide:zap", "name": "Caching", "description": "Cached settings for optimal performance" }
+        {
+          "icon": "lucide:user",
+          "name": "User Preferences",
+          "description": "Per-user configurable preferences",
+          "details": "Per-user key-value settings stored in the database. Accessible via `$user->setting('notifications.email', true)`. Type-cast values and dot-notation keys are supported."
+        },
+        {
+          "icon": "lucide:server",
+          "name": "System Config",
+          "description": "Application-wide configuration",
+          "details": "Application-wide settings managed from the Filament admin panel. Stored in the database, cached in Redis. Accessible anywhere via `setting('site.name')`."
+        },
+        {
+          "icon": "lucide:zap",
+          "name": "Caching",
+          "description": "Cached settings for optimal performance",
+          "details": "Settings are cached per-user and per-scope using Laravel's cache system. The cache is automatically invalidated when a setting is updated, keeping reads fast without stale data."
+        }
       ],
       "dependencies": ["auth"]
     },
@@ -41,10 +143,30 @@
       "badge": "free",
       "href": "/modules/billing",
       "features": [
-        { "icon": "lucide:shopping-cart", "name": "Checkout", "description": "Stripe checkout sessions" },
-        { "icon": "lucide:receipt", "name": "Billing Portal", "description": "Hosted Stripe billing portal" },
-        { "icon": "lucide:file-text", "name": "Invoices", "description": "Invoice list and stored payment methods" },
-        { "icon": "lucide:webhook", "name": "Webhooks", "description": "Idempotent webhook processing" }
+        {
+          "icon": "lucide:shopping-cart",
+          "name": "Checkout",
+          "description": "Stripe checkout sessions",
+          "details": "Stripe Checkout sessions are created server-side and redirect users to Stripe's hosted payment page. Supports one-time payments and recurring subscriptions."
+        },
+        {
+          "icon": "lucide:receipt",
+          "name": "Billing Portal",
+          "description": "Hosted Stripe billing portal",
+          "details": "Authenticated users are redirected to Stripe's hosted billing portal where they can update payment methods, download invoices, and cancel or modify their subscription."
+        },
+        {
+          "icon": "lucide:file-text",
+          "name": "Invoices",
+          "description": "Invoice list and stored payment methods",
+          "details": "Lists the user's Stripe invoices with status, amount, and PDF download links. Stored payment methods are shown alongside for easy management."
+        },
+        {
+          "icon": "lucide:webhook",
+          "name": "Webhooks",
+          "description": "Idempotent webhook processing",
+          "details": "Stripe webhook events are received, signature-verified, and processed idempotently. Duplicate events are safely ignored via event ID tracking stored in the database."
+        }
       ],
       "dependencies": ["auth"]
     },
@@ -57,9 +179,102 @@
       "badge": "free",
       "href": "/modules/roadmap",
       "features": [
-        { "icon": "lucide:lightbulb", "name": "Feature Requests", "description": "Users suggest features and bugs" },
-        { "icon": "lucide:thumbs-up", "name": "Voting", "description": "Vote on what matters most" },
-        { "icon": "lucide:layout-dashboard", "name": "Admin Panel", "description": "Filament admin panel for moderation" }
+        {
+          "icon": "lucide:lightbulb",
+          "name": "Feature Requests",
+          "description": "Users suggest features and bugs",
+          "details": "Users submit ideas and bug reports on a public roadmap. Posts include a title, description, and category. Admins can edit or remove any post from the Filament panel."
+        },
+        {
+          "icon": "lucide:thumbs-up",
+          "name": "Voting",
+          "description": "Vote on what matters most",
+          "details": "Authenticated users upvote items they care about. Vote counts are displayed and used to sort the roadmap. One vote per user per item, with instant optimistic UI updates."
+        },
+        {
+          "icon": "lucide:layout-dashboard",
+          "name": "Admin Panel",
+          "description": "Filament admin panel for moderation",
+          "details": "A Filament resource for moderating roadmap items. Admins can change status (Planned, In Progress, Completed, etc.), pin items to the top, and respond to user posts."
+        }
+      ],
+      "dependencies": ["auth"]
+    },
+    {
+      "id": "announcements",
+      "title": "Announcements",
+      "description": "Site-wide announcement banners with scheduling, audience targeting, and cookie-based dismissal — managed from the Filament admin panel.",
+      "color": "#6366f1",
+      "logo": "lucide:megaphone",
+      "badge": "free",
+      "href": "/modules/announcements",
+      "features": [
+        {
+          "icon": "lucide:layout-template",
+          "name": "Banner",
+          "description": "Fixed bar above the nav on every page",
+          "details": "A fixed bar rendered above the navigation on every page. Built with an Inertia shared prop so it works with SSR and client-side navigation without additional requests."
+        },
+        {
+          "icon": "lucide:calendar",
+          "name": "Scheduling",
+          "description": "Set start and end times for banners",
+          "details": "Set a `starts_at` and `ends_at` timestamp on any announcement. Visibility is evaluated on every request — no cron job or queue worker needed."
+        },
+        {
+          "icon": "lucide:users",
+          "name": "Audience Targeting",
+          "description": "Show on public, authenticated pages, or both",
+          "details": "Control whether the banner appears on public (unauthenticated) pages, authenticated pages, or both. Configured independently per announcement."
+        },
+        {
+          "icon": "lucide:x-circle",
+          "name": "Dismissal",
+          "description": "Cookie-based dismissal, no database writes",
+          "details": "A ✕ button lets users permanently dismiss a banner. The dismissed state is stored in a cookie (1-year expiry) with no database writes. A new announcement with a different ID will reappear regardless."
+        },
+        {
+          "icon": "lucide:layout-dashboard",
+          "name": "Admin Panel",
+          "description": "Filament CRUD for managing announcements",
+          "details": "Create, edit, and delete announcements in Filament. The rich text editor supports bold, italic, underline, links, and lists for formatting banner content."
+        }
+      ],
+      "dependencies": ["auth"]
+    },
+    {
+      "id": "blog",
+      "title": "Blog",
+      "description": "Full-featured blog with posts, categories, tags, and a Filament admin panel for content management.",
+      "color": "#ec4899",
+      "logo": "lucide:newspaper",
+      "badge": "coming-soon",
+      "href": "#",
+      "features": [
+        {
+          "icon": "lucide:file-text",
+          "name": "Posts",
+          "description": "Create and manage blog posts",
+          "details": "Create and publish blog posts with a rich text editor, slug, excerpt, cover image, and publish date. Supports draft and scheduled publishing."
+        },
+        {
+          "icon": "lucide:tag",
+          "name": "Categories & Tags",
+          "description": "Organize content with categories and tags",
+          "details": "Organize posts into hierarchical categories and tag them for filtering. Category and tag archive pages are automatically generated with pagination."
+        },
+        {
+          "icon": "lucide:layout-dashboard",
+          "name": "Admin Panel",
+          "description": "Filament admin panel for content management",
+          "details": "Manage all blog content from Filament with draft/published status, scheduled publishing, and bulk actions for efficient content management."
+        },
+        {
+          "icon": "lucide:search",
+          "name": "SEO Optimized",
+          "description": "Meta tags, Open Graph, and structured data for every post",
+          "details": "Each post gets its own meta title, description, Open Graph image, and JSON-LD structured data for rich search results and social sharing previews."
+        }
       ],
       "dependencies": ["auth"]
     },
@@ -72,9 +287,24 @@
       "badge": "coming-soon",
       "href": "#",
       "features": [
-        { "icon": "lucide:users", "name": "Team Collaboration", "description": "Multi-user teams" },
-        { "icon": "lucide:key", "name": "Role Permissions", "description": "Role-based access control" },
-        { "icon": "lucide:mail-plus", "name": "Invitations", "description": "Team invitations by email" }
+        {
+          "icon": "lucide:users",
+          "name": "Team Collaboration",
+          "description": "Multi-user teams",
+          "details": "Users can create and switch between multiple teams. All data is automatically scoped to the active team, making it straightforward to build B2B multi-tenant applications."
+        },
+        {
+          "icon": "lucide:key",
+          "name": "Role Permissions",
+          "description": "Role-based access control",
+          "details": "Built-in owner, admin, and member roles with permission checks via `$user->hasTeamPermission('billing')`. Role definitions are customizable to match your application's needs."
+        },
+        {
+          "icon": "lucide:mail-plus",
+          "name": "Invitations",
+          "description": "Team invitations by email",
+          "details": "Invite users to a team by email. Invited users receive an email with an accept link. Pending invitations are managed from the team settings page and expire after 7 days."
+        }
       ],
       "dependencies": ["auth"]
     }

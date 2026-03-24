@@ -9,8 +9,6 @@ import ModuleGrid from '@site/src/components/ModuleGrid';
 
 # Installation
 
-![Installation Screenshot](</img/preview.gif>)
-
 Get Saucebase running locally in three commands.
 
 ## Prerequisites
