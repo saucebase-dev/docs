@@ -244,6 +244,14 @@ const sidebars: SidebarsConfig = {
             icon: 'lucide:flask-conical',
           },
         },
+        {
+          type: 'doc',
+          id: 'development/ai',
+          label: 'AI Development',
+          customProps: {
+            icon: 'lucide:sparkles',
+          },
+        },
         // 'development/debugging',
       ],
     },
