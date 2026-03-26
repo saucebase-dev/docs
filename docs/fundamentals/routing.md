@@ -88,10 +88,11 @@ Saucebase includes a `POST /locale/{locale}` route handled by `LocalizationContr
 
 ```html
 <script setup lang="ts">
-import axios from 'axios';
+import { useHttp } from '@inertiajs/vue3';
 
 const changeLocale = async (locale: string) => {
-    await axios.post(route('locale', { locale }));
+    const { post } = useHttp();
+    await post(route('locale', { locale }));
 };
 </script>
 

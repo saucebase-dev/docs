@@ -97,7 +97,7 @@ Saucebase uses cutting-edge tools that make development enjoyable:
 <td>
 <a href="/reference/glossary#vue-3">Vue 3</a> Composition API •
 <a href="/reference/glossary#typescript">TypeScript 5.8</a> •
-<a href="/reference/glossary#inertiajs">Inertia.js 2.0</a> •
+<a href="/reference/glossary#inertiajs">Inertia.js 3.0</a> •
 <a href="/reference/glossary#tailwind-css">Tailwind CSS 4</a> •
 <a href="/reference/glossary#shadcn-vue">shadcn-vue</a> components
 </td>

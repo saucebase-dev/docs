@@ -75,7 +75,7 @@ Laravel's dashboard and configuration system for Redis queues. It gives you a be
 ## I
 
 ### Inertia.js
-A framework that connects Laravel (backend) and Vue (frontend) without building a traditional API. Your Laravel routes render Vue components directly. Version 2.0 brings improved TypeScript support and better performance.
+A framework that connects Laravel (backend) and Vue (frontend) without building a traditional API. Your Laravel routes render Vue components directly. Version 3.0 removes Axios as a dependency, introduces a new `@inertiajs/vite` plugin for automatic SSR, and adds optimistic updates and instant visits.
 
 **Official website**: [inertiajs.com](https://inertiajs.com/)
 **Documentation**: [Inertia.js Documentation](https://inertiajs.com/manual)
