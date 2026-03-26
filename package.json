@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sauce-base/docs.git"
+    "url": "git+https://github.com/saucebase-dev/docs.git"
   },
   "keywords": [
     "documentation",
@@ -30,9 +30,9 @@
   "author": "Sauce Base",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sauce-base/docs/issues"
+    "url": "https://github.com/saucebase-dev/docs/issues"
   },
-  "homepage": "https://github.com/sauce-base/docs#readme",
+  "homepage": "https://github.com/saucebase-dev/docs#readme",
   "dependencies": {
     "@docusaurus/core": "^3.9.2",
     "@docusaurus/module-type-aliases": "^3.9.2",

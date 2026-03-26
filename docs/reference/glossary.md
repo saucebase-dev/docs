@@ -114,8 +114,8 @@ A database version control system in Laravel. Each migration file describes chan
 A self-contained feature package in Saucebase. Modules install directly into your `Modules/` directory and include everything needed: controllers, models, views, migrations, tests, and assets.
 
 **Available modules:**
-- [Auth](https://github.com/sauce-base/auth) - Authentication with social login
-- [Settings](https://github.com/sauce-base/settings) - Settings management
+- [Auth](https://github.com/saucebase-dev/auth) - Authentication with social login
+- [Settings](https://github.com/saucebase-dev/settings) - Settings management
 
 **Learn more**: [Saucebase Modules Documentation](/fundamentals/modules)
 
@@ -249,4 +249,4 @@ This ensures your frontend routes stay in sync with your backend routes.
 
 ## Don't See a Term?
 
-If you encounter a term not listed here, please [open an issue](https://github.com/sauce-base/docs/issues) so we can add it!
+If you encounter a term not listed here, please [open an issue](https://github.com/saucebase-dev/docs/issues) so we can add it!
