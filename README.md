@@ -1,10 +1,10 @@
 # Saucebase Documentation
 
-This repository contains the comprehensive documentation for [Saucebase](https://github.com/sauce-base/saucebase) - a modular Laravel SaaS starter kit built on the VILT stack.
+This repository contains the comprehensive documentation for [Saucebase](https://github.com/saucebase-dev/saucebase) - a modular Laravel SaaS starter kit built on the VILT stack.
 
 ## 🌐 Live Documentation
 
-**→ https://sauce-base.github.io/docs/**
+**→ https://saucebase-dev.github.io/docs/**
 
 ## 🚀 Development
 
@@ -78,7 +78,7 @@ See [Docusaurus markdown features](https://docusaurus.io/docs/markdown-features)
 
 ### Syncing with Main Repository
 
-When code changes in the [main repository](https://github.com/sauce-base/saucebase) affect documentation:
+When code changes in the [main repository](https://github.com/saucebase-dev/saucebase) affect documentation:
 
 1. Create an issue in this repository using the `sync-needed` label
 2. Link to the relevant commit/PR in the main repository
@@ -88,9 +88,9 @@ When code changes in the [main repository](https://github.com/sauce-base/sauceba
 
 ## 🔗 Related Repositories
 
-- **Main Repository**: [sauce-base/saucebase](https://github.com/sauce-base/saucebase)
-- **Auth Module**: [sauce-base/auth](https://github.com/sauce-base/auth)
-- **Settings Module**: [sauce-base/settings](https://github.com/sauce-base/settings)
+- **Main Repository**: [saucebase-dev/saucebase](https://github.com/saucebase-dev/saucebase)
+- **Auth Module**: [saucebase-dev/auth](https://github.com/saucebase-dev/auth)
+- **Settings Module**: [saucebase-dev/settings](https://github.com/saucebase-dev/settings)
 
 ## 📄 License
 
@@ -98,4 +98,4 @@ Documentation is licensed under [MIT](LICENSE).
 
 ---
 
-For questions or issues, please use [GitHub Issues](https://github.com/sauce-base/docs/issues).
+For questions or issues, please use [GitHub Issues](https://github.com/saucebase-dev/docs/issues).

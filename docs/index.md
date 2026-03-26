@@ -119,7 +119,7 @@ Commitlint for conventional commits
 You can get Saucebase running in just a few minutes. Only **[Docker](https://www.docker.com)** and **[Node.js](https://nodejs.org)** are required:
 
 ```bash
-git clone https://github.com/sauce-base/saucebase.git my-app
+git clone https://github.com/saucebase-dev/saucebase.git my-app
 cd my-app
 bash bin/setup-env
 ```

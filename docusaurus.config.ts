@@ -89,7 +89,7 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/sauce-base/docs/tree/main/',
+          editUrl: 'https://github.com/saucebase-dev/docs/tree/main/',
         },
         blog: false, // Disable blog
         theme: {
@@ -124,7 +124,7 @@ const config: Config = {
           position: 'right',
         },
         {
-          href: 'https://github.com/sauce-base/saucebase',
+          href: 'https://github.com/saucebase-dev/saucebase',
           label: 'GitHub',
           position: 'right',
         },
@@ -155,11 +155,11 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/sauce-base/saucebase',
+              href: 'https://github.com/saucebase-dev/saucebase',
             },
             {
               label: 'Issues',
-              href: 'https://github.com/sauce-base/saucebase/issues',
+              href: 'https://github.com/saucebase-dev/saucebase/issues',
             },
           ],
         },
@@ -168,11 +168,11 @@ const config: Config = {
           items: [
             {
               label: 'Main Repository',
-              href: 'https://github.com/sauce-base/saucebase',
+              href: 'https://github.com/saucebase-dev/saucebase',
             },
             {
               label: 'Documentation Source',
-              href: 'https://github.com/sauce-base/docs',
+              href: 'https://github.com/saucebase-dev/docs',
             },
           ],
         },
