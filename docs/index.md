@@ -69,7 +69,7 @@ Saucebase ships a complete development environment so your team is productive fr
 
 Saucebase includes everything you need for production deployments:
 
-- **Code quality tools**: [PHPStan](/reference/glossary#phpstan) level 5, [Laravel Pint](/reference/glossary#laravel-pint), ESLint, and commitlint ensure clean, consistent code
+- **Code quality tools**: [PHPStan](/reference/glossary#phpstan) level 5, [Laravel Pint](/reference/glossary#laravel-pint), and ESLint ensure clean, consistent code
 - **Comprehensive testing**: [Playwright](/reference/glossary#playwright) for E2E testing, PHPUnit for backend tests, all pre-configured
 - **Admin panel**: [Filament 5](/reference/glossary#filament) admin panel included with beautiful UI and powerful tools
 
