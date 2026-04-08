@@ -676,7 +676,7 @@ If you're still stuck after trying these solutions:
 
 2. **Search documentation**: Use the search bar (press `/` key)
 
-3. **Check GitHub issues**: [github.com/sauce-base/saucebase/issues](https://github.com/sauce-base/saucebase)
+3. **Check GitHub issues**: [github.com/saucebase-dev/saucebase/issues](https://github.com/saucebase-dev/saucebase)
 
 4. **Stack Overflow**: Tag questions with `laravel`, `inertiajs`, `vue3`
 

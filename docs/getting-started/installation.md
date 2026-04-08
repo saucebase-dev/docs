@@ -19,7 +19,7 @@ Get Saucebase running locally in three commands.
 ## Quick Start
 
 ```bash
-git clone https://github.com/sauce-base/saucebase.git my-app
+git clone https://github.com/saucebase-dev/saucebase.git my-app
 cd my-app
 bash bin/setup-env
 ```
@@ -33,7 +33,7 @@ bash bin/setup-env
 If you have [Laravel Herd](https://herd.laravel.com) installed, you can follow the steps below instead.
 
 ```bash
-git clone https://github.com/sauce-base/saucebase.git my-app
+git clone https://github.com/saucebase-dev/saucebase.git my-app
 cd my-app
 composer install
 cp .env.example .env
@@ -48,7 +48,7 @@ npm install && npm run dev
 If you prefer [Laravel Sail](https://laravel.com/docs/sail), you can follow the steps below instead.
 
 ```bash
-git clone https://github.com/sauce-base/saucebase.git my-app
+git clone https://github.com/saucebase-dev/saucebase.git my-app
 cd my-app
 cp .env.example .env
 # Configure .env for Sail (DB_HOST=mysql, REDIS_HOST=redis, etc.)
@@ -63,7 +63,7 @@ npm install && npm run dev
 If you'd prefer to run Saucebase without Docker, you can install it natively with PHP and Composer.
 
 ```bash
-git clone https://github.com/sauce-base/saucebase.git my-app
+git clone https://github.com/saucebase-dev/saucebase.git my-app
 cd my-app
 composer install
 cp .env.example .env

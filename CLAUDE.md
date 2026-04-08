@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Docusaurus-based documentation site for **Saucebase** — a modular Laravel SaaS starter kit built on the VILT stack (Vue, Inertia.js, Laravel, Tailwind CSS). The documentation is deployed to GitHub Pages at https://sauce-base.github.io/docs/.
+This is a Docusaurus-based documentation site for **Saucebase** — a modular Laravel SaaS starter kit built on the VILT stack (Vue, Inertia.js, Laravel, Tailwind CSS). The documentation is deployed to GitHub Pages at https://saucebase-dev.github.io/docs/.
 
 ## Commands
 
@@ -24,7 +24,7 @@ This is a Docusaurus-based documentation site for **Saucebase** — a modular La
 - **tsconfig.json** — Extends `@docusaurus/tsconfig` with `@site/*` alias
 - **Base URL**: `/docs/` — Docs served at site root (`routeBasePath: '/'`)
 - **Search**: `@easyops-cn/docusaurus-search-local` (no Algolia)
-- **Edit links**: point to `https://github.com/sauce-base/docs/tree/main/`
+- **Edit links**: point to `https://github.com/saucebase-dev/docs/tree/main/`
 
 ## Documentation Structure
 
@@ -98,10 +98,10 @@ description: Clear, concise description (50-160 characters)
 
 ## Related Repositories
 
-- **Main Repository**: [sauce-base/saucebase](https://github.com/sauce-base/saucebase) — The Laravel SaaS starter kit
-- **Auth Module**: [sauce-base/auth](https://github.com/sauce-base/auth)
-- **Settings Module**: [sauce-base/settings](https://github.com/sauce-base/settings)
+- **Main Repository**: [saucebase-dev/saucebase](https://github.com/saucebase-dev/saucebase) — The Laravel SaaS starter kit
+- **Auth Module**: [saucebase-dev/auth](https://github.com/saucebase-dev/auth)
+- **Settings Module**: [saucebase-dev/settings](https://github.com/saucebase-dev/settings)
 
 ## Deployment
 
-Pushes to `main` trigger automatic deployment via GitHub Actions (`.github/workflows/deploy.yml`). The workflow runs `npm ci && npm run build` and deploys `build/` to GitHub Pages at https://sauce-base.github.io/docs/.
+Pushes to `main` trigger automatic deployment via GitHub Actions (`.github/workflows/deploy.yml`). The workflow runs `npm ci && npm run build` and deploys `build/` to GitHub Pages at https://saucebase-dev.github.io/docs/.
