@@ -166,7 +166,7 @@ The impersonation feature is powered by two Laravel packages:
 
 ### How Data is Shared
 
-Impersonation data is shared globally via Inertia.js, making it available to all frontend pages. The `ImpersonationAlert` component automatically appears when impersonation is active.
+Impersonation data is shared globally via Inertia.js, making it available to all frontend pages. The `ImpersonationAlert` component lives in the Auth module (`modules/Auth/resources/js/components/ImpersonationAlert.vue`) and is registered automatically when the module loads — no changes to core files needed.
 
 ### Event System
 
@@ -191,11 +191,10 @@ Check that your admin user has the necessary permissions in Filament.
 
 ### Alert Not Appearing
 
-The impersonation alert requires the `ImpersonationAlert` component to be rendered in your layout. This component is included in the base `App.vue` layout.
-
-Clear the cache and rebuild assets if you recently installed the Auth module:
+The impersonation alert is registered automatically by the Auth module. If it isn't showing up, make sure the module is enabled and assets are up to date:
 
 ```bash
+php artisan module:list
 php artisan optimize:clear
 npm run build
 ```

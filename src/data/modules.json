@@ -243,6 +243,42 @@
       "dependencies": ["auth"]
     },
     {
+      "id": "themes",
+      "title": "Themes",
+      "description": "Visual theme editor for designing your app's colors, fonts, radius, and shadows. Pick a built-in theme or build your own, then bake it into CSS — no runtime overhead.",
+      "color": "#a855f7",
+      "logo": "lucide:palette",
+      "badge": "free",
+      "href": "/modules/themes",
+      "features": [
+        {
+          "icon": "lucide:palette",
+          "name": "14 Built-in Themes",
+          "description": "Food-named themes ready to use",
+          "details": "14 curated themes — beetroot, coffee, kiwi, mango, sushi, and more — each fully defining colors, fonts, radius, and shadows for both light and dark mode."
+        },
+        {
+          "icon": "lucide:sliders-horizontal",
+          "name": "Visual Editor",
+          "description": "Live color, font, radius, and shadow editing",
+          "details": "A floating panel on every page lets you edit every visual token live. Changes preview instantly in both light and dark mode without a page reload."
+        },
+        {
+          "icon": "lucide:sun-moon",
+          "name": "Dark & Light Mode",
+          "description": "Full dark/light support for every theme",
+          "details": "Every theme defines separate color sets for light and dark mode. A per-field sync toggle lets you lock values to be identical across modes or edit them independently."
+        },
+        {
+          "icon": "lucide:file-json",
+          "name": "JSON + Baked CSS",
+          "description": "Themes are committed JSON, output is static CSS",
+          "details": "Built-in theme definitions are JSON files committed to your repo. Custom themes you create in the editor are saved to `storage/app/themes/`. Once you're happy with a design, run `php artisan saucebase:theme:apply` to write the CSS variables into a static file. No database, no runtime cost."
+        }
+      ],
+      "dependencies": []
+    },
+    {
       "id": "blog",
       "title": "Blog",
       "description": "Full-featured blog with posts, categories, tags, and a Filament admin panel for content management.",

@@ -28,56 +28,6 @@ php artisan module:migrate Announcements --seed
 npm run build
 ```
 
-## Integration (required)
-
-After enabling the module, two core files need to be updated to display the banner. Apply the provided patches:
-
-```bash
-git apply modules/Announcements/patches/types.patch
-git apply modules/Announcements/patches/app-vue.patch
-npm run build
-```
-
-<details>
-<summary>Manual alternative</summary>
-
-If you prefer to apply the changes manually, follow these two steps.
-
-**1. Add the `Announcement` type to your shared types**
-
-In `resources/js/types/index.d.ts`, import the `Announcement` type from the module and add the `announcement?` prop to `PageProps`:
-
-```typescript
-import type { Announcement } from '@modules/Announcements/resources/js/types';
-
-export type PageProps<
-    T extends Record<string, unknown> = Record<string, unknown>,
-> = T & {
-    // ... existing props ...
-    announcement?: Announcement | null;
-};
-```
-
-**2. Render the banner in `App.vue`**
-
-In `resources/js/components/App.vue`, import `AnnouncementBanner` and render it as the first element in the template:
-
-```vue
-<script setup lang="ts">
-import AnnouncementBanner from '@modules/Announcements/resources/js/components/AnnouncementBanner.vue';
-// ... existing imports ...
-</script>
-
-<template>
-    <AnnouncementBanner />
-    <!-- ... rest of template ... -->
-</template>
-```
-
-Run `npm run build` (or restart `npm run dev`) after completing these steps.
-
-</details>
-
 ## Admin panel
 
 Navigate to `/admin` → **Announcements** in the left navigation to manage banners.

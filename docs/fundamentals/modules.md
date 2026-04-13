@@ -96,11 +96,11 @@ npm run build
 
 ### Applying Patches
 
-Some modules include patch files that integrate the module into core files like `User.php`, `App.vue`, and `index.d.ts`. These patches add things like model interfaces, Vue component registrations, and TypeScript type definitions that the module requires.
+Some modules include patch files that add things to core files. The most common example is adding a trait to your `User` model.
 
 Patch files live at `modules/{ModuleName}/patches/*.patch`.
 
-Apply a single patch with `git apply` from the repo root:
+Apply a patch with `git apply` from the repo root:
 
 ```bash
 git apply modules/Auth/patches/user.patch
@@ -128,6 +128,25 @@ docker compose exec app php artisan module:migrate Auth --seed
 # Build assets (on host machine)
 npm run build
 ```
+
+## Adding Global Components
+
+If your module needs to render a component on every page — like a notification banner, a floating widget, or a panel overlay — you can register it from your module's `setup()` hook instead of editing `App.vue`.
+
+In `modules/YourModule/resources/js/app.ts`, import your component and register it:
+
+```typescript
+import { registerGlobalComponent } from '@/lib/globalComponents';
+import MyBanner from './components/MyBanner.vue';
+
+export function setup() {
+    registerGlobalComponent('top', MyBanner);
+}
+```
+
+Use `'top'` to render the component **before** the page content, or `'bottom'` to render it **after**. The component will appear on every page automatically — no changes to core files needed.
+
+Your component is responsible for deciding when to render itself (for example, by checking an Inertia shared prop). If the prop isn't set, just return nothing from the template.
 
 ## Managing Modules
 
