@@ -335,9 +335,6 @@ npm run format:check
 ### Pre-commit Hooks
 
 ```bash
-# Test commit message format
-echo "feat: test commit" | npx commitlint
-
 # Run pre-commit hooks manually
 npx husky run pre-commit
 ```

@@ -85,15 +85,15 @@
         },
         {
           "icon": "lucide:github",
-          "name": "OAuth",
-          "description": "Google and GitHub OAuth integration",
-          "details": "Google and GitHub OAuth via Laravel Socialite. One config entry per provider in `.env`. New users are created automatically; existing users are linked by email."
+          "name": "Social Login",
+          "description": "Google and GitHub login",
+          "details": "Users can sign in with Google or GitHub. New accounts are created automatically, and existing accounts are linked by email."
         },
         {
-          "icon": "lucide:shield",
-          "name": "Security",
-          "description": "Rate limiting and CSRF protection",
-          "details": "All auth routes are rate-limited. CSRF tokens are injected into every Inertia response. Session fixation is prevented on login."
+          "icon": "lucide:user-check",
+          "name": "Impersonation",
+          "description": "Log in as any user from the admin panel",
+          "details": "Admins can impersonate any user directly from the Filament admin panel. A banner shows when impersonation is active, and you can switch back to your account at any time."
         },
         {
           "icon": "lucide:link",
@@ -107,7 +107,7 @@
     {
       "id": "settings",
       "title": "Settings",
-      "description": "Flexible settings management for user preferences and system-wide configuration with validation and caching.",
+      "description": "Account settings pages for managing profile info, avatar, password, and connected social accounts.",
       "color": "#0ea5e9",
       "logo": "lucide:settings-2",
       "badge": "free",
@@ -115,21 +115,27 @@
       "features": [
         {
           "icon": "lucide:user",
-          "name": "User Preferences",
-          "description": "Per-user configurable preferences",
-          "details": "Per-user key-value settings stored in the database. Accessible via `$user->setting('notifications.email', true)`. Type-cast values and dot-notation keys are supported."
+          "name": "Profile Info",
+          "description": "Update your name and email",
+          "details": "Users can update their display name and email address from their account settings page."
         },
         {
-          "icon": "lucide:server",
-          "name": "System Config",
-          "description": "Application-wide configuration",
-          "details": "Application-wide settings managed from the Filament admin panel. Stored in the database, cached in Redis. Accessible anywhere via `setting('site.name')`."
+          "icon": "lucide:image",
+          "name": "Avatar Upload",
+          "description": "Upload a profile picture",
+          "details": "Users can upload a custom profile photo. If no photo is set, the avatar falls back to the one from their connected social account, then to a default image."
         },
         {
-          "icon": "lucide:zap",
-          "name": "Caching",
-          "description": "Cached settings for optimal performance",
-          "details": "Settings are cached per-user and per-scope using Laravel's cache system. The cache is automatically invalidated when a setting is updated, keeping reads fast without stale data."
+          "icon": "lucide:key",
+          "name": "Password Change",
+          "description": "Change your password securely",
+          "details": "Users can update their password after confirming their current one. An email notification is sent when the password is changed."
+        },
+        {
+          "icon": "lucide:link",
+          "name": "Connected Accounts",
+          "description": "Manage linked social login providers",
+          "details": "Users can see which social providers (Google, GitHub) are connected to their account and disconnect them when needed."
         }
       ],
       "dependencies": ["auth"]
@@ -146,26 +152,26 @@
         {
           "icon": "lucide:shopping-cart",
           "name": "Checkout",
-          "description": "Stripe checkout sessions",
-          "details": "Stripe Checkout sessions are created server-side and redirect users to Stripe's hosted payment page. Supports one-time payments and recurring subscriptions."
+          "description": "Multi-step checkout flow",
+          "details": "A hosted checkout collects customer details and redirects to a payment page. Supports one-time payments and recurring subscriptions."
+        },
+        {
+          "icon": "lucide:refresh-cw",
+          "name": "Subscriptions",
+          "description": "Manage subscription lifecycle",
+          "details": "Create, cancel, and resume subscriptions. Status changes are kept in sync automatically via webhooks — no manual polling needed."
         },
         {
           "icon": "lucide:receipt",
           "name": "Billing Portal",
-          "description": "Hosted Stripe billing portal",
-          "details": "Authenticated users are redirected to Stripe's hosted billing portal where they can update payment methods, download invoices, and cancel or modify their subscription."
-        },
-        {
-          "icon": "lucide:file-text",
-          "name": "Invoices",
-          "description": "Invoice list and stored payment methods",
-          "details": "Lists the user's Stripe invoices with status, amount, and PDF download links. Stored payment methods are shown alongside for easy management."
+          "description": "Let users manage their own billing",
+          "details": "Users are redirected to a hosted billing portal where they can update payment methods, download invoices, and cancel or modify their subscription."
         },
         {
           "icon": "lucide:webhook",
           "name": "Webhooks",
-          "description": "Idempotent webhook processing",
-          "details": "Stripe webhook events are received, signature-verified, and processed idempotently. Duplicate events are safely ignored via event ID tracking stored in the database."
+          "description": "Reliable payment event processing",
+          "details": "Payment events are verified and processed reliably. Duplicate events are safely ignored, and failed payments update subscription status automatically."
         }
       ],
       "dependencies": ["auth"]
@@ -189,13 +195,19 @@
           "icon": "lucide:thumbs-up",
           "name": "Voting",
           "description": "Vote on what matters most",
-          "details": "Authenticated users upvote items they care about. Vote counts are displayed and used to sort the roadmap. One vote per user per item, with instant optimistic UI updates."
+          "details": "Authenticated users can upvote or downvote ideas. Vote counts are displayed publicly and used to rank items on the board."
+        },
+        {
+          "icon": "lucide:arrow-up-down",
+          "name": "Sorting",
+          "description": "Sort by votes, newest, or oldest",
+          "details": "Users can sort the roadmap by most voted, newest, or oldest. The default view shows the most popular ideas first."
         },
         {
           "icon": "lucide:layout-dashboard",
           "name": "Admin Panel",
-          "description": "Filament admin panel for moderation",
-          "details": "A Filament resource for moderating roadmap items. Admins can change status (Planned, In Progress, Completed, etc.), pin items to the top, and respond to user posts."
+          "description": "Moderate and manage roadmap items",
+          "details": "Admins can review, approve, reject, and update the status of any roadmap item from the Filament admin panel."
         }
       ],
       "dependencies": ["auth"]
@@ -241,6 +253,42 @@
         }
       ],
       "dependencies": ["auth"]
+    },
+    {
+      "id": "themes",
+      "title": "Themes",
+      "description": "Visual theme editor for designing your app's colors, fonts, radius, and shadows. Pick a built-in theme or build your own, then bake it into CSS — no runtime overhead.",
+      "color": "#a855f7",
+      "logo": "lucide:palette",
+      "badge": "free",
+      "href": "/modules/themes",
+      "features": [
+        {
+          "icon": "lucide:palette",
+          "name": "Built-in Themes",
+          "description": "Ready-to-use themes included",
+          "details": "Curated built-in themes are included, each fully defining colors, fonts, radius, and shadows for both light and dark mode."
+        },
+        {
+          "icon": "lucide:sliders-horizontal",
+          "name": "Visual Editor",
+          "description": "Live color, font, radius, and shadow editing",
+          "details": "A floating panel on every page lets you edit every visual token live. Changes preview instantly in both light and dark mode without a page reload."
+        },
+        {
+          "icon": "lucide:sun-moon",
+          "name": "Dark & Light Mode",
+          "description": "Full dark/light support for every theme",
+          "details": "Every theme defines separate color sets for light and dark mode. A per-field sync toggle lets you lock values to be identical across modes or edit them independently."
+        },
+        {
+          "icon": "lucide:file-code",
+          "name": "Baked CSS",
+          "description": "Export your theme as static CSS",
+          "details": "Once you're happy with a design, run one command to write the theme into a static CSS file. No database reads or runtime overhead — your styles ship as plain CSS."
+        }
+      ],
+      "dependencies": []
     },
     {
       "id": "blog",

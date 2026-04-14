@@ -1,13 +1,12 @@
 # Git Workflow
 
-Saucebase enforces strict commit message standards and code quality checks using Commitlint and Husky hooks. This guide covers the git workflow, commit conventions, and best practices.
+Saucebase follows conventional commit standards and enforces code quality checks using Husky hooks. This guide covers the git workflow, commit conventions, and best practices.
 
 ## Overview
 
-Every commit in Saucebase follows the **Conventional Commits** specification with strict enforcement:
+Every commit in Saucebase follows the **Conventional Commits** specification:
 
 - ✅ Automatic code formatting before commit
-- ✅ Commit message validation
 - ✅ Single-line commits only
 - ✅ Lowercase type and subject
 - ✅ Pre-configured hooks with Husky
@@ -28,7 +27,7 @@ type: subject
 
 ### Rules
 
-- **Single-line only** - No body or footer allowed
+- **Single-line only** - No body or footer
 - **Maximum length**: 150 characters
 - **Type**: Required, must be lowercase
 - **Scope**: Optional, must be lowercase
@@ -61,11 +60,6 @@ type: subject
 
 ❌ add new feature
    (Type is required)
-
-❌ feat: add new feature
-
-   This adds a new feature for users
-   (Body/footer not allowed - single-line only)
 ```
 
 ## Commit Types
@@ -108,24 +102,11 @@ npx lint-staged
 - Affected files: `**/*.{js,ts,vue}`
 - Auto-fixes and formats code
 
-### 3. Commit Message Validation
-
-```bash
-npx commitlint --edit $1
-```
-
-- Validates commit message format
-- Runs on `commit-msg` hook
-- Rejects invalid commit messages
-
 ## Workflow Steps
 
 ### 1. Make Your Changes
 
-Edit files as needed:
-
 ```bash
-# Edit files
 vim app/Models/User.php
 vim resources/js/pages/Dashboard.vue
 ```
@@ -138,9 +119,6 @@ git add app/Models/User.php
 
 # Stage all changes
 git add .
-
-# Stage interactively
-git add -p
 ```
 
 ### 3. Commit (Hooks Run Automatically)
@@ -152,9 +130,8 @@ git commit -m "feat(auth): add email verification"
 **What happens:**
 1. Pre-commit hook runs → `composer lint` formats PHP files
 2. Pre-commit hook runs → `lint-staged` formats JS/TS/Vue files
-3. Commit-msg hook runs → `commitlint` validates message
-4. If all pass → Commit succeeds
-5. If any fail → Commit rejected, fix issues and try again
+3. If all pass → Commit succeeds
+4. If any fail → Commit rejected, fix issues and try again
 
 ### 4. Push to Remote
 
@@ -168,7 +145,7 @@ git push -u origin feature/my-feature
 
 ## Handling Pre-commit Hook Failures
 
-### Scenario 1: PHP Formatting Issues
+### Scenario: PHP Formatting Issues
 
 ```bash
 $ git commit -m "feat: add new feature"
@@ -180,19 +157,7 @@ git add .
 git commit -m "feat: add new feature"
 ```
 
-### Scenario 2: Commit Message Invalid
-
-```bash
-$ git commit -m "Add new feature"
-⧗   input: Add new feature
-✖   type must be one of [feat, fix, docs, ...] [type-enum]
-✖   found 1 problems, 0 warnings
-
-# Fix commit message
-git commit -m "feat: add new feature"
-```
-
-### Scenario 3: Linting Errors
+### Scenario: Linting Errors
 
 ```bash
 $ git commit -m "feat: add feature"
@@ -211,22 +176,6 @@ git commit -m "feat: add feature"
 ```
 
 ## Manual Validation
-
-Test commit messages before committing:
-
-```bash
-# Test commit message format
-echo "feat: test commit" | npx commitlint
-
-# Expected output:
-# ✔   found 0 problems, 0 warnings
-
-# Test invalid message
-echo "Add feature" | npx commitlint
-
-# Expected output:
-# ✖   type must be one of [feat, fix, ...] [type-enum]
-```
 
 Run linters manually:
 
@@ -247,22 +196,6 @@ npm run format
 npm run format:check
 ```
 
-## Bypassing Hooks (Not Recommended)
-
-In rare cases, you can bypass hooks:
-
-```bash
-# Skip pre-commit hooks (NOT RECOMMENDED)
-git commit -m "feat: urgent fix" --no-verify
-
-# Skip commit message validation (NOT RECOMMENDED)
-git commit -m "WIP" --no-verify
-```
-
-:::danger Use with Caution
-Bypassing hooks should only be done in emergency situations. Your commit may be rejected during code review or cause CI/CD failures.
-:::
-
 ## Troubleshooting
 
 ### Hooks Not Running
@@ -273,27 +206,13 @@ npm run prepare
 
 # Verify hooks are installed
 ls -la .git/hooks/
-# Should show: pre-commit, commit-msg
-```
-
-### Commitlint Not Found
-
-```bash
-# Reinstall dependencies
-npm install
-
-# Verify commitlint is installed
-npx commitlint --version
+# Should show: pre-commit
 ```
 
 ### Linter Errors in Module Code
 
 ```bash
 # Run linter on specific module
-cd modules/Auth
-composer lint
-
-# Or from project root
 vendor/bin/pint modules/Auth
 ```
 
@@ -302,7 +221,6 @@ vendor/bin/pint modules/Auth
 ```bash
 # Make hooks executable
 chmod +x .git/hooks/pre-commit
-chmod +x .git/hooks/commit-msg
 ```
 
 ## Next Steps
