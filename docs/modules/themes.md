@@ -15,7 +15,7 @@ The theme editor is intended for the SaaS developer/owner, not end users. You de
 
 ## What you get
 
-- **14 built-in themes** — beetroot, bento-box, blue-lotus, blueberry, coffee, hotdog, kiwi, lollipop, mango, pizza, sushi, tangerine, tomato, and the default Saucebase theme
+- **Built-in themes** — including beetroot, bento-box, blue-lotus, blueberry, coffee, hotdog, kiwi, lollipop, mango, pizza, sushi, tangerine, tomato, and the default Saucebase theme
 - **Visual editor (ThemePanel)** — a floating panel on every page for live editing colors, fonts, border radius, and shadows
 - **Dark and light mode** — every theme defines both; switch between them while editing
 - **Per-field mode sync** — lock a field to keep the same value in both modes, or edit each mode independently

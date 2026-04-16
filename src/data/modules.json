@@ -265,9 +265,9 @@
       "features": [
         {
           "icon": "lucide:palette",
-          "name": "15 Built-in Themes",
+          "name": "Built-in Themes",
           "description": "Ready-to-use themes included",
-          "details": "15 curated themes — beetroot, coffee, kiwi, mango, sushi, and more — each fully defining colors, fonts, radius, and shadows for both light and dark mode."
+          "details": "Curated built-in themes are included, each fully defining colors, fonts, radius, and shadows for both light and dark mode."
         },
         {
           "icon": "lucide:sliders-horizontal",
