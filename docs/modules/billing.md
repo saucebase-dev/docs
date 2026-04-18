@@ -29,6 +29,10 @@ php artisan module:migrate Billing --seed
 npm run build
 ```
 
+:::warning
+This module requires a EmailService configured in your app to send billing-related emails. You can use services like Mailgun, SendGrid, or even SMTP for development. Make sure to set up your mail configuration in `.env` before testing these features. For development, you can use [Mailpit](https://mailpit.axllent.org/docs/install/) or [MailHog](https://github.com/mailhog/MailHog). If you are using docker you don't need to worry about this as the default configuration uses MailPit.
+:::
+
 **Docker:**
 ```bash
 composer require saucebase/billing && composer dump-autoload
