@@ -64,6 +64,7 @@ const sidebars: SidebarsConfig = {
             { type: 'doc', id: 'modules/settings', label: 'Settings', customProps: { icon: 'lucide:settings-2' } },
             { type: 'doc', id: 'modules/billing', label: 'Billing', customProps: { icon: 'lucide:credit-card' } },
             { type: 'doc', id: 'modules/announcements', label: 'Announcements', customProps: { icon: 'lucide:megaphone' } },
+            { type: 'doc', id: 'modules/blog', label: 'Blog', customProps: { icon: 'lucide:newspaper' } },
             { type: 'doc', id: 'modules/roadmap', label: 'Roadmap', customProps: { icon: 'lucide:map' } },
             { type: 'doc', id: 'modules/themes', label: 'Themes', customProps: { icon: 'lucide:palette' } },
           ],
