@@ -24,7 +24,7 @@ Use `Navigation::add()` to register items:
 use App\Facades\Navigation;
 use App\Navigation\Section;
 
-Navigation::add('Dashboard', route('dashboard'), function (Section $section) {
+Navigation::add('Dashboard', fn () => route('dashboard'), function (Section $section) {
     $section->attributes([
         'group' => 'main',
         'slug' => 'dashboard',
@@ -32,6 +32,12 @@ Navigation::add('Dashboard', route('dashboard'), function (Section $section) {
     ]);
 });
 ```
+
+:::tip Always wrap `route()` in a Closure
+Always pass named routes as `fn () => route('name')` — never call `route()` directly as the URL argument. The module system ([internachi/modular](https://github.com/InterNACHI/modular)) loads all `navigation.php` files before all `web.php` files, so named routes aren't registered yet at that point. Wrapping in a Closure defers the call to render time, after all routes are ready.
+
+Plain string URLs (`'https://...'`, `'#'`, `'/path'`) do not need wrapping.
+:::
 
 ### Attributes Reference
 
@@ -65,7 +71,7 @@ Navigation::add('Documentation', 'https://docs.example.com', function (Section $
 });
 
 // Badge — show a notification count
-Navigation::add('Notifications', route('notifications.index'), function (Section $section) {
+Navigation::add('Notifications', fn () => route('notifications.index'), function (Section $section) {
     $section->attributes([
         'group' => 'main',
         'slug' => 'notifications',
@@ -89,7 +95,7 @@ Navigation::add('Log out', '#', function (Section $section) {
 });
 
 // Custom styling
-Navigation::add('Admin', route('filament.admin.pages.dashboard'), function (Section $section) {
+Navigation::add('Admin', fn () => route('filament.admin.pages.dashboard'), function (Section $section) {
     $section->attributes([
         'group' => 'secondary',
         'slug' => 'admin',
@@ -110,14 +116,14 @@ Two methods for conditional navigation:
 // addWhen — re-evaluated every request
 Navigation::addWhen(
     fn () => Auth::check() && Auth::user()->isAdmin(),
-    'Admin', route('filament.admin.pages.dashboard'),
+    'Admin', fn () => route('filament.admin.pages.dashboard'),
     function (Section $section) { /* ... */ }
 );
 
 // addIf — checked once when navigation loads
 Navigation::addIf(
     Product::displayable()->count() > 0,
-    'Pricing', route('pricing'),
+    'Pricing', fn () => route('pricing'),
     function (Section $section) { /* ... */ }
 );
 ```
@@ -130,7 +136,7 @@ Modules register navigation in their own `routes/navigation.php`. The file is lo
 use App\Facades\Navigation;
 use App\Navigation\Section;
 
-Navigation::add('Settings', route('settings.index'), function (Section $section) {
+Navigation::add('Settings', fn () => route('settings.index'), function (Section $section) {
     $section->attributes([
         'group' => 'user',
         'slug' => 'settings',
@@ -141,6 +147,10 @@ Navigation::add('Settings', route('settings.index'), function (Section $section)
 ```
 
 No additional registration is needed — just create the file and enable the module.
+
+:::note
+Always use `fn () => route(...)` for named routes in module navigation files. The module system loads all `navigation.php` files before all `web.php` files, so direct `route()` calls would fail. See [Adding Navigation Items](#adding-navigation-items) for the full explanation.
+:::
 
 ## Navigation Groups
 
