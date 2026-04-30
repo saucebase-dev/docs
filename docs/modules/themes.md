@@ -27,8 +27,6 @@ The theme editor is intended for the SaaS developer/owner, not end users. You de
 
 ```bash
 composer require saucebase/themes
-composer dump-autoload
-php artisan module:enable Themes
 npm run build
 ```
 

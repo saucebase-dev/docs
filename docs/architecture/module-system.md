@@ -10,23 +10,28 @@ This guide explains how Saucebase's module system works architecturally. For the
 
 ## Module Metadata
 
-Each module has a `module.json` file describing its identity:
+Each module has a `composer.json` that declares its identity and service provider:
 
 ```json
 {
-    "name": "Auth",
-    "alias": "auth",
+    "name": "saucebase/auth",
     "description": "Authentication with social login support",
-    "keywords": ["authentication", "oauth", "login"],
-    "priority": 0,
-    "providers": [
-        "Modules\\Auth\\Providers\\AuthServiceProvider"
-    ],
-    "files": []
+    "autoload": {
+        "psr-4": {
+            "Modules\\Auth\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Auth\\Providers\\AuthServiceProvider"
+            ]
+        }
+    }
 }
 ```
 
-The `providers` array tells Laravel which service provider to load when the module is enabled.
+The `extra.laravel.providers` array tells Laravel which service provider to auto-load when the package is installed.
 
 ## Module Lifecycle
 
@@ -34,27 +39,17 @@ Understanding how modules are discovered, loaded, and integrated helps you under
 
 ### 1. Installation
 
-When you run `composer require saucebase/auth`, Composer downloads the module and places it in `modules/Auth/`. At this point, the module exists but isn't active.
+When you run `composer require saucebase/auth`, Composer downloads the module and places it in `modules/auth/`. The service provider listed in `extra.laravel.providers` is immediately registered — the module is active as soon as it is installed.
 
-### 2. Enable/Disable
+### 2. Active/Inactive
 
-The `modules_statuses.json` file tracks which modules are enabled:
-
-```json
-{
-    "Auth": true,
-    "Settings": true,
-    "Analytics": false
-}
-```
-
-Only enabled modules are loaded by the application. This file is the source of truth for module activation.
+There is no separate enable/disable toggle. A module is active when it is present in `composer.json`'s require section. Run `composer remove saucebase/auth` to deactivate it.
 
 ### 3. Discovery
 
-At application boot time, Laravel reads `modules_statuses.json` and loads service providers for enabled modules. This happens automatically—you don't need to register providers manually.
+At application boot time, Laravel auto-discovers service providers from every installed package's `extra.laravel.providers`. InterNACHI/modular scans the `modules/` directory and registers providers without any manual configuration.
 
-During the build process, `module-loader.js` scans the same file to determine which module assets to include in the frontend bundle.
+During the build process, `module-loader.js` scans the `modules/` directory to determine which module assets to include in the frontend bundle.
 
 ### 4. Registration
 
@@ -104,12 +99,12 @@ Routes are prefixed with the module name by default, preventing collisions. The 
 
 At build time, `module-loader.js` discovers module assets:
 
-1. Reads `modules_statuses.json` for enabled modules
+1. Scans the `modules/` directory for installed Composer packages
 2. Finds each module's `vite.config.js`
 3. Extracts the `paths` array from each config
 4. Adds those paths to Vite's input
 
-This means modules automatically participate in the build process when enabled, and are excluded when disabled.
+This means modules automatically participate in the build process when installed, and are excluded when removed.
 
 ### Page Resolution
 

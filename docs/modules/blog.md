@@ -23,9 +23,8 @@ The Blog module adds a public-facing blog to your app. Admins create and manage 
 
 ```bash
 composer require saucebase/blog
-composer dump-autoload
-php artisan module:enable Blog
-php artisan module:migrate Blog --seed
+php artisan migrate
+php artisan modules:seed --module=blog
 npm run build
 ```
 

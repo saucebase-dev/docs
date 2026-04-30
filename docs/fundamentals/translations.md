@@ -422,7 +422,7 @@ if (!isLoaded('my.key')) {
 
 ### Module Translations Not Working
 
-1. Check module is enabled: `cat modules_statuses.json`
+1. Check module is installed: `php artisan modules:list`
 2. Verify language files exist: `ls modules/Auth/lang/en/`
 3. Rebuild assets: `npm run build`
 4. Clear caches: `php artisan optimize:clear`

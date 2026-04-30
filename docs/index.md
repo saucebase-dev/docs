@@ -138,14 +138,15 @@ The bootstrap script starts Docker containers (MySQL, Redis, Mailpit), generates
 php artisan saucebase:install
 ```
 
-The interactive installer prompts you to choose modules, runs `composer require`, enables them, and runs migrations. The code lands in your `modules/` directory — open the files and modify them however you want.
+The interactive installer prompts you to choose modules, runs `composer require`, and runs migrations. The code lands in your `modules/` directory — open the files and modify them however you want.
 
 If you prefer to install a single module manually:
 
 ```bash
 composer require saucebase/auth
-php artisan module:enable Auth
-php artisan module:migrate Auth --seed
+php artisan migrate
+php artisan modules:seed --module=auth
+npm run build
 ```
 
 <ModuleGrid />

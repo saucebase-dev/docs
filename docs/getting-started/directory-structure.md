@@ -20,7 +20,6 @@ saucebase/
 ├── modules/                # ⭐ Feature modules (unique to Saucebase)
 ├── resources/              # Frontend code with module support
 ├── module-loader.js        # ⭐ Module asset discovery system
-├── modules_statuses.json   # ⭐ Module registry (enabled/disabled)
 ├── vite.config.js          # ⭐ Module-aware Vite configuration
 ├── playwright.config.ts    # ⭐ Module-aware E2E testing
 └── ...                     # Standard Laravel files
@@ -65,22 +64,18 @@ modules/
     │   ├── Unit/
     │   └── e2e/                 # Module E2E tests (auto-discovered)
     ├── vite.config.js           # ⭐ Exports asset paths for collection
-    ├── composer.json
-    └── module.json              # Module metadata
+    └── composer.json            # Module manifest (PSR-4 autoload + Laravel providers)
 ```
 
-## Module Registry (`modules_statuses.json`)
+## Module Discovery
 
-Tracks which modules are enabled. Only enabled modules are loaded and built.
+Modules are loaded based on their presence as Composer packages in `modules/`. There is no separate status file — Composer is the source of truth.
 
-```json title="modules_statuses.json"
-{
-  "Auth": true,
-  "Settings": true
-}
-```
+- **Install**: `composer require saucebase/auth` — module is immediately active
+- **Remove**: `composer remove saucebase/auth` — module is deactivated
+- **List**: `php artisan modules:list` — shows all discovered modules
 
-Managed automatically via `php artisan module:enable` and `php artisan module:disable` commands. Saucebase's module system is built on [nWidart/laravel-modules](https://github.com/nWidart/laravel-modules) — see that package for the full module API.
+Saucebase's module system is built on [InterNACHI/modular](https://github.com/InterNACHI/modular) — see that package for the full module API.
 
 ## Want to go deeper?
 

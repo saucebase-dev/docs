@@ -89,52 +89,39 @@ class MacroServiceProvider extends ServiceProvider
 
 ### ModuleServiceProvider (Abstract)
 
-Base class for module service providers:
+Base class for module service providers. Migrations and views are auto-discovered by InterNACHI/modular — `boot()` only needs to handle translations, config, and Inertia data:
 
 ```php
 abstract class ModuleServiceProvider extends ServiceProvider
 {
-    protected string $name;
-    protected string $nameLower;
-    protected array $commands = [];
     protected array $providers = [];
 
     public function boot(): void
     {
         $this->registerTranslations();
         $this->registerConfig();
-        $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
-
-        // Share module data with Inertia
-        Inertia::share([
-            "{$this->nameLower}.config" => fn() => config($this->nameLower),
-        ]);
+        $this->shareInertiaData();
     }
 
     public function register(): void
     {
-        $this->registerProviders();
-        $this->registerCommands();
+        foreach ($this->providers as $provider) {
+            $this->app->register($provider);
+        }
     }
 }
 ```
 
+`module_path()` is a project-level helper backed by `base_path()`, not a package-provided API.
+
 ### Module Provider Example
 
-Every module extends `ModuleServiceProvider`, which handles translations, config, migrations, and Inertia data sharing automatically:
+Every module extends `ModuleServiceProvider`, which handles translations, config, and Inertia data sharing automatically:
 
 ```php
-// modules/Auth/app/Providers/AuthServiceProvider.php
+// modules/auth/src/Providers/AuthServiceProvider.php
 class AuthServiceProvider extends ModuleServiceProvider
 {
-    protected string $name = 'Auth';
-    protected string $nameLower = 'auth';
-
-    protected array $commands = [
-        Commands\SetupOAuthCommand::class,
-    ];
-
     protected array $providers = [
         RouteServiceProvider::class,
     ];
@@ -146,12 +133,11 @@ class AuthServiceProvider extends ModuleServiceProvider
 
         // Add module-specific boot logic
         $this->registerEventListeners();
-        $this->configureThirdPartyServices();
     }
 }
 ```
 
-When a module is enabled, its service provider automatically registers routes, migrations, translations, config, commands, and nested providers.
+When a module is installed, its service provider automatically registers nested providers, translations, and config. Migrations and routes are auto-discovered by the framework.
 
 ## HandleInertiaRequests Middleware
 
@@ -172,8 +158,8 @@ class HandleInertiaRequests extends Middleware
     {
         return array_merge(parent::share($request), [
             'locale' => app()->getLocale(),
-            'modules' => fn () => collect(Module::allEnabled())
-                ->mapWithKeys(fn ($module, $key) => [$key => $module->getName()])
+            'modules' => fn () => app(ModuleRegistry::class)->modules()
+                ->mapWithKeys(fn ($module) => [$module->name => $module->name])
                 ->all(),
             'navigation' => fn () => app(Navigation::class)->treeGrouped(),
             'breadcrumbs' => $this->getBreadcrumbs(),

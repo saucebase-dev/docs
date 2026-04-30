@@ -130,7 +130,7 @@ Navigation::addIf(
 
 ## Module Navigation
 
-Modules register navigation in their own `routes/navigation.php`. The file is loaded automatically when the module is enabled in `modules_statuses.json`.
+Modules register navigation in their own `routes/navigation.php`. The file is loaded automatically when the module is installed.
 
 ```php title="modules/Settings/routes/navigation.php"
 use App\Facades\Navigation;

@@ -25,9 +25,8 @@ The Roadmap module gives authenticated users a page to suggest features or bugs,
 
 ```bash
 composer require saucebase/roadmap
-composer dump-autoload
-php artisan module:enable Roadmap
-php artisan module:migrate Roadmap --seed
+php artisan migrate
+php artisan modules:seed --module=roadmap
 npm run build
 ```
 
