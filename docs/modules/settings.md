@@ -24,17 +24,14 @@ It has no own database tables or models — everything operates on the core `Use
 
 ```bash
 composer require saucebase/settings
-composer dump-autoload
-php artisan module:enable Settings
 npm run build
 ```
 
-No migrations are needed — this module adds no tables of its own.
+No migrations or seeders needed — this module adds no tables of its own.
 
 **Docker:**
 ```bash
-composer require saucebase/settings && composer dump-autoload
-docker compose exec workspace php artisan module:enable Settings
+composer require saucebase/settings
 npm run build
 ```
 

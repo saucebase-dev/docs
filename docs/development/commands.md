@@ -158,64 +158,73 @@ php artisan saucebase:install --no-interaction
 
 ## Module Management
 
+### Creating a Module
+
+```bash
+# Scaffold a new module from stubs
+php artisan saucebase:recipe BlogPost
+
+# After scaffolding, activate and build
+composer require saucebase/blogpost
+npm run dev
+```
+
 ### Installing Modules
 
 ```bash
-# Install module package
+# 1. Install the module via Composer
 composer require saucebase/auth
 
-# Regenerate autoloader
-composer dump-autoload
+# 2. Run migrations
+php artisan migrate
 
-# Enable module
-php artisan module:enable Auth
+# 3. Seed module data (if the module has seeders)
+php artisan modules:seed --module=auth
 
-# Run migrations and seeds
-php artisan module:migrate Auth --seed
-
-# Build frontend assets
+# 4. Build frontend assets
 npm run build
 ```
 
 ### Managing Modules
 
 ```bash
-# List all modules
-php artisan module:list
+# List all discovered modules
+php artisan modules:list
 
-# Enable module
-php artisan module:enable Auth
+# Sync PHPUnit test suite config (run after adding/removing modules)
+php artisan modules:sync
 
-# Disable module
-php artisan module:disable Auth
+# Cache module discovery (production)
+php artisan modules:cache
 
-# Module status
-php artisan module:list
+# Clear module cache
+php artisan modules:clear
+```
+
+### Removing Modules
+
+```bash
+# 1. Remove the module via Composer
+composer remove saucebase/auth
+
+# 2. Rebuild frontend assets
+npm run build
 ```
 
 ### Module Database Operations
 
 ```bash
-# Run migrations
-php artisan module:migrate Auth
+# Run all migrations (includes module migrations)
+php artisan migrate
 
-# Rollback migrations
-php artisan module:migrate-rollback Auth
+# Rollback last migration batch
+php artisan migrate:rollback
 
-# Refresh migrations (drop + re-run)
-php artisan module:migrate-refresh Auth
-
-# Seed data
-php artisan module:seed Auth
-
-# Run specific seeder
-php artisan module:seed Auth --class=AuthDatabaseSeeder
-
-# Migrate and seed together
-php artisan module:migrate Auth --seed
+# Refresh all migrations (CAUTION: destroys data)
+php artisan migrate:fresh --seed
 
 # Check migration status
-php artisan module:migrate-status Auth
+php artisan migrate:status
 ```
 
 ## Frontend Assets

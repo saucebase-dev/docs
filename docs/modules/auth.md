@@ -22,9 +22,8 @@ The Auth module handles everything related to user identity: email/password logi
 
 ```bash
 composer require saucebase/auth
-composer dump-autoload
-php artisan module:enable Auth
-php artisan module:migrate Auth --seed
+php artisan migrate
+php artisan modules:seed --module=auth
 npm run build
 ```
 
@@ -34,9 +33,9 @@ This module requires a EmailService configured in your app to send the magic lin
 
 **Docker:**
 ```bash
-composer require saucebase/auth && composer dump-autoload
-docker compose exec workspace php artisan module:enable Auth
-docker compose exec workspace php artisan module:migrate Auth --seed
+composer require saucebase/auth
+docker compose exec workspace php artisan migrate
+docker compose exec workspace php artisan modules:seed --module=auth
 npm run build
 ```
 

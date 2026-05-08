@@ -22,9 +22,8 @@ The Announcements module lets admins create site-wide banners that appear fixed 
 
 ```bash
 composer require saucebase/announcements
-composer dump-autoload
-php artisan module:enable Announcements
-php artisan module:migrate Announcements --seed
+php artisan migrate
+php artisan modules:seed --module=announcements
 npm run build
 ```
 

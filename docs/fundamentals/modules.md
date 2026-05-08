@@ -1,7 +1,7 @@
 ---
 sidebar_position: 1
 title: Module Management
-description: Learn how to install, enable, disable, and remove Saucebase modules
+description: Learn how to install and remove Saucebase modules
 ---
 
 # Module Management
@@ -24,11 +24,11 @@ php artisan saucebase:recipe BlogPost "Basic Recipe"
 Module names must be StudlyCase with no spaces or hyphens (e.g. `BlogPost`, `UserReports`).
 :::
 
-The command generates a ready-to-use structure under `Modules/{Name}/`:
+The command generates a ready-to-use structure under `modules/{name}/`:
 
 ```
-Modules/BlogPost/
-├── app/
+modules/blogpost/
+├── src/
 │   ├── Filament/           # Admin panel plugin
 │   ├── Http/Controllers/
 │   └── Providers/          # Service + Route providers
@@ -41,27 +41,15 @@ Modules/BlogPost/
 │   └── navigation.php      # Sidebar nav entries
 ├── tests/e2e/
 ├── composer.json
-├── module.json
 └── vite.config.js
 ```
 
 After generation, activate the module:
 
 ```bash
-composer dump-autoload
-php artisan module:enable BlogPost
+composer require saucebase/blogpost
 npm run dev
 ```
-
-### Alternative: `module:make`
-
-The underlying `nwidart/laravel-modules` package also provides a generator:
-
-```bash
-php artisan module:make BlogPost
-```
-
-This works but produces generic stubs — it won't include the Filament plugin, Vite config, Taskfile entry, or navigation route that `saucebase:recipe` sets up.
 
 ## Installing Modules
 
@@ -73,26 +61,22 @@ Follow these steps in order to install any module:
 # 1. Install the module via Composer
 composer require saucebase/auth
 
-# 2. Regenerate autoload files
-composer dump-autoload
+# 2. Run migrations
+php artisan migrate
 
-# 3. Enable the module
-php artisan module:enable Auth
+# 3. Seed module data
+php artisan modules:seed --module=auth
 
-# 4. Run migrations and seeders
-php artisan module:migrate Auth --seed
-
-# 5. Build frontend assets
+# 4. Build frontend assets
 npm run build
 ```
 
 **What each command does:**
 
-1. `composer require` - Downloads the module and adds it to `composer.json`
-2. `composer dump-autoload` - Regenerates autoloader to include new module classes
-3. `module:enable` - Marks the module as enabled in `modules_statuses.json`
-4. `module:migrate --seed` - Runs database migrations and seeds sample data
-5. `npm run build` - Rebuilds frontend assets to include module JavaScript/CSS
+1. `composer require` - Downloads the module, registers its service provider, and makes its classes available
+2. `php artisan migrate` - Runs all pending migrations, including the module's
+3. `php artisan modules:seed --module=auth` - Seeds the module's initial data (roles, demo records, etc.)
+4. `npm run build` - Rebuilds frontend assets to include module JavaScript/CSS
 
 ### Applying Patches
 
@@ -119,11 +103,10 @@ If using Docker:
 ```bash
 # Install via Composer (on host machine)
 composer require saucebase/auth
-composer dump-autoload
 
-# Enable and migrate (inside Docker container)
-docker compose exec app php artisan module:enable Auth
-docker compose exec app php artisan module:migrate Auth --seed
+# Run migrations and seed (inside Docker container)
+docker compose exec app php artisan migrate
+docker compose exec app php artisan modules:seed --module=auth
 
 # Build assets (on host machine)
 npm run build
@@ -150,64 +133,34 @@ Your component is responsible for deciding when to render itself (for example, b
 
 ## Managing Modules
 
-### Enable/Disable Modules
-
-```bash
-# Enable a module
-php artisan module:enable Auth
-
-# Disable a module
-php artisan module:disable Auth
-
-# List all modules
-php artisan module:list
-```
-
-When you enable/disable modules, **always rebuild frontend assets**:
-
-```bash
-npm run build
-# OR restart dev server
-npm run dev
-```
-
 ### Module Status
 
-Check which modules are enabled:
+List all discovered modules:
 
 ```bash
-php artisan module:list
+php artisan modules:list
 ```
 
-Or view `modules_statuses.json`:
+After adding or removing modules, sync the PHPUnit test suite config:
 
-```json title="modules_statuses.json"
-{
-  "Auth": true,
-  "Billing": true,
-  "Settings": true
-}
+```bash
+php artisan modules:sync
 ```
-
-Only modules with `true` are loaded.
 
 ### Database Operations
 
 ```bash
-# Run migrations
-php artisan module:migrate Auth
+# Run all migrations (includes module migrations)
+php artisan migrate
 
-# Rollback migrations
-php artisan module:migrate-rollback Auth
+# Rollback last batch
+php artisan migrate:rollback
 
-# Refresh migrations (drop + re-run)
-php artisan module:migrate-refresh Auth
+# Refresh all migrations (CAUTION: destroys data)
+php artisan migrate:fresh --seed
 
-# Seed data
-php artisan module:seed Auth
-
-# Migrate and seed together
-php artisan module:migrate Auth --seed
+# Check migration status
+php artisan migrate:status
 ```
 
 ## Removing Modules
@@ -215,19 +168,10 @@ php artisan module:migrate Auth --seed
 To completely remove a module:
 
 ```bash
-# 1. Disable the module
-php artisan module:disable Auth
-
-# 2. Rollback migrations (if desired)
-php artisan module:migrate-rollback Auth
-
-# 3. Remove from Composer
+# 1. Remove from Composer
 composer remove saucebase/auth
 
-# 4. Delete the directory
-rm -rf modules/Auth
-
-# 5. Rebuild assets
+# 2. Rebuild assets
 npm run build
 ```
 
@@ -247,14 +191,13 @@ php artisan optimize:clear
 ### Module Routes Not Working
 
 **Check:**
-1. Module is enabled: `php artisan module:list`
+1. Module is installed: `php artisan modules:list`
 2. Routes are registered: `php artisan route:list --name=auth`
 3. Service provider is loaded
 
 **Fix:**
 
 ```bash
-php artisan module:enable Auth
 php artisan optimize:clear
 ```
 
@@ -277,9 +220,9 @@ npm run dev
 **Solution:**
 
 ```bash
-php artisan module:migrate Auth
+php artisan migrate
 # Check status
-php artisan module:migrate-status Auth
+php artisan migrate:status
 ```
 
 ## Next Steps

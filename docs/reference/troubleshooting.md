@@ -108,18 +108,18 @@ composer install --ignore-platform-reqs
 **Solutions**:
 
 ```bash
-# 1. Check module is enabled
-cat modules_statuses.json
-# Should show: {"Auth": true}
+# 1. Verify module is installed
+php artisan modules:list
 
 # 2. Regenerate autoload files
 composer dump-autoload
 
 # 3. Clear all caches
 php artisan optimize:clear
+php artisan modules:clear
 
-# 4. Verify module exists
-ls -la modules/Auth
+# 4. Verify module directory exists
+ls -la modules/auth
 
 # 5. Rebuild frontend assets
 npm run build
@@ -132,17 +132,17 @@ npm run build
 **Solutions**:
 
 ```bash
-# 1. Enable the module
-php artisan module:enable Auth
+# 1. Verify the module is installed
+php artisan modules:list
 
-# 2. Clear route cache
+# 2. Check extra.laravel.providers in the module's composer.json
+cat modules/auth/composer.json
+
+# 3. Clear route cache
 php artisan route:clear
 
-# 3. List all routes to verify
+# 4. List all routes to verify
 php artisan route:list | grep auth
-
-# 4. Check module routes file exists
-cat modules/Auth/routes/web.php
 
 # 5. Restart Laravel server
 # If using: php artisan serve
@@ -156,17 +156,14 @@ cat modules/Auth/routes/web.php
 **Solutions**:
 
 ```bash
-# Run module migrations
-php artisan module:migrate Auth
+# Run all pending migrations (includes module migrations)
+php artisan migrate
 
 # Check migration status
-php artisan module:migrate-status Auth
+php artisan migrate:status
 
-# Refresh migrations (CAUTION: destroys data)
-php artisan module:migrate-refresh Auth
-
-# Run specific migration
-php artisan migrate --path=modules/Auth/database/migrations
+# Refresh all migrations (CAUTION: destroys data)
+php artisan migrate:fresh --seed
 ```
 
 ### Module Assets Not Loading
@@ -182,11 +179,11 @@ npm run build
 # 2. Clear Laravel caches
 php artisan optimize:clear
 
-# 3. Verify module is enabled
-cat modules_statuses.json
+# 3. Clear module discovery cache
+php artisan modules:clear
 
 # 4. Check module vite.config.js exists
-cat modules/Auth/vite.config.js
+cat modules/auth/vite.config.js
 
 # 5. Restart Vite dev server
 # Press Ctrl+C and run:
