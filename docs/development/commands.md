@@ -164,8 +164,8 @@ php artisan saucebase:install --no-interaction
 # Scaffold a new module from stubs
 php artisan saucebase:recipe BlogPost
 
-# After scaffolding
-composer dump-autoload && php artisan package:discover
+# After scaffolding, activate and build
+composer require saucebase/blogpost
 npm run dev
 ```
 

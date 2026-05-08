@@ -24,11 +24,11 @@ php artisan saucebase:recipe BlogPost "Basic Recipe"
 Module names must be StudlyCase with no spaces or hyphens (e.g. `BlogPost`, `UserReports`).
 :::
 
-The command generates a ready-to-use structure under `Modules/{Name}/`:
+The command generates a ready-to-use structure under `modules/{name}/`:
 
 ```
-Modules/BlogPost/
-├── app/
+modules/blogpost/
+├── src/
 │   ├── Filament/           # Admin panel plugin
 │   ├── Http/Controllers/
 │   └── Providers/          # Service + Route providers
@@ -47,7 +47,7 @@ Modules/BlogPost/
 After generation, activate the module:
 
 ```bash
-composer dump-autoload && php artisan package:discover
+composer require saucebase/blogpost
 npm run dev
 ```
 
